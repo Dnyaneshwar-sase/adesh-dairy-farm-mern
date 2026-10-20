@@ -9,7 +9,13 @@ require("dotenv").config();
 const app = express();
 
 // Middleware
-app.use(cors());
+// Middleware - Allow Frontend
+app.use(cors({
+    origin: "https://adesh-dairy-farm-mern-frontend.vercel.app",
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
 app.use(express.json());
 
 // Uploaded photos
