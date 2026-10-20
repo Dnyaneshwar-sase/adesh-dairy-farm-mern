@@ -12,7 +12,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// अपलोड केलेले फोटो ब्राउझरमध्ये दाखवण्यासाठी
+// Uploaded photos
 app.use(
     "/uploads",
     express.static(path.join(__dirname, "uploads"))
@@ -34,7 +34,8 @@ app.use("/api/financial", require("./routes/financialRoutes"));
 app.use("/api/feed", require("./routes/feedRoutes"));
 app.use("/api/workers", require("./routes/workerSalaryRoutes"));
 app.use("/api/gallery", require("./routes/galleryRoutes"));
-// Backend तपासण्यासाठी
+
+// Backend health check
 app.get("/", (req, res) => {
     res.send("Adesh Dairy Farm Backend is running!");
 });
@@ -42,15 +43,10 @@ app.get("/", (req, res) => {
 // Server Port
 const PORT = process.env.PORT || 5000;
 
-// MongoDB Connection आणि Server Start
-
- // MongoDB Connection आणि Server Start
+// MongoDB Connection and Server Start
 mongoose.connect(process.env.MONGODB_URI)
     .then(() => {
         console.log("MongoDB Connected Successfully!");
-
-        // Reminder Scheduler सुरू करा
-        require("./reminderScheduler");
 
         app.listen(PORT, () => {
             console.log(`Server running on port ${PORT}`);
@@ -62,4 +58,3 @@ mongoose.connect(process.env.MONGODB_URI)
             error.message
         );
     });
-

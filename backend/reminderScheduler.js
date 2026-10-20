@@ -1,4 +1,3 @@
-const cron = require("node-cron");
 
 const BreedingRecord = require("./models/BreedingRecord");
 const Cow = require("./models/Cow");
@@ -152,7 +151,6 @@ async function processRecord(record, today) {
             "Cow किंवा Owner Email उपलब्ध नाही:",
             record._id
         );
-
         return;
     }
 
@@ -165,9 +163,7 @@ async function processRecord(record, today) {
     // Expected Calving Date नसल्यास AI Date + 9 महिने + 9 दिवस
     const deliveryDate =
         record.expectedCalvingDate ||
-        (aiDate
-            ? addDays(addMonths(aiDate, 9), 9)
-            : "");
+        (aiDate ? addDays(addMonths(aiDate, 9), 9) : "");
 
     const status = record.pregnancyStatus;
 
@@ -183,14 +179,10 @@ async function processRecord(record, today) {
             `Reminders बंद: ${cowName}. ` +
             `Expected Calving Date: ${deliveryDate}`
         );
-
         return;
     }
 
-    // ==================================================
     // 1. AI नंतर 21 दिवस: Heat तपासणी Reminder
-    // ==================================================
-
     const heatDate =
         record.aiReminderDate ||
         (aiDate ? addDays(aiDate, 21) : "");
@@ -225,23 +217,17 @@ async function processRecord(record, today) {
         return;
     }
 
-    // ==================================================
     // 2. AI नंतर 2 महिने: Pregnancy Test + Monthly Follow-up
-    // 45 दिवसांचा स्वतंत्र Reminder काढलेला आहे.
-    // पहिला Reminder AI नंतर 2 महिने पूर्ण झाल्यावर.
-    // त्यानंतर दर महिन्याला Follow-up.
-    // ==================================================
-
     const twoMonthDate = addMonths(aiDate, 2);
     const lastReminder = record.lastPregnancyReminderDate;
 
-    // जुन्या 45 दिवसांच्या Reminder ची तारीख 2 महिन्यांपूर्वीची
-    // असल्यास ती पहिला 2 महिन्यांचा Reminder रोखणार नाही.
+    // जुन्या 45 दिवसांच्या Reminder मुळे पहिला 2 महिन्यांचा
+    // Reminder रोखला जाऊ नये.
     const firstTwoMonthReminderDue =
         today >= twoMonthDate &&
         (!lastReminder || lastReminder < twoMonthDate);
 
-    // पहिल्या 2 महिन्यांच्या Reminder नंतर पुढील मासिक Reminder
+    // पहिल्या 2 महिन्यांच्या Reminder नंतर मासिक Reminder
     const nextMonthlyReminderDue =
         today >= twoMonthDate &&
         lastReminder &&
@@ -309,19 +295,12 @@ async function processRecord(record, today) {
         console.log("Monthly Reminder पाठवला:", cowName);
     }
 
-    // ==================================================
     // 3. गाय गर्भवती नसल्यास Calving Reminders पाठवू नका
-    // ==================================================
-
     if (!pregnant || !deliveryDate) {
         return;
     }
 
-    // ==================================================
     // 4. वेताच्या 15 दिवस आधी, 9 दिवस आधी आणि वेताच्या दिवशी
-    // या तीन Reminders मध्ये बदल केलेला नाही.
-    // ==================================================
-
     const calvingReminders = [
         {
             days: 15,
@@ -377,10 +356,7 @@ async function processRecord(record, today) {
     }
 }
 
-// ==================================================
 // सर्व Breeding Records तपासा
-// ==================================================
-
 async function checkReminders() {
     const today = getToday();
 
@@ -402,27 +378,5 @@ async function checkReminders() {
     console.log("Reminder तपासणी पूर्ण:", today);
 }
 
-// ==================================================
-// Scheduler
-// सध्या testing साठी दर मिनिटाला चालतो.
-// Production मध्ये सकाळी 9 वाजता चालवण्यासाठी:
-// "0 9 * * *" वापरा.
-// ==================================================
-
-// दररोज भारतीय वेळेनुसार सकाळी 9 वाजता
-cron.schedule("0 9 * * *", async () => {
-    console.log("Daily Reminder Scheduler started:", getToday());
-
-    checkReminders()
-        .catch(error => {
-            console.error("Daily Scheduler error:", error);
-        });
-}, {
-    timezone: "Asia/Kolkata"
-});
-
-console.log(
-    "Reminder Scheduler तयार आहे. वेळ: दररोज सकाळी 9:00 IST"
-);
-
+// Vercel Cron API मधून हे function वापरले जाईल.
 module.exports = { checkReminders };
