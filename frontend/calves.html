@@ -1,0 +1,440 @@
+
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>वासरांची व्यवस्थापन | आदेश डेअरी फार्म</title>
+
+<style>
+.calf-page,.calf-page *{box-sizing:border-box!important}
+.calf-page{width:100%;max-width:1400px;margin:0 auto;padding:24px;font-family:"Segoe UI",Arial,sans-serif;color:#26382b}
+.calf-page .farm-brand{display:flex;align-items:center;gap:16px;padding:18px 22px;margin:0 0 22px;background:#fff;border:1px solid #dce9dd;border-radius:16px;box-shadow:0 5px 18px rgba(0,0,0,.06)}
+.calf-page .farm-logo{width:68px;height:68px;padding:4px;object-fit:contain;border-radius:12px;background:#f1f8ef}
+.calf-page .farm-brand h2{margin:0 0 5px;color:#176b3a;font-size:24px;font-weight:800}
+.calf-page .farm-brand p{margin:0;color:#647568;font-size:14px}
+.calf-page .calves-header{padding:28px;margin:0 0 24px;background:linear-gradient(135deg,#e5f5e7,#fff);border:1px solid #d5e9d6;border-radius:16px;box-shadow:0 5px 18px rgba(30,90,45,.05)}
+.calf-page .calves-header h1{margin:0 0 10px;color:#176b3a;font-size:32px;line-height:1.4;font-weight:800}
+.calf-page .calves-header p{margin:0 0 20px;color:#596b60;font-size:15px;line-height:1.7}
+.calf-page .add-button{display:inline-flex;align-items:center;justify-content:center;padding:12px 22px;background:#198754;color:#fff;border:1px solid #198754;border-radius:10px;font-size:15px;font-weight:700;text-decoration:none;cursor:pointer}
+.calf-page .add-button:hover{background:#146c43}
+.calf-page .page-navigation{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:14px;width:100%;margin:24px auto 10px}
+.calf-page .page-navigation a,.calf-page .page-navigation button{display:inline-flex;align-items:center;justify-content:center;padding:11px 18px;background:#e8f5e9;color:#245b35;border:1px solid #c8e6c9;border-radius:9px;font-size:14px;font-weight:700;text-decoration:none;cursor:pointer}
+.calf-page .form-panel{display:none;padding:24px;margin:0 0 25px;background:#fff;border:1px solid #dce9dd;border-radius:16px;box-shadow:0 5px 18px rgba(0,0,0,.05)}
+.calf-page .form-panel.show{display:block}
+.calf-page .form-panel h2{margin:0 0 20px;color:#176b3a}
+.calf-page .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.calf-page .field{display:flex;flex-direction:column;gap:8px;min-width:0}
+.calf-page .field label{font-size:14px;font-weight:700;color:#245b35}
+.calf-page .field input,.calf-page .field select{width:100%;padding:12px;border:1px solid #d4e1d6;border-radius:9px;background:#fff;font-size:15px}
+.calf-page .field input:focus,.calf-page .field select:focus{outline:2px solid #a8d9b7;border-color:#17683b}
+.calf-page .full-width{grid-column:1/-1}
+.calf-page .cow-container{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch;gap:20px;width:100%}
+.calf-page .calf-card{display:flex;flex-direction:column;min-width:0;padding:0;overflow:hidden;background:#fff;border:1px solid #dce9dd;border-radius:16px;box-shadow:0 5px 20px rgba(0,0,0,.07);transition:transform .2s ease,box-shadow .2s ease}
+.calf-page .calf-card:hover{transform:translateY(-3px);box-shadow:0 10px 25px rgba(0,0,0,.1)}
+.calf-page .calf-photo{display:block;width:calc(100% - 28px);height:185px;margin:14px;padding:0;object-fit:contain;object-position:center;background:#f4f8f3;border:1px solid #e0e9df;border-radius:12px}
+.calf-page .calf-card-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:4px 16px 12px}
+.calf-page .calf-card-header h2{margin:0;padding:0;color:#176b3a;font-size:22px;font-weight:800;overflow-wrap:anywhere}
+.calf-page .calf-card-header span{flex-shrink:0;padding:7px 10px;background:#e8f5e9;color:#176b3a;border-radius:8px;font-size:13px;font-weight:800}
+.calf-page .calf-details{display:block;flex:1 0 auto;padding:0 16px 12px;margin:0}
+.calf-page .calf-details p{display:flex;align-items:flex-start;gap:8px;width:100%;margin:0;padding:9px 0;color:#4b5b50;font-size:14px;line-height:1.6;border-bottom:1px solid #edf2ec;overflow-wrap:anywhere;word-break:break-word}
+.calf-page .calf-details p:last-child{border-bottom:none}
+.calf-page .calf-details strong{display:block;flex:0 0 112px;min-width:112px;color:#245b35;font-size:14px;font-weight:700}
+.calf-page .calf-details p span{display:block;flex:1 1 auto;min-width:0;color:#4b5b50;overflow-wrap:anywhere}
+.calf-page .calf-actions{margin-top:auto}
+.calf-page .calf-actions button{display:flex;align-items:center;justify-content:center;width:calc(100% - 32px);min-height:42px;margin:0 16px 9px;padding:11px 12px;border-radius:9px;font-size:14px;font-weight:700;line-height:1.4;text-align:center;cursor:pointer}
+.calf-page .details-button{background:#e8f5e9;color:#176b3a;border:1px solid #c8e6c9}
+.calf-page .delete-calf-button{margin-bottom:16px!important;background:#f8d7da;color:#842029;border:1px solid #f1aeb5}
+.calf-page .delete-calf-button:hover{background:#f1aeb5}
+.calf-page .empty-message,.calf-page .message-box{padding:28px;margin:20px 0;background:#fff;border:1px solid #dce9dd;border-radius:14px;text-align:center;color:#26382b}
+.calf-page .empty-message{grid-column:1/-1}
+.calf-page .alert-box{display:none;padding:14px 18px;margin:0 0 20px;border-radius:10px;font-size:14px;line-height:1.6}
+.calf-page .alert-box.error{display:block;color:#842029;background:#f8d7da;border:1px solid #f1aeb5}
+.calf-page .alert-box.success{display:block;color:#0f5132;background:#d1e7dd;border:1px solid #a3cfbb}
+.calf-page button:disabled{cursor:not-allowed;opacity:.65}
+@media(max-width:1050px){.calf-page .cow-container{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.calf-page{padding:12px}.calf-page .farm-brand{padding:14px;gap:12px}.calf-page .farm-logo{width:54px;height:54px}.calf-page .farm-brand h2{font-size:19px}.calf-page .calves-header{padding:20px}.calf-page .calves-header h1{font-size:26px}.calf-page .cow-container,.calf-page .form-grid{grid-template-columns:minmax(0,1fr)}.calf-page .cow-container{gap:18px}}
+</style>
+</head>
+
+<body>
+<div class="calf-page">
+
+<header class="farm-brand">
+    <img src="images/logo.png" alt="आदेश डेअरी फार्म लोगो"
+         class="farm-logo" onerror="this.style.display='none'">
+    <div>
+        <h2>आदेश डेअरी फार्म</h2>
+        <p>Jeur (BA), Ahilyanagar</p>
+    </div>
+</header>
+
+<section class="calves-header">
+    <h1>🐮 वासरांची व्यवस्थापन</h1>
+    <p>तुमच्या डेअरी फार्ममधील सर्व वासरांची माहिती येथे पाहा आणि व्यवस्थापित करा.</p>
+    <button type="button" class="add-button" id="toggleForm">＋ नवीन वासराची नोंद करा</button>
+</section>
+
+<div id="alertBox" class="alert-box"></div>
+
+<section class="form-panel" id="formPanel">
+    <h2>🐮 नवीन वासराची नोंद</h2>
+
+    <form id="calfForm">
+        <div class="form-grid">
+
+            <div class="field">
+                <label for="calfTag">वासराचा Tag Number *</label>
+                <input id="calfTag" name="calfTag" required maxlength="100"
+                       placeholder="उदा. CALF-001">
+            </div>
+
+            <div class="field">
+                <label for="name">वासराचे नाव</label>
+                <input id="name" name="name" placeholder="वासराचे नाव">
+            </div>
+
+            <div class="field">
+                <label for="breed">जात</label>
+                <input id="breed" name="breed" placeholder="उदा. HF, जर्सी, देशी">
+            </div>
+
+            <div class="field">
+                <label for="dateOfBirth">जन्मतारीख</label>
+                <input id="dateOfBirth" name="dateOfBirth" type="date">
+            </div>
+
+            <div class="field">
+                <label for="healthStatus">आरोग्य</label>
+                <select id="healthStatus" name="healthStatus">
+                    <option value="Healthy">निरोगी</option>
+                    <option value="Under Treatment">उपचार सुरू</option>
+                    <option value="Needs Attention">विशेष काळजी आवश्यक</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="motherCowTag">आईच्या गाईचा Tag Number</label>
+                <input id="motherCowTag" name="motherCowTag"
+                       placeholder="आईच्या गाईचा Tag">
+            </div>
+
+            <div class="field full-width">
+                <label for="photo">वासराचा फोटो (ऐच्छिक)</label>
+                <input id="photo" name="photo" type="file" accept="image/*">
+            </div>
+
+            <div class="full-width">
+                <button type="submit" class="add-button" id="saveButton">
+                    वासराची नोंद करा
+                </button>
+            </div>
+
+        </div>
+    </form>
+</section>
+
+<div id="loading" class="message-box">वासरांची माहिती लोड होत आहे...</div>
+<div id="calfContainer" class="cow-container"></div>
+
+<nav class="page-navigation" aria-label="Page navigation">
+    <button type="button" onclick="goBack()">← Back</button>
+    <a href="dashboard.html">🏠 Dashboard</a>
+</nav>
+
+</div>
+
+<script>
+const API_URL = "http://localhost:5000/api/calves";
+const BACKEND_URL = "http://localhost:5000";
+const DEFAULT_CALF_PHOTO = "images/.default-calf.png";
+
+const container = document.getElementById("calfContainer");
+const loading = document.getElementById("loading");
+const alertBox = document.getElementById("alertBox");
+const calfForm = document.getElementById("calfForm");
+const formPanel = document.getElementById("formPanel");
+const photoInput = document.getElementById("photo");
+const saveButton = document.getElementById("saveButton");
+
+document.getElementById("toggleForm").addEventListener("click", () => {
+    formPanel.classList.toggle("show");
+    if (formPanel.classList.contains("show")) {
+        formPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+});
+
+function goBack() {
+    window.history.back();
+}
+
+function showMessage(message, type = "error") {
+    alertBox.textContent = message;
+    alertBox.className = "alert-box " + type;
+    alertBox.style.display = "block";
+}
+
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[char]);
+}
+
+function getToken() {
+    return localStorage.getItem("authToken");
+}
+
+function getCalfPhoto(calf) {
+    const photo = calf.photo;
+
+    if (!photo) return DEFAULT_CALF_PHOTO;
+
+    if (photo.startsWith("http://") || photo.startsWith("https://")) {
+        return photo;
+    }
+
+    if (photo.startsWith("/")) {
+        return BACKEND_URL + photo;
+    }
+
+    return photo;
+}
+
+function formatDate(dateValue) {
+    if (!dateValue) return "माहिती उपलब्ध नाही";
+
+    const date = new Date(dateValue);
+    if (Number.isNaN(date.getTime())) return escapeHTML(dateValue);
+
+    return date.toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+    });
+}
+
+function renderCalves(calves) {
+    container.innerHTML = "";
+
+    if (!Array.isArray(calves) || calves.length === 0) {
+        container.innerHTML = `
+            <div class="empty-message">
+                <h2>🐮 अद्याप वासरू उपलब्ध नाही</h2>
+                <p>नवीन वासराची नोंद करण्यासाठी वरील बटणावर क्लिक करा.</p>
+            </div>`;
+        return;
+    }
+
+    calves.forEach(calf => {
+        const calfId = calf._id || calf.id;
+        const card = document.createElement("article");
+        card.className = "calf-card";
+
+        const photo = getCalfPhoto(calf);
+
+        card.innerHTML = `
+            <img src="${escapeHTML(photo)}"
+                 alt="${escapeHTML(calf.name || "वासरू")}"
+                 class="calf-photo">
+
+            <div class="calf-card-header">
+                <h2>${escapeHTML(calf.name || "नाव उपलब्ध नाही")}</h2>
+                <span>${escapeHTML(calf.calfTag || "Tag N/A")}</span>
+            </div>
+
+            <div class="calf-details">
+                <p><strong>🐮 जात:</strong>
+                    <span>${escapeHTML(calf.breed || "माहिती उपलब्ध नाही")}</span></p>
+                <p><strong>📅 जन्मतारीख:</strong>
+                    <span>${formatDate(calf.dateOfBirth)}</span></p>
+                <p><strong>❤️ आरोग्य:</strong>
+                    <span>${escapeHTML(calf.healthStatus || "माहिती उपलब्ध नाही")}</span></p>
+                <p><strong>🐄 आईचा Tag:</strong>
+                    <span>${escapeHTML(calf.motherCowTag || "माहिती उपलब्ध नाही")}</span></p>
+            </div>
+
+            <div class="calf-actions">
+                <button type="button" class="details-button">📋 अधिक माहिती</button>
+                <button type="button" class="delete-calf-button">🗑️ वासरू Delete करा</button>
+            </div>`;
+
+        const image = card.querySelector(".calf-photo");
+        image.onerror = function () {
+            this.onerror = null;
+            this.src = DEFAULT_CALF_PHOTO;
+        };
+
+        const buttons = card.querySelectorAll("button");
+
+        buttons[0].addEventListener("click", () => {
+            alert(
+                "वासराची माहिती\n\n" +
+                "Tag Number: " + (calf.calfTag || "उपलब्ध नाही") + "\n" +
+                "नाव: " + (calf.name || "उपलब्ध नाही") + "\n" +
+                "जात: " + (calf.breed || "उपलब्ध नाही") + "\n" +
+                "जन्मतारीख: " + (calf.dateOfBirth || "उपलब्ध नाही") + "\n" +
+                "आरोग्य: " + (calf.healthStatus || "उपलब्ध नाही") + "\n" +
+                "आईचा Tag: " + (calf.motherCowTag || "उपलब्ध नाही")
+            );
+        });
+
+        buttons[1].addEventListener("click", () => deleteCalf(calfId, calf.name || "हे वासरू"));
+
+        container.appendChild(card);
+    });
+}
+
+async function loadCalves() {
+    loading.style.display = "block";
+    container.innerHTML = "";
+    alertBox.style.display = "none";
+
+    const token = getToken();
+
+    if (!token) {
+        loading.style.display = "none";
+        showMessage("कृपया Login करून पुन्हा प्रयत्न करा.");
+        return;
+    }
+
+    try {
+        const response = await fetch(API_URL, {
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (response.status === 401 || response.status === 403) {
+            throw new Error("Login session संपली आहे. पुन्हा Login करा.");
+        }
+
+        if (!response.ok) {
+            throw new Error("वासरांची माहिती लोड करता आली नाही.");
+        }
+
+        const data = await response.json();
+        const calves = Array.isArray(data) ? data
+            : Array.isArray(data.calves) ? data.calves
+            : Array.isArray(data.data) ? data.data
+            : [];
+
+        renderCalves(calves);
+
+    } catch (error) {
+        console.error("Load calves error:", error);
+        showMessage(error.message || "Backend सुरू आहे का ते तपासा.");
+    } finally {
+        loading.style.display = "none";
+    }
+}
+
+calfForm.addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const token = getToken();
+
+    if (!token) {
+        showMessage("कृपया Login करून पुन्हा प्रयत्न करा.");
+        return;
+    }
+
+    const calfTag = document.getElementById("calfTag").value.trim();
+
+    if (!calfTag) {
+        showMessage("वासराचा Tag Number आवश्यक आहे.");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("calfTag", calfTag);
+    formData.append("name", document.getElementById("name").value.trim());
+    formData.append("breed", document.getElementById("breed").value.trim());
+    formData.append("dateOfBirth", document.getElementById("dateOfBirth").value);
+    formData.append("healthStatus", document.getElementById("healthStatus").value);
+    formData.append("motherCowTag", document.getElementById("motherCowTag").value.trim());
+
+    if (photoInput.files && photoInput.files.length > 0) {
+        formData.append("photo", photoInput.files[0]);
+    }
+
+    saveButton.disabled = true;
+    saveButton.textContent = "नोंद Save होत आहे...";
+
+    try {
+        const response = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token
+            },
+            body: formData
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.message || "नोंद Save झाली नाही.");
+        }
+
+        showMessage("वासराची नोंद यशस्वी झाली!", "success");
+        calfForm.reset();
+        formPanel.classList.remove("show");
+        await loadCalves();
+
+    } catch (error) {
+        console.error("Save calf error:", error);
+        showMessage(error.message || "नोंद करताना समस्या आली.");
+    } finally {
+        saveButton.disabled = false;
+        saveButton.textContent = "वासराची नोंद करा";
+    }
+});
+
+async function deleteCalf(calfId, calfName) {
+    if (!calfId) {
+        showMessage("वासराचा ID उपलब्ध नाही. Delete करता येणार नाही.");
+        return;
+    }
+
+    if (!confirm("तुम्हाला खरंच " + calfName + " Delete करायचे आहे?")) {
+        return;
+    }
+
+    const token = getToken();
+
+    if (!token) {
+        showMessage("Login session मिळाली नाही. पुन्हा Login करा.");
+        return;
+    }
+
+    try {
+        const response = await fetch(API_URL + "/" + encodeURIComponent(calfId), {
+            method: "DELETE",
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        });
+
+        if (!response.ok) {
+            const result = await response.json().catch(() => ({}));
+            throw new Error(result.message || "वासराची नोंद Delete करता आली नाही.");
+        }
+
+        showMessage("वासराची नोंद यशस्वीपणे Delete झाली.", "success");
+        await loadCalves();
+
+    } catch (error) {
+        console.error("Delete calf error:", error);
+        showMessage(error.message || "Server शी संपर्क होऊ शकला नाही.");
+    }
+}
+
+document.addEventListener("DOMContentLoaded", loadCalves);
+</script>
+</body>
+</html>

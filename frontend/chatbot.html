@@ -1,0 +1,566 @@
+
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Dairy Assistant | आदेश डेअरी फार्म</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, "Noto Sans Devanagari", sans-serif;
+            background: linear-gradient(180deg, #eaf5ff 0%, #fff8ec 100%);
+            color: #17345e;
+        }
+
+        .header {
+            background: linear-gradient(120deg, #d9efff, #fff, #fff0dc);
+            padding: 30px 20px;
+            text-align: center;
+            border-radius: 0 0 32px 32px;
+            border-bottom: 5px solid #8bc7ff;
+            box-shadow: 0 8px 25px #1e5aa01a;
+        }
+
+        .farm-logo {
+            width: 95px;
+            height: 95px;
+            object-fit: contain;
+            margin: 0 auto 14px;
+            border-radius: 50%;
+            background: white;
+            padding: 5px;
+            box-shadow: 0 5px 18px #1e5aa026;
+        }
+
+        .header h1 {
+            margin: 0 0 12px;
+            font-size: clamp(28px, 4vw, 42px);
+            color: #123568;
+        }
+
+        .header p {
+            margin: 5px 0;
+            font-size: 17px;
+            line-height: 1.7;
+        }
+
+        .back {
+            display: inline-block;
+            margin-top: 18px;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #1679ed, #369cf5);
+            color: white;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 5px 12px #1679ed33;
+        }
+
+        .back:hover {
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1150px;
+            margin: 28px auto;
+            padding: 0 18px;
+        }
+
+        .welcome {
+            background: #fffffffa;
+            padding: 28px;
+            border-radius: 24px;
+            border: 1px solid #e1edfa;
+            box-shadow: 0 8px 25px #244e7817;
+            margin-bottom: 24px;
+        }
+
+        .welcome h2 {
+            color: #174c9a;
+            margin-top: 0;
+            font-size: 26px;
+        }
+
+        .welcome p {
+            line-height: 1.8;
+            color: #455b78;
+        }
+
+        .section-heading {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0 18px;
+        }
+
+        .section-heading strong {
+            color: #173c72;
+        }
+
+        .tip {
+            color: #a45116;
+            background: #fff3df;
+            padding: 10px 15px;
+            border-radius: 25px;
+            font-size: 13px;
+        }
+
+        .suggestions {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .suggestions button {
+            min-height: 100px;
+            padding: 15px;
+            border: 1px solid #dce9fa;
+            background: #eff6ff;
+            color: #204879;
+            border-radius: 19px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+            line-height: 1.6;
+            text-align: left;
+            transition: transform .2s, box-shadow .2s;
+        }
+
+        .suggestions button:nth-child(4n+1) {
+            background: #e7f8ee;
+            border-color: #d1efdc;
+            color: #246344;
+        }
+
+        .suggestions button:nth-child(4n+2) {
+            background: #fff0e5;
+            border-color: #ffe0cb;
+            color: #8a4920;
+        }
+
+        .suggestions button:nth-child(4n+3) {
+            background: #fff0f4;
+            border-color: #f9dce6;
+            color: #9b345b;
+        }
+
+        .suggestions button:nth-child(4n) {
+            background: #e8f3ff;
+            border-color: #d4e7ff;
+            color: #245ba0;
+        }
+
+        .suggestions button:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 9px 18px #325a141f;
+        }
+
+        .chat-box {
+            background: white;
+            border: 1px solid #dceafb;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px #1f53801f;
+        }
+
+        .chat-title {
+            background: linear-gradient(110deg, #1767c9, #54a8f5);
+            color: white;
+            padding: 22px 25px;
+            font-weight: bold;
+            font-size: 21px;
+        }
+
+        .chat-status {
+            float: right;
+            font-size: 13px;
+            font-weight: normal;
+        }
+
+        .online-dot {
+            display: inline-block;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #9cffad;
+            margin-right: 5px;
+        }
+
+        .chat-content {
+            padding: 25px;
+            min-height: 290px;
+            max-height: 520px;
+            overflow-y: auto;
+            background: radial-gradient(
+                ellipse at bottom right, #eaf5ff 0%, transparent 48%
+            ), white;
+        }
+
+        .message {
+            padding: 17px 20px;
+            border-radius: 18px;
+            margin-bottom: 18px;
+            line-height: 1.9;
+            white-space: pre-line;
+            overflow-wrap: anywhere;
+            box-shadow: 0 4px 12px #244e780d;
+        }
+
+        .bot {
+            background: #eff6ff;
+            border-left: 5px solid #3993ed;
+            margin-right: 10%;
+            border-radius: 5px 18px 18px 18px;
+        }
+
+        .user {
+            background: #fff0df;
+            border-right: 5px solid #f39a43;
+            margin-left: 10%;
+            border-radius: 18px 5px 18px 18px;
+        }
+
+        .message-label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #24548b;
+        }
+
+        .question-form {
+            display: flex;
+            gap: 12px;
+            padding: 19px;
+            border-top: 1px solid #e3edfa;
+            background: white;
+        }
+
+        .question-form input {
+            flex: 1;
+            min-width: 0;
+            padding: 16px 18px;
+            border: 1px solid #c9ddf6;
+            border-radius: 18px;
+            font-size: 16px;
+            color: #17345e;
+            background: #fbfdff;
+            outline: none;
+        }
+
+        .question-form input:focus {
+            border-color: #3893ed;
+            box-shadow: 0 0 0 4px #3893ed1f;
+        }
+
+        .send {
+            padding: 14px 25px;
+            background: linear-gradient(135deg, #1477ed, #369bf3);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .send:disabled {
+            opacity: .65;
+            cursor: not-allowed;
+        }
+
+        .footer-note {
+            color: #6b5b48;
+            background: #fff3df;
+            border: 1px solid #ffe2b3;
+            padding: 17px 20px;
+            border-radius: 16px;
+            font-size: 13px;
+            line-height: 1.8;
+            margin: 22px 0;
+        }
+
+        @media (max-width: 850px) {
+            .suggestions {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                padding: 28px 16px;
+            }
+
+            .farm-logo {
+                width: 78px;
+                height: 78px;
+            }
+
+            .container {
+                padding: 0 12px;
+                margin-top: 18px;
+            }
+
+            .welcome {
+                padding: 20px;
+            }
+
+            .welcome h2 {
+                font-size: 22px;
+            }
+
+            .suggestions {
+                gap: 9px;
+            }
+
+            .suggestions button {
+                min-height: 85px;
+                padding: 12px;
+                font-size: 13px;
+            }
+
+            .chat-title {
+                font-size: 18px;
+                padding: 18px;
+            }
+
+            .chat-status {
+                float: none;
+                display: block;
+                margin-top: 8px;
+            }
+
+            .chat-content {
+                padding: 15px;
+                min-height: 250px;
+            }
+
+            .bot {
+                margin-right: 2%;
+            }
+
+            .user {
+                margin-left: 2%;
+            }
+
+            .question-form {
+                padding: 13px;
+                flex-direction: column;
+            }
+
+            .question-form input,
+            .send {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<header class="header">
+    <img src="/images/logo.png"
+         alt="आदेश डेअरी फार्म Logo"
+         class="farm-logo"
+         onerror="this.style.display='none'">
+
+    <h1>🐄 Smart Dairy Assistant</h1>
+    <p><strong>आदेश डेअरी फार्म</strong></p>
+    <p>तुमचा डिजिटल पशुपालन सहाय्यक</p>
+
+    <a href="dashboard.html" class="back">⌂ Dashboard वर जा</a>
+</header>
+
+<main class="container">
+    <section class="welcome">
+        <h2>🙏 नमस्कार शेतकरी मित्रा!</h2>
+
+        <p>
+            मी तुमचा AI Dairy Assistant आहे. चारा, गायींच्या जाती,
+            आरोग्य, माज, गर्भधारणा, दूध उत्पादन आणि डेअरीच्या
+            खर्चाविषयी प्रश्न विचारा.
+        </p>
+
+        <div class="section-heading">
+            <strong>💡 लोकप्रिय प्रश्न — क्लिक करून सुरुवात करा</strong>
+            <span class="tip">एक क्लिक करा आणि उत्तर मिळवा!</span>
+        </div>
+
+        <div class="suggestions">
+            <button type="button" onclick="askQuestion('गायीला कोणता चारा द्यावा?')">
+                🌾<br>गायीला कोणता चारा द्यावा?
+            </button>
+
+            <button type="button" onclick="askQuestion('कोणती गाय जास्त दूध देते?')">
+                🐄<br>कोणती गाय जास्त दूध देते?
+            </button>
+
+            <button type="button" onclick="askQuestion('गायीची काळजी कशी घ्यावी?')">
+                🩺<br>गायीची काळजी कशी घ्यावी?
+            </button>
+
+            <button type="button" onclick="askQuestion('गाय माजावर आली तर काय करावे?')">
+                🐮<br>गाय माजावर आली तर काय करावे?
+            </button>
+
+            <button type="button" onclick="askQuestion('दूध उत्पादन कसे सुधारावे?')">
+                🥛<br>दूध उत्पादन कसे सुधारावे?
+            </button>
+
+            <button type="button" onclick="askQuestion('डेअरीचा नफा आणि खर्च कसा मोजावा?')">
+                💰<br>डेअरीचा नफा आणि खर्च
+            </button>
+
+            <button type="button" onclick="askQuestion('माझ्याकडे किती गायी आहेत?')">
+                📋<br>माझ्याकडे किती गायी आहेत?
+            </button>
+
+            <button type="button" onclick="askQuestion('आज किती दूध झाले?')">
+                📊<br>आज किती दूध झाले?
+            </button>
+        </div>
+    </section>
+
+    <section class="chat-box">
+        <div class="chat-title">
+            🤖 Dairy Assistant
+            <span class="chat-status">
+                <span class="online-dot"></span>AI Assistant
+            </span>
+        </div>
+
+        <div class="chat-content" id="chatContent" aria-live="polite">
+            <div class="message bot">
+                <span class="message-label">🤖 Dairy Assistant</span>
+                नमस्कार! 👋
+
+                मी आदेश डेअरी फार्मचा AI Assistant आहे.
+
+                तुम्ही वरील प्रश्नांपैकी एखादा निवडा किंवा
+                तुमचा प्रश्न खाली लिहा. मी तुम्हाला मार्गदर्शन करीन.
+            </div>
+        </div>
+
+        <form class="question-form" id="chatForm">
+            <input type="text"
+                   id="question"
+                   placeholder="तुमचा प्रश्न येथे लिहा..."
+                   maxlength="4000"
+                   autocomplete="off"
+                   required>
+
+            <button type="submit" class="send" id="sendButton">
+                ➤ पाठवा
+            </button>
+        </form>
+    </section>
+
+    <p class="footer-note">
+        ⚠️ <strong>महत्त्वाची सूचना:</strong>
+        हा AI सहाय्यक सामान्य पशुपालनविषयक मार्गदर्शन देतो.
+        प्रत्येक जनावराची गरज वेगळी असू शकते. आरोग्य, औषधोपचार,
+        गर्भधारणा आणि आहाराच्या अचूक प्रमाणासाठी पशुवैद्यकीय
+        तज्ज्ञांचा सल्ला घ्या.
+    </p>
+</main>
+
+<script>
+    const chatForm = document.getElementById("chatForm");
+    const questionInput = document.getElementById("question");
+    const chatContent = document.getElementById("chatContent");
+    const sendButton = document.getElementById("sendButton");
+
+    function addMessage(text, type) {
+        const message = document.createElement("div");
+        message.className = "message " + type;
+
+        const label = document.createElement("span");
+        label.className = "message-label";
+        label.textContent = type === "user"
+            ? "👨‍🌾 तुम्ही"
+            : "🤖 Dairy Assistant";
+
+        const content = document.createElement("div");
+        content.textContent = text;
+
+        message.appendChild(label);
+        message.appendChild(content);
+        chatContent.appendChild(message);
+
+        chatContent.scrollTop = chatContent.scrollHeight;
+        return content;
+    }
+
+    async function askQuestion(question) {
+        question = question.trim();
+
+        if (!question || sendButton.disabled) return;
+
+        addMessage(question, "user");
+        questionInput.value = "";
+
+        const answerElement = addMessage(
+            "उत्तर तयार होत आहे... कृपया थांबा.",
+            "bot"
+        );
+
+        sendButton.disabled = true;
+
+        try {
+            // Existing Node.js backend API — unchanged
+            const token = localStorage.getItem("authToken");
+
+            const response = await fetch(
+                "http://localhost:5000/api/chatbot",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        ...(token
+                            ? { "Authorization": "Bearer " + token }
+                            : {})
+                    },
+                    body: JSON.stringify({ question })
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                answerElement.textContent = response.status === 401 ||
+                    response.status === 403
+                    ? "Login किंवा access approval आवश्यक आहे. कृपया Dashboard वरून पुन्हा login करा."
+                    : (data.answer || "उत्तर मिळवताना त्रुटी आली.");
+            } else {
+                answerElement.textContent =
+                    data.answer || "AI कडून उत्तर मिळाले नाही.";
+            }
+        } catch (error) {
+            console.error("Chatbot error:", error);
+            answerElement.textContent =
+                "Server शी संपर्क होऊ शकला नाही. Backend चालू आहे का ते तपासा.";
+        } finally {
+            sendButton.disabled = false;
+            questionInput.focus();
+            chatContent.scrollTop = chatContent.scrollHeight;
+        }
+    }
+
+    chatForm.addEventListener("submit", function(event) {
+        event.preventDefault();
+        askQuestion(questionInput.value);
+    });
+
+    window.addEventListener("load", function() {
+        chatContent.scrollTop = chatContent.scrollHeight;
+    });
+</script>
+</body>
+</html>

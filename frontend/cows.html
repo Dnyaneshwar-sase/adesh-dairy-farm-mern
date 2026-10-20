@@ -1,0 +1,710 @@
+
+<!DOCTYPE html>
+<html lang="mr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>गायी व्यवस्थापन | आदेश डेअरी फार्म</title>
+
+    <style>
+        .cow-page,
+        .cow-page * {
+            box-sizing: border-box !important;
+        }
+
+        .cow-page {
+            width: 100% !important;
+            max-width: 1400px !important;
+            margin: 0 auto !important;
+            padding: 24px !important;
+            font-family: "Segoe UI", Arial, sans-serif !important;
+            color: #26382b !important;
+        }
+
+        .cow-page .farm-brand {
+            display: flex !important;
+            align-items: center !important;
+            gap: 16px !important;
+            padding: 18px 22px !important;
+            margin: 0 0 22px !important;
+            background: #fff !important;
+            border: 1px solid #dce9dd !important;
+            border-radius: 16px !important;
+            box-shadow: 0 5px 18px rgba(0,0,0,.06) !important;
+        }
+
+        .cow-page .farm-logo {
+            width: 68px !important;
+            height: 68px !important;
+            padding: 4px !important;
+            object-fit: contain !important;
+            border-radius: 12px !important;
+            background: #f1f8ef !important;
+        }
+
+        .cow-page .farm-brand h2 {
+            margin: 0 0 5px !important;
+            color: #176b3a !important;
+            font-size: 24px !important;
+            font-weight: 800 !important;
+        }
+
+        .cow-page .farm-brand p {
+            margin: 0 !important;
+            color: #647568 !important;
+            font-size: 14px !important;
+        }
+
+        .cow-page .page-navigation {
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            flex-wrap: wrap !important;
+            gap: 14px !important;
+            width: 100% !important;
+            margin: 24px auto 10px !important;
+        }
+
+        .cow-page .page-navigation a,
+        .cow-page .page-navigation button {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 11px 18px !important;
+            background: #e8f5e9 !important;
+            color: #245b35 !important;
+            border: 1px solid #c8e6c9 !important;
+            border-radius: 9px !important;
+            font-size: 14px !important;
+            font-weight: 700 !important;
+            text-decoration: none !important;
+            cursor: pointer !important;
+        }
+
+        .cow-page .cows-header {
+            padding: 28px !important;
+            margin: 0 0 28px !important;
+            background: linear-gradient(135deg, #e5f5e7, #fff) !important;
+            border: 1px solid #d5e9d6 !important;
+            border-radius: 16px !important;
+            box-shadow: 0 5px 18px rgba(30,90,45,.05) !important;
+        }
+
+        .cow-page .cows-header h1 {
+            margin: 0 0 10px !important;
+            color: #176b3a !important;
+            font-size: 32px !important;
+            line-height: 1.4 !important;
+            font-weight: 800 !important;
+        }
+
+        .cow-page .cows-header p {
+            margin: 0 0 20px !important;
+            color: #596b60 !important;
+            font-size: 15px !important;
+            line-height: 1.7 !important;
+        }
+
+        .cow-page .add-cow-button {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 12px 22px !important;
+            background: #198754 !important;
+            color: #fff !important;
+            border: 1px solid #198754 !important;
+            border-radius: 10px !important;
+            font-size: 15px !important;
+            font-weight: 700 !important;
+            text-decoration: none !important;
+            cursor: pointer !important;
+        }
+
+        .cow-page .add-cow-button:hover {
+            background: #146c43 !important;
+        }
+
+        .cow-page .cow-container {
+            display: grid !important;
+            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+            align-items: stretch !important;
+            gap: 20px !important;
+            width: 100% !important;
+        }
+
+        .cow-page .cow-card {
+            display: flex !important;
+            flex-direction: column !important;
+            min-width: 0 !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+            background: #fff !important;
+            border: 1px solid #dce9dd !important;
+            border-radius: 16px !important;
+            box-shadow: 0 5px 20px rgba(0,0,0,.07) !important;
+            transition: transform .2s ease, box-shadow .2s ease !important;
+        }
+
+        .cow-page .cow-card:hover {
+            transform: translateY(-3px) !important;
+            box-shadow: 0 10px 25px rgba(0,0,0,.10) !important;
+        }
+
+        .cow-page .cow-card .cow-photo {
+            display: block !important;
+            width: calc(100% - 28px) !important;
+            height: 185px !important;
+            margin: 14px !important;
+            padding: 0 !important;
+            object-fit: contain !important;
+            object-position: center !important;
+            background: #f4f8f3 !important;
+            border: 1px solid #e0e9df !important;
+            border-radius: 12px !important;
+        }
+
+        .cow-page .cow-card-header {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            gap: 12px !important;
+            padding: 4px 16px 12px !important;
+        }
+
+        .cow-page .cow-card-header h2 {
+            margin: 0 !important;
+            padding: 0 !important;
+            color: #176b3a !important;
+            font-size: 22px !important;
+            font-weight: 800 !important;
+            overflow-wrap: anywhere !important;
+        }
+
+        .cow-page .cow-card-header span {
+            flex-shrink: 0 !important;
+            padding: 7px 10px !important;
+            background: #e8f5e9 !important;
+            color: #176b3a !important;
+            border-radius: 8px !important;
+            font-size: 13px !important;
+            font-weight: 800 !important;
+        }
+
+        .cow-page .cow-details {
+            display: block !important;
+            flex: 1 0 auto !important;
+            padding: 0 16px 12px !important;
+            margin: 0 !important;
+        }
+
+        .cow-page .cow-details p {
+            display: flex !important;
+            align-items: flex-start !important;
+            justify-content: flex-start !important;
+            flex-wrap: nowrap !important;
+            gap: 8px !important;
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 9px 0 !important;
+            color: #4b5b50 !important;
+            font-size: 14px !important;
+            line-height: 1.6 !important;
+            border-bottom: 1px solid #edf2ec !important;
+            overflow-wrap: anywhere !important;
+            word-break: break-word !important;
+        }
+
+        .cow-page .cow-details p:last-child {
+            border-bottom: none !important;
+        }
+
+        .cow-page .cow-details strong {
+            display: block !important;
+            flex: 0 0 112px !important;
+            min-width: 112px !important;
+            color: #245b35 !important;
+            font-size: 14px !important;
+            font-weight: 700 !important;
+        }
+
+        .cow-page .cow-details p span {
+            display: block !important;
+            flex: 1 1 auto !important;
+            min-width: 0 !important;
+            color: #4b5b50 !important;
+            overflow-wrap: anywhere !important;
+        }
+
+        .cow-page .cow-card a.details-button,
+        .cow-page .cow-card button.details-button,
+        .cow-page .cow-card button.edit-cow-button {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: calc(100% - 32px) !important;
+            min-height: 42px !important;
+            margin: 0 16px 9px !important;
+            padding: 11px 12px !important;
+            background: #e8f5e9 !important;
+            color: #176b3a !important;
+            border: 1px solid #c8e6c9 !important;
+            border-radius: 9px !important;
+            font-size: 14px !important;
+            font-weight: 700 !important;
+            line-height: 1.4 !important;
+            text-align: center !important;
+            text-decoration: none !important;
+            cursor: pointer !important;
+            transition: background .2s ease !important;
+        }
+
+        .cow-page .cow-card a.details-button:hover,
+        .cow-page .cow-card button.details-button:hover {
+            background: #d5ebd8 !important;
+            color: #14532d !important;
+        }
+
+        .cow-page .cow-card button.edit-cow-button {
+            background: #fff3cd !important;
+            color: #664d03 !important;
+            border-color: #ffecb5 !important;
+        }
+
+        .cow-page .cow-card button.delete-cow-button,
+        .cow-page .cow-card button.delete-cow-button:focus {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: calc(100% - 32px) !important;
+            min-height: 42px !important;
+            margin: 0 16px 16px !important;
+            padding: 12px 14px !important;
+            background: #f8d7da !important;
+            background-image: none !important;
+            color: #842029 !important;
+            border: 1px solid #f1aeb5 !important;
+            border-radius: 9px !important;
+            box-shadow: none !important;
+            font-family: inherit !important;
+            font-size: 14px !important;
+            font-weight: 700 !important;
+            line-height: 1.4 !important;
+            text-align: center !important;
+            cursor: pointer !important;
+            opacity: 1 !important;
+            transform: none !important;
+        }
+
+        .cow-page .cow-card button.delete-cow-button:hover {
+            background: #f1aeb5 !important;
+        }
+
+        .cow-page .cow-card button:disabled {
+            cursor: not-allowed !important;
+            opacity: .65 !important;
+        }
+
+        .cow-page .cow-actions {
+            margin-top: auto !important;
+        }
+
+        .cow-page .empty-message,
+        .cow-page .message-box {
+            padding: 28px !important;
+            margin: 20px 0 !important;
+            background: #fff !important;
+            border: 1px solid #dce9dd !important;
+            border-radius: 14px !important;
+            text-align: center !important;
+            color: #26382b !important;
+        }
+
+        .cow-page #alertBox {
+            display: none;
+            padding: 14px 18px;
+            margin: 0 0 20px;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .cow-page #alertBox.error {
+            display: block;
+            color: #842029;
+            background: #f8d7da;
+            border: 1px solid #f1aeb5;
+        }
+
+        .cow-page #alertBox.success {
+            display: block;
+            color: #0f5132;
+            background: #d1e7dd;
+            border: 1px solid #a3cfbb;
+        }
+
+        @media (max-width: 1050px) {
+            .cow-page .cow-container {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .cow-page {
+                padding: 12px !important;
+            }
+
+            .cow-page .farm-brand {
+                padding: 14px !important;
+                gap: 12px !important;
+            }
+
+            .cow-page .farm-logo {
+                width: 54px !important;
+                height: 54px !important;
+            }
+
+            .cow-page .farm-brand h2 {
+                font-size: 19px !important;
+            }
+
+            .cow-page .cows-header {
+                padding: 20px !important;
+            }
+
+            .cow-page .cows-header h1 {
+                font-size: 26px !important;
+            }
+
+            .cow-page .cow-container {
+                grid-template-columns: minmax(0, 1fr) !important;
+                gap: 18px !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="cow-page">
+
+    <header class="farm-brand">
+        <img
+            src="images/logo.png"
+            alt="आदेश डेअरी फार्म लोगो"
+            class="farm-logo"
+            onerror="this.style.display='none'"
+        >
+        <div>
+            <h2>आदेश डेअरी फार्म</h2>
+            <p>Jeur (BA), Ahilyanagar</p>
+        </div>
+    </header>
+
+    <section class="cows-header">
+        <h1>🐄 गायी व्यवस्थापन</h1>
+        <p>तुमच्या डेअरी फार्ममधील सर्व गायींची माहिती येथे पाहा आणि व्यवस्थापित करा.</p>
+        <a href="add-cow.html" class="add-cow-button">＋ नवीन गाय जोडा</a>
+    </section>
+
+    <div id="alertBox"></div>
+    <div id="loading" class="message-box">गायींची माहिती लोड होत आहे...</div>
+    <div id="cowContainer" class="cow-container"></div>
+
+    <nav class="page-navigation" aria-label="Page navigation">
+        <button type="button" onclick="goBack()">← Back</button>
+        <a href="dashboard.html">🏠 Dashboard</a>
+    </nav>
+
+</div>
+
+<script>
+    const API_URL = "http://localhost:5000/api/cows";
+
+    const container = document.getElementById("cowContainer");
+    const loading = document.getElementById("loading");
+    const alertBox = document.getElementById("alertBox");
+
+    function goBack() {
+        window.history.back();
+    }
+
+    function showMessage(message, type = "error") {
+        alertBox.textContent = message;
+        alertBox.className = type;
+        alertBox.style.display = "block";
+    }
+
+    function escapeHTML(value) {
+        return String(value ?? "").replace(/[&<>"']/g, function (char) {
+            const entities = {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;"
+            };
+            return entities[char];
+        });
+    }
+
+    function getToken() {
+        return localStorage.getItem("authToken");
+    }
+
+    function getCowPhoto(cow) {
+        const photo = cow.photo;
+
+        if (!photo) {
+            return "images/default-cow.png";
+        }
+
+        if (photo.startsWith("http://") || photo.startsWith("https://")) {
+            return photo;
+        }
+
+        if (photo.startsWith("/")) {
+            return "http://localhost:5000" + photo;
+        }
+
+        return photo;
+    }
+
+    function formatDate(dateValue) {
+        if (!dateValue) {
+            return "माहिती उपलब्ध नाही";
+        }
+
+        const date = new Date(dateValue);
+
+        if (Number.isNaN(date.getTime())) {
+            return escapeHTML(dateValue);
+        }
+
+        return date.toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric"
+        });
+    }
+
+    function renderCows(cows) {
+        container.innerHTML = "";
+
+        if (!Array.isArray(cows) || cows.length === 0) {
+            container.innerHTML = `
+                <div class="empty-message">
+                    <h2>🐄 अद्याप गाय उपलब्ध नाही</h2>
+                    <p>नवीन गाय जोडण्यासाठी वरील बटणावर क्लिक करा.</p>
+                </div>
+            `;
+            return;
+        }
+
+        cows.forEach(function (cow) {
+            const cowId = cow._id || cow.id;
+            const card = document.createElement("article");
+            card.className = "cow-card";
+
+            const photo = getCowPhoto(cow);
+
+            card.innerHTML = `
+                <img
+                    src="${escapeHTML(photo)}"
+                    alt="${escapeHTML(cow.name || "गाय")}"
+                    class="cow-photo"
+                    onerror="this.onerror=null;this.src='images/default-cow.png';"
+                >
+
+                <div class="cow-card-header">
+                    <h2>${escapeHTML(cow.name || "नाव उपलब्ध नाही")}</h2>
+                    <span>${escapeHTML(cow.cowTag || cow.tagNumber || "Tag N/A")}</span>
+                </div>
+
+                <div class="cow-details">
+                    <p>
+                        <strong>🐄 जात:</strong>
+                        <span>${escapeHTML(cow.breed || "माहिती उपलब्ध नाही")}</span>
+                    </p>
+
+                    <p>
+                        <strong>📅 जन्मतारीख:</strong>
+                        <span>${formatDate(cow.dateOfBirth)}</span>
+                    </p>
+
+                    <p>
+                        <strong>❤️ आरोग्य:</strong>
+                        <span>${escapeHTML(cow.healthStatus || "माहिती उपलब्ध नाही")}</span>
+                    </p>
+
+                    <p>
+                        <strong>🤰 गर्भधारणा:</strong>
+                        <span>${escapeHTML(cow.pregnancyStatus || "माहिती उपलब्ध नाही")}</span>
+                    </p>
+                </div>
+
+                <div class="cow-actions">
+                    <button type="button" class="details-button">
+                        📋 अधिक माहिती
+                    </button>
+
+                    <button type="button" class="edit-cow-button">
+                        ✏️ माहिती बदला
+                    </button>
+
+                    <button type="button" class="delete-cow-button">
+                        🗑️ गाय Delete करा
+                    </button>
+                </div>
+            `;
+
+            const buttons = card.querySelectorAll("button");
+
+            buttons[0].addEventListener("click", function () {
+                showCowDetails(cow);
+            });
+
+            buttons[1].addEventListener("click", function () {
+                editCow(cow);
+            });
+
+            buttons[2].addEventListener("click", function () {
+                deleteCow(cowId, cow.name || "ही गाय");
+            });
+
+            container.appendChild(card);
+        });
+    }
+
+    function showCowDetails(cow) {
+        const cowId = cow._id || cow.id;
+
+        if (!cowId) {
+            alert("गायीचा ID उपलब्ध नाही.");
+            return;
+        }
+
+        window.location.href =
+            "cow-details.html?id=" + encodeURIComponent(cowId);
+    }
+
+    function editCow(cow) {
+        const cowId = cow._id || cow.id;
+
+        if (!cowId) {
+            alert("गायीचा ID उपलब्ध नाही.");
+            return;
+        }
+
+        window.location.href =
+            "add-cow.html?edit=" + encodeURIComponent(cowId);
+    }
+
+    async function deleteCow(cowId, cowName) {
+        if (!cowId) {
+            showMessage("गायीचा ID उपलब्ध नाही. Delete करता येणार नाही.");
+            return;
+        }
+
+        const confirmed = confirm(
+            "तुम्हाला खरंच " + cowName + " ही गाय Delete करायची आहे?"
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        const token = getToken();
+
+        if (!token) {
+            showMessage("Login session मिळाली नाही. कृपया पुन्हा Login करा.");
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                API_URL + "/" + encodeURIComponent(cowId),
+                {
+                    method: "DELETE",
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    }
+                }
+            );
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText || "गाय Delete करता आली नाही.");
+            }
+
+            showMessage("गायीची माहिती यशस्वीपणे Delete झाली.", "success");
+            await loadCows();
+
+        } catch (error) {
+            console.error("Delete cow error:", error);
+
+            showMessage(
+                error.message || "Server शी संपर्क होऊ शकला नाही."
+            );
+        }
+    }
+
+    async function loadCows() {
+        loading.style.display = "block";
+        container.innerHTML = "";
+        alertBox.style.display = "none";
+
+        const token = getToken();
+
+        if (!token) {
+            loading.style.display = "none";
+            showMessage("कृपया Login करून पुन्हा प्रयत्न करा.");
+            return;
+        }
+
+        try {
+            const response = await fetch(API_URL, {
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + token,
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (response.status === 401 || response.status === 403) {
+                throw new Error("Login session संपली आहे. पुन्हा Login करा.");
+            }
+
+            if (!response.ok) {
+                throw new Error("गायींची माहिती लोड करता आली नाही.");
+            }
+
+            const data = await response.json();
+
+            const cows = Array.isArray(data)
+                ? data
+                : Array.isArray(data.cows)
+                    ? data.cows
+                    : Array.isArray(data.data)
+                        ? data.data
+                        : [];
+
+            renderCows(cows);
+
+        } catch (error) {
+            console.error("Load cows error:", error);
+
+            showMessage(
+                error.message ||
+                "Server शी संपर्क होऊ शकला नाही. Backend सुरू आहे का ते तपासा."
+            );
+
+        } finally {
+            loading.style.display = "none";
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", loadCows);
+</script>
+
+</body>
+</html>

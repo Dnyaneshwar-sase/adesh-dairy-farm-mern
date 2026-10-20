@@ -1,0 +1,890 @@
+
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>कामगार व पगार व्यवस्थापन | आदेश डेअरी फार्म</title>
+
+<style>
+:root {
+    --green: #176b45;
+    --green-dark: #104b32;
+    --green-light: #e8f7ed;
+    --bg: #f4f8f5;
+    --text: #193528;
+    --muted: #718176;
+    --border: #e1ebe3;
+    --white: #ffffff;
+    --red: #c0392b;
+    --orange: #b66a0a;
+    --shadow: 0 8px 28px rgba(28, 75, 48, .08);
+}
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; transition: .2s; }
+button:hover { transform: translateY(-1px); }
+.topbar {
+    background: linear-gradient(120deg, #104b32, #208353);
+    color: white;
+    padding: 24px 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    box-shadow: 0 5px 20px #104b3220;
+}
+.brand { display: flex; gap: 14px; align-items: center; }
+.brand-icon {
+    width: 52px; height: 52px; border-radius: 16px;
+    background: #ffffff20; display: grid; place-items: center;
+    font-size: 27px;
+}
+.brand h1 { margin: 0; font-size: clamp(20px, 3vw, 28px); }
+.brand p { margin: 5px 0 0; color: #d5f5df; font-size: 13px; }
+.top-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn {
+    border: 0; padding: 11px 16px; border-radius: 10px;
+    font-weight: 650; display: inline-flex; align-items: center;
+    justify-content: center; gap: 7px;
+}
+.btn-light { background: white; color: var(--green-dark); }
+.btn-green { background: var(--green); color: white; }
+.btn-outline { background: white; color: var(--green); border: 1px solid #c8dfce; }
+.btn-red { background: #fff0ee; color: var(--red); }
+.btn-small { padding: 7px 10px; font-size: 12px; }
+.container { width: min(1500px, 94%); margin: 28px auto 50px; }
+.notice {
+    display: none; padding: 13px 16px; border-radius: 12px;
+    margin-bottom: 18px; font-size: 14px;
+}
+.notice.show { display: block; }
+.notice.success { background: #e6f7eb; color: #176b45; }
+.notice.error { background: #fff0ee; color: #a82c20; }
+.filters {
+    display: flex; gap: 12px; align-items: end;
+    flex-wrap: wrap; margin-bottom: 22px;
+}
+.field { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+.field label { font-size: 13px; color: #52675a; font-weight: 650; }
+.field input, .field select, .field textarea {
+    width: 100%; padding: 11px 12px; border: 1px solid var(--border);
+    border-radius: 10px; outline: none; background: white; color: var(--text);
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+    border-color: #3b9863; box-shadow: 0 0 0 3px #3b986315;
+}
+.filters .field { min-width: 145px; }
+.filters .search-field { flex: 1; min-width: 210px; }
+.stats {
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 17px; margin-bottom: 25px;
+}
+.stat-card {
+    padding: 21px; background: white; border: 1px solid var(--border);
+    border-radius: 17px; box-shadow: var(--shadow);
+    position: relative; overflow: hidden; transition: .25s;
+}
+.stat-card:hover { transform: translateY(-4px); box-shadow: 0 14px 30px #1c4b4815; }
+.stat-card:after {
+    content: ""; position: absolute; right: -22px; top: -24px;
+    width: 85px; height: 85px; border-radius: 50%; background: var(--tint);
+}
+.stat-icon {
+    width: 42px; height: 42px; display: grid; place-items: center;
+    border-radius: 13px; background: var(--tint); font-size: 21px;
+}
+.stat-label { margin: 15px 0 7px; color: var(--muted); font-size: 13px; }
+.stat-value { font-size: clamp(20px, 2.4vw, 29px); font-weight: 800; overflow-wrap: anywhere; }
+.stat-foot { margin-top: 8px; color: var(--muted); font-size: 12px; }
+.panel {
+    background: white; border: 1px solid var(--border); border-radius: 17px;
+    box-shadow: var(--shadow); margin-bottom: 24px; overflow: hidden;
+}
+.panel-head {
+    padding: 19px 22px; display: flex; align-items: center;
+    justify-content: space-between; gap: 12px; flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+}
+.panel-head h2 { margin: 0; font-size: 18px; }
+.panel-head p { margin: 5px 0 0; font-size: 12px; color: var(--muted); }
+.panel-body { padding: 22px; }
+.form-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 17px; }
+.form-grid .wide { grid-column: 1 / -1; }
+.form-actions { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+.hidden { display: none !important; }
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; min-width: 950px; }
+th, td {
+    text-align: left; padding: 15px 14px; border-bottom: 1px solid #edf2ed;
+    font-size: 13px; vertical-align: middle;
+}
+th { background: #f7faf7; color: #627568; font-size: 12px; white-space: nowrap; }
+tbody tr:hover { background: #f9fcf9; }
+.worker-name { font-weight: 750; }
+.subtext { color: var(--muted); font-size: 11px; margin-top: 4px; }
+.money { font-weight: 750; white-space: nowrap; }
+.pill { display: inline-block; padding: 5px 9px; border-radius: 30px; font-size: 11px; font-weight: 750; }
+.pill-green { background: #e5f7eb; color: #176b45; }
+.pill-orange { background: #fff3dc; color: #9b5d08; }
+.pill-red { background: #ffebe8; color: #b52f23; }
+.row-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.empty { text-align: center; padding: 45px 20px; color: var(--muted); }
+.empty .emoji { font-size: 38px; margin-bottom: 10px; }
+.report-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 15px; }
+.report-box { padding: 17px; background: #f6faf6; border-radius: 13px; }
+.report-box span { font-size: 12px; color: var(--muted); }
+.report-box strong { display: block; font-size: 22px; margin-top: 8px; }
+.modal {
+    position: fixed; inset: 0; z-index: 1000; display: none;
+    align-items: center; justify-content: center; padding: 18px;
+    background: #102b1f99; backdrop-filter: blur(5px);
+}
+.modal.open { display: flex; }
+.modal-content {
+    width: min(650px, 100%); max-height: 92vh; overflow-y: auto;
+    background: white; border-radius: 20px; box-shadow: 0 20px 70px #0003;
+}
+.modal-head {
+    padding: 20px 23px; display: flex; justify-content: space-between;
+    align-items: center; border-bottom: 1px solid var(--border);
+}
+.modal-head h2 { margin: 0; font-size: 19px; }
+.close-btn { border: 0; background: #edf4ee; border-radius: 9px; padding: 8px 12px; }
+.modal-body { padding: 22px; }
+.loading { text-align: center; padding: 30px; color: var(--muted); }
+.footer { text-align: center; padding: 20px; color: #829187; font-size: 12px; }
+@media(max-width: 950px) {
+    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media(max-width: 580px) {
+    .topbar { padding: 19px 4%; }
+    .container { width: 94%; margin-top: 18px; }
+    .stats { gap: 10px; }
+    .stat-card { padding: 15px; }
+    .stat-value { font-size: 21px; }
+    .form-grid, .report-grid { grid-template-columns: 1fr; }
+    .form-grid .wide { grid-column: auto; }
+    .panel-body { padding: 15px; }
+    .panel-head { padding: 16px; }
+    .filters .field, .filters .search-field { width: 100%; }
+}
+</style>
+</head>
+
+<body>
+<header class="topbar">
+    <div class="brand">
+        <div class="brand-icon">🐄</div>
+        <div>
+            <h1>कामगार व पगार व्यवस्थापन</h1>
+            <p>आदेश डेअरी फार्म · Worker & Salary Management</p>
+        </div>
+    </div>
+   
+<div class="top-actions">
+    <a href="dashboard.html" class="btn btn-light"
+       style="text-decoration:none;">
+        ← Dashboard
+    </a>
+
+    <button class="btn btn-light" id="refreshBtn">
+        ↻ Refresh
+    </button>
+
+    <button class="btn btn-light" id="addWorkerBtn">
+        ＋ नवीन कामगार
+    </button>
+</div>
+
+</header>
+
+<main class="container">
+    <div id="notice" class="notice" role="status"></div>
+
+    <div class="filters">
+        <div class="field">
+            <label for="monthFilter">महिना</label>
+            <select id="monthFilter">
+                <option value="1">जानेवारी</option><option value="2">फेब्रुवारी</option>
+                <option value="3">मार्च</option><option value="4">एप्रिल</option>
+                <option value="5">मे</option><option value="6">जून</option>
+                <option value="7">जुलै</option><option value="8">ऑगस्ट</option>
+                <option value="9">सप्टेंबर</option><option value="10">ऑक्टोबर</option>
+                <option value="11">नोव्हेंबर</option><option value="12">डिसेंबर</option>
+            </select>
+        </div>
+        <div class="field">
+            <label for="yearFilter">वर्ष</label>
+            <select id="yearFilter"></select>
+        </div>
+        <div class="field search-field">
+            <label for="searchInput">कामगार शोधा</label>
+            <input id="searchInput" type="search" placeholder="नाव, मोबाइल किंवा कामाचा प्रकार...">
+        </div>
+        <button class="btn btn-outline" id="reportBtn">📊 रिपोर्ट</button>
+    </div>
+
+    <section class="stats">
+        <div class="stat-card" style="--tint:#e4f5e9">
+            <div class="stat-icon">👷</div>
+            <div class="stat-label">एकूण कामगार</div>
+            <div class="stat-value" id="totalWorkers">—</div>
+            <div class="stat-foot">नोंद केलेले कामगार</div>
+        </div>
+        <div class="stat-card" style="--tint:#e5efff">
+            <div class="stat-icon">💰</div>
+            <div class="stat-label">एकूण अपेक्षित पगार</div>
+            <div class="stat-value" id="expectedSalary">₹0</div>
+            <div class="stat-foot">निवडलेल्या महिन्यासाठी</div>
+        </div>
+        <div class="stat-card" style="--tint:#e2f7f4">
+            <div class="stat-icon">✅</div>
+            <div class="stat-label">दिलेला पगार</div>
+            <div class="stat-value" id="paidSalary">₹0</div>
+            <div class="stat-foot">निवडलेल्या महिन्यासाठी</div>
+        </div>
+        <div class="stat-card" style="--tint:#fff0df">
+            <div class="stat-icon">⏳</div>
+            <div class="stat-label">बाकी पगार</div>
+            <div class="stat-value" id="remainingSalary">₹0</div>
+            <div class="stat-foot">निवडलेल्या महिन्यासाठी</div>
+        </div>
+    </section>
+
+    <section class="panel" id="workerFormPanel">
+        <div class="panel-head">
+            <div>
+                <h2 id="formTitle">＋ नवीन कामगार नोंदणी</h2>
+                <p>कामगाराची माहिती भरा आणि सेव्ह करा.</p>
+            </div>
+        </div>
+        <div class="panel-body">
+            <form id="workerForm">
+                <input type="hidden" id="workerId">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="workerName">पूर्ण नाव *</label>
+                        <input id="workerName" required maxlength="100" placeholder="कामगाराचे नाव">
+                    </div>
+                    <div class="field">
+                        <label for="workerMobile">मोबाइल नंबर</label>
+                        <input id="workerMobile" type="tel" maxlength="15" placeholder="मोबाइल नंबर">
+                    </div>
+                    <div class="field">
+                        <label for="workType">कामाचा प्रकार *</label>
+                        <input id="workType" required maxlength="100" placeholder="उदा. दूध काढणे, जनावरांची देखभाल">
+                    </div>
+                    <div class="field">
+                        <label for="salaryType">पगाराचा प्रकार *</label>
+                        <select id="salaryType" required>
+                            <option value="Monthly">मासिक पगार</option>
+                            <option value="Daily">रोजंदारी</option>
+                        </select>
+                    </div>
+                    <div class="field" id="monthlySalaryField">
+                        <label for="monthlySalary">मासिक पगार (₹) *</label>
+                        <input id="monthlySalary" type="number" min="0" step="0.01" value="0">
+                    </div>
+                    <div class="field hidden" id="dailyWageField">
+                        <label for="dailyWage">दररोजचा पगार (₹) *</label>
+                        <input id="dailyWage" type="number" min="0" step="0.01" value="0">
+                    </div>
+                    <div class="field">
+                        <label for="joiningDate">काम सुरू केल्याची तारीख</label>
+                        <input id="joiningDate" type="date">
+                    </div>
+                    <div class="field" id="statusField">
+                        <label for="workerStatus">स्थिती</label>
+                        <select id="workerStatus">
+                            <option value="Active">काम सुरू आहे</option>
+                            <option value="Inactive">काम बंद आहे</option>
+                        </select>
+                    </div>
+                    <div class="field wide">
+                        <label for="workerNotes">अतिरिक्त माहिती</label>
+                        <textarea id="workerNotes" rows="2" placeholder="इतर माहिती (ऐच्छिक)"></textarea>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-green" type="submit" id="saveWorkerBtn">कामगार सेव्ह करा</button>
+                    <button class="btn btn-outline" type="button" id="cancelEditBtn">रद्द करा</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-head">
+            <div>
+                <h2>👥 कामगारांची यादी</h2>
+                <p>निवडलेल्या महिन्याचा पगार आणि बाकी रक्कम येथे दिसेल.</p>
+            </div>
+            <span class="pill pill-green" id="listCount">0 कामगार</span>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>कामगार</th><th>कामाचा प्रकार</th><th>पगार प्रकार</th>
+                        <th>अपेक्षित पगार</th><th>दिलेला</th><th>बाकी</th>
+                        <th>स्थिती</th><th>कृती</th>
+                    </tr>
+                </thead>
+                <tbody id="workerTableBody">
+                    <tr><td colspan="8" class="loading">माहिती लोड होत आहे...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="panel hidden" id="reportPanel">
+        <div class="panel-head">
+            <div>
+                <h2>📊 पगार रिपोर्ट</h2>
+                <p id="reportPeriod">निवडलेल्या महिन्याचा सारांश</p>
+            </div>
+            <button class="btn btn-outline btn-small" id="printReportBtn">🖨️ Print</button>
+        </div>
+        <div class="panel-body">
+            <div class="report-grid">
+                <div class="report-box"><span>एकूण अपेक्षित पगार</span><strong id="reportExpected">₹0</strong></div>
+                <div class="report-box"><span>एकूण दिलेला पगार</span><strong id="reportPaid">₹0</strong></div>
+                <div class="report-box"><span>एकूण बाकी पगार</span><strong id="reportRemaining">₹0</strong></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel hidden" id="paymentPanel">
+        <div class="panel-head">
+            <div>
+                <h2>💵 पगाराची नोंद</h2>
+                <p id="paymentWorkerName">कामगार निवडा</p>
+            </div>
+            <button class="btn btn-outline btn-small" id="closePaymentBtn">बंद करा</button>
+        </div>
+        <div class="panel-body">
+            <form id="paymentForm">
+                <input type="hidden" id="paymentWorkerId">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="paymentAmount">दिलेली रक्कम (₹) *</label>
+                        <input id="paymentAmount" type="number" min="0.01" step="0.01" required>
+                    </div>
+                    <div class="field">
+                        <label for="paymentDate">पगार दिल्याची तारीख *</label>
+                        <input id="paymentDate" type="date" required>
+                    </div>
+                    <div class="field">
+                        <label for="paymentMode">पद्धत</label>
+                        <select id="paymentMode">
+                            <option value="Cash">रोख</option>
+                            <option value="UPI">UPI</option>
+                            <option value="Bank Transfer">बँक ट्रान्सफर</option>
+                            <option value="Other">इतर</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="paymentWorkDays">या नोंदीतील कामाचे दिवस</label>
+                        <input id="paymentWorkDays" type="number" min="0" step="0.5" value="0">
+                    </div>
+                    <div class="field wide">
+                        <label for="paymentNote">शेरा</label>
+                        <textarea id="paymentNote" rows="2" placeholder="पगाराबद्दल अतिरिक्त माहिती"></textarea>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-green" type="submit" id="savePaymentBtn">पगार सेव्ह करा</button>
+                </div>
+            </form>
+            <div style="margin-top:25px">
+                <h3 style="font-size:15px">या कामगाराच्या पगाराच्या नोंदी</h3>
+                <div class="table-wrap">
+                    <table style="min-width:650px">
+                        <thead><tr><th>तारीख</th><th>रक्कम</th><th>पद्धत</th><th>दिवस</th><th>शेरा</th><th>कृती</th></tr></thead>
+                        <tbody id="paymentTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="footer">© आदेश डेअरी फार्म · कामगार व पगार व्यवस्थापन</footer>
+
+<script>
+"use strict";
+
+// तुमच्या सध्याच्या Backend API शी कनेक्शन
+const API_BASE = "http://localhost:5000/api/workers";
+const TOKEN_KEY = "authToken";
+
+const $ = (id) => document.getElementById(id);
+
+let workers = [];
+let currentPaymentWorker = null;
+let noticeTimer = null;
+
+const monthNames = [
+    "जानेवारी", "फेब्रुवारी", "मार्च", "एप्रिल", "मे", "जून",
+    "जुलै", "ऑगस्ट", "सप्टेंबर", "ऑक्टोबर", "नोव्हेंबर", "डिसेंबर"
+];
+
+function money(value) {
+    return new Intl.NumberFormat("en-IN", {
+        style: "currency", currency: "INR", maximumFractionDigits: 2
+    }).format(Number(value) || 0);
+}
+
+function esc(value) {
+    return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;",
+        '"': "&quot;", "'": "&#39;"
+    })[char]);
+}
+
+function todayString() {
+    const date = new Date();
+    return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`;
+}
+
+function getToken() {
+    return sessionStorage.getItem(TOKEN_KEY) ||
+           localStorage.getItem(TOKEN_KEY) ||
+           "";
+}
+
+function showNotice(message, type = "success") {
+    const notice = $("notice");
+    notice.textContent = message;
+    notice.className = `notice show ${type}`;
+    clearTimeout(noticeTimer);
+    noticeTimer = setTimeout(() => notice.classList.remove("show"), 5000);
+}
+
+async function api(path = "", options = {}) {
+    const token = getToken();
+
+    if (!token) {
+        throw new Error("लॉगिन Token सापडला नाही. Owner म्हणून लॉगिन करून पुन्हा प्रयत्न करा.");
+    }
+
+    const response = await fetch(`${API_BASE}${path}`, {
+        ...options,
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+            ...(options.headers || {})
+        }
+    });
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+        throw new Error(data.message || `Request अयशस्वी (${response.status})`);
+    }
+
+    return data;
+}
+
+function getMonthYear() {
+    return {
+        month: Number($("monthFilter").value),
+        year: Number($("yearFilter").value)
+    };
+}
+
+function localDate(dateValue) {
+    if (!dateValue) return "—";
+    const date = new Date(dateValue);
+    if (Number.isNaN(date.getTime())) return "—";
+    return date.toLocaleDateString("en-IN");
+}
+
+function paymentMonth(payment) {
+    const date = new Date(payment.paymentDate);
+    return {
+        month: Number(payment.month) || date.getMonth() + 1,
+        year: Number(payment.year) || date.getFullYear()
+    };
+}
+
+function getWorkerSummary(worker) {
+    const { month, year } = getMonthYear();
+    const payments = (worker.payments || []).filter((payment) => {
+        const period = paymentMonth(payment);
+        return period.month === month && period.year === year;
+    });
+
+    const paid = payments.reduce((sum, p) => sum + Number(p.amount || 0), 0);
+    const expected = worker.salaryType === "Monthly"
+        ? Number(worker.monthlySalary || 0)
+        : payments.reduce((sum, p) =>
+            sum + Number(p.workDays || 0) * Number(worker.dailyWage || 0), 0);
+
+    return {
+        payments,
+        expected,
+        paid,
+        remaining: Math.max(0, expected - paid)
+    };
+}
+
+function updateSummary(summary) {
+    $("totalWorkers").textContent = summary?.totalWorkers ?? workers.length;
+
+    const calculated = workers.reduce((acc, worker) => {
+        const s = getWorkerSummary(worker);
+        acc.expected += s.expected;
+        acc.paid += s.paid;
+        acc.remaining += s.remaining;
+        return acc;
+    }, { expected: 0, paid: 0, remaining: 0 });
+
+    $("expectedSalary").textContent = money(summary?.expectedSalary ?? calculated.expected);
+    $("paidSalary").textContent = money(summary?.paidSalary ?? calculated.paid);
+    $("remainingSalary").textContent = money(summary?.remainingSalary ?? calculated.remaining);
+
+    $("reportExpected").textContent = money(summary?.expectedSalary ?? calculated.expected);
+    $("reportPaid").textContent = money(summary?.paidSalary ?? calculated.paid);
+    $("reportRemaining").textContent = money(summary?.remainingSalary ?? calculated.remaining);
+
+    const { month, year } = getMonthYear();
+    $("reportPeriod").textContent = `${monthNames[month-1]} ${year} · पगार सारांश`;
+}
+
+function renderWorkers() {
+    const query = $("searchInput").value.trim().toLocaleLowerCase("mr");
+    const filtered = workers.filter((worker) =>
+        [worker.name, worker.mobileNumber, worker.workType]
+            .some((value) => String(value || "").toLocaleLowerCase("mr").includes(query))
+    );
+
+    $("listCount").textContent = `${filtered.length} कामगार`;
+    const tbody = $("workerTableBody");
+
+    if (!filtered.length) {
+        tbody.innerHTML = `<tr><td colspan="8"><div class="empty">
+            <div class="emoji">👷</div>
+            <strong>${workers.length ? "शोधाशी जुळणारा कामगार नाही" : "अजून कामगार नोंदवलेले नाहीत"}</strong>
+            <div style="margin-top:8px">नवीन कामगार नोंदवण्यासाठी वरील बटण वापरा.</div>
+        </div></td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = filtered.map((worker) => {
+        const s = getWorkerSummary(worker);
+        const salaryType = worker.salaryType === "Monthly" ? "मासिक" : "रोजंदारी";
+        const status = worker.status === "Inactive"
+            ? '<span class="pill pill-red">काम बंद</span>'
+            : '<span class="pill pill-green">सक्रिय</span>';
+
+        return `<tr>
+            <td><div class="worker-name">${esc(worker.name)}</div>
+                <div class="subtext">${esc(worker.mobileNumber || "मोबाइल दिलेला नाही")}</div></td>
+            <td>${esc(worker.workType)}</td>
+            <td>${salaryType}<div class="subtext">${money(worker.salaryType === "Monthly" ? worker.monthlySalary : worker.dailyWage)}${worker.salaryType === "Daily" ? " / दिवस" : " / महिना"}</div></td>
+            <td class="money">${money(s.expected)}</td>
+            <td class="money">${money(s.paid)}</td>
+            <td class="money">${money(s.remaining)}</td>
+            <td>${status}</td>
+            <td><div class="row-actions">
+                <button class="btn btn-green btn-small" data-action="pay" data-id="${esc(worker._id)}">पगार</button>
+                <button class="btn btn-outline btn-small" data-action="edit" data-id="${esc(worker._id)}">Edit</button>
+                <button class="btn btn-red btn-small" data-action="delete" data-id="${esc(worker._id)}">Delete</button>
+            </div></td>
+        </tr>`;
+    }).join("");
+}
+
+async function loadWorkers() {
+    $("workerTableBody").innerHTML =
+        '<tr><td colspan="8" class="loading">माहिती लोड होत आहे...</td></tr>';
+
+    try {
+        const { month, year } = getMonthYear();
+        const data = await api(`?month=${month}&year=${year}`);
+        workers = Array.isArray(data.workers) ? data.workers : [];
+        updateSummary(data.summary);
+        renderWorkers();
+    } catch (error) {
+        $("workerTableBody").innerHTML =
+            `<tr><td colspan="8" class="empty">${esc(error.message)}</td></tr>`;
+        showNotice(error.message, "error");
+    }
+}
+
+function resetWorkerForm() {
+    $("workerForm").reset();
+    $("workerId").value = "";
+    $("formTitle").textContent = "＋ नवीन कामगार नोंदणी";
+    $("saveWorkerBtn").textContent = "कामगार सेव्ह करा";
+    $("joiningDate").value = todayString();
+    $("monthlySalary").value = "0";
+    $("dailyWage").value = "0";
+    $("workerStatus").value = "Active";
+    $("statusField").classList.remove("hidden");
+    updateSalaryFields();
+}
+
+function updateSalaryFields() {
+    const isMonthly = $("salaryType").value === "Monthly";
+    $("monthlySalaryField").classList.toggle("hidden", !isMonthly);
+    $("dailyWageField").classList.toggle("hidden", isMonthly);
+    $("monthlySalary").required = isMonthly;
+    $("dailyWage").required = !isMonthly;
+}
+
+function editWorker(worker) {
+    $("workerId").value = worker._id;
+    $("workerName").value = worker.name || "";
+    $("workerMobile").value = worker.mobileNumber || "";
+    $("workType").value = worker.workType || "";
+    $("salaryType").value = worker.salaryType || "Monthly";
+    $("monthlySalary").value = worker.monthlySalary ?? 0;
+    $("dailyWage").value = worker.dailyWage ?? 0;
+    $("joiningDate").value = worker.joiningDate ? String(worker.joiningDate).slice(0,10) : "";
+    $("workerStatus").value = worker.status || "Active";
+    $("workerNotes").value = worker.notes || "";
+    $("formTitle").textContent = "✏️ कामगाराची माहिती बदला";
+    $("saveWorkerBtn").textContent = "बदल सेव्ह करा";
+    $("statusField").classList.remove("hidden");
+    updateSalaryFields();
+    $("workerFormPanel").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+async function saveWorker(event) {
+    event.preventDefault();
+
+    const id = $("workerId").value;
+    const salaryType = $("salaryType").value;
+
+    const body = {
+        name: $("workerName").value.trim(),
+        mobileNumber: $("workerMobile").value.trim(),
+        workType: $("workType").value.trim(),
+        salaryType,
+        monthlySalary: salaryType === "Monthly" ? Number($("monthlySalary").value) : 0,
+        dailyWage: salaryType === "Daily" ? Number($("dailyWage").value) : 0,
+        joiningDate: $("joiningDate").value || undefined,
+        status: $("workerStatus").value,
+        notes: $("workerNotes").value.trim()
+    };
+
+    if (body.monthlySalary < 0 || body.dailyWage < 0) {
+        showNotice("पगाराची रक्कम ऋण असू शकत नाही.", "error");
+        return;
+    }
+
+    $("saveWorkerBtn").disabled = true;
+
+    try {
+        const result = await api(id ? `/${encodeURIComponent(id)}` : "", {
+            method: id ? "PUT" : "POST",
+            body: JSON.stringify(body)
+        });
+
+        showNotice(result.message || "कामगाराची माहिती सेव्ह झाली.");
+        resetWorkerForm();
+        await loadWorkers();
+    } catch (error) {
+        showNotice(error.message, "error");
+    } finally {
+        $("saveWorkerBtn").disabled = false;
+    }
+}
+
+async function deleteWorker(worker) {
+    if (!confirm(`${worker.name} या कामगाराची नोंद आणि त्याच्या पगाराच्या नोंदी Delete करायच्या आहेत का?`)) return;
+
+    try {
+        const result = await api(`/${encodeURIComponent(worker._id)}`, { method: "DELETE" });
+        showNotice(result.message || "कामगार Delete झाला.");
+        if (currentPaymentWorker === worker._id) closePaymentPanel();
+        await loadWorkers();
+    } catch (error) {
+        showNotice(error.message, "error");
+    }
+}
+
+function openPaymentPanel(worker) {
+    currentPaymentWorker = worker._id;
+    $("paymentWorkerId").value = worker._id;
+    $("paymentWorkerName").textContent =
+        `${worker.name} · ${worker.salaryType === "Monthly" ? money(worker.monthlySalary) + " / महिना" : money(worker.dailyWage) + " / दिवस"}`;
+    $("paymentForm").reset();
+    $("paymentDate").value = todayString();
+    $("paymentWorkDays").value = "0";
+    $("paymentPanel").classList.remove("hidden");
+    renderPayments(worker);
+    $("paymentPanel").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function closePaymentPanel() {
+    currentPaymentWorker = null;
+    $("paymentPanel").classList.add("hidden");
+}
+
+function renderPayments(worker) {
+    const tbody = $("paymentTableBody");
+    const payments = [...(worker.payments || [])].sort(
+        (a,b) => new Date(b.paymentDate) - new Date(a.paymentDate)
+    );
+
+    if (!payments.length) {
+        tbody.innerHTML = '<tr><td colspan="6" class="empty">पगाराची नोंद उपलब्ध नाही.</td></tr>';
+        return;
+    }
+
+    const modeLabels = {
+        Cash: "रोख", UPI: "UPI",
+        "Bank Transfer": "बँक ट्रान्सफर", Other: "इतर"
+    };
+
+    tbody.innerHTML = payments.map((payment) => `
+        <tr>
+            <td>${localDate(payment.paymentDate)}</td>
+            <td class="money">${money(payment.amount)}</td>
+            <td>${esc(modeLabels[payment.paymentMode] || payment.paymentMode || "—")}</td>
+            <td>${Number(payment.workDays || 0)}</td>
+            <td>${esc(payment.note || "—")}</td>
+            <td><button class="btn btn-red btn-small" data-action="delete-payment"
+                data-id="${esc(worker._id)}" data-payment-id="${esc(payment._id)}">Delete</button></td>
+        </tr>`).join("");
+}
+
+async function savePayment(event) {
+    event.preventDefault();
+
+    const workerId = $("paymentWorkerId").value;
+    const amount = Number($("paymentAmount").value);
+    const workDays = Number($("paymentWorkDays").value || 0);
+
+    if (!(amount > 0) || !Number.isFinite(amount)) {
+        showNotice("दिलेली रक्कम शून्यापेक्षा जास्त भरा.", "error");
+        return;
+    }
+
+    $("savePaymentBtn").disabled = true;
+
+    try {
+        const result = await api(`/${encodeURIComponent(workerId)}/payments`, {
+            method: "POST",
+            body: JSON.stringify({
+                amount,
+                paymentDate: $("paymentDate").value,
+                paymentMode: $("paymentMode").value,
+                workDays,
+                note: $("paymentNote").value.trim()
+            })
+        });
+
+        showNotice(result.message || "पगाराची नोंद झाली.");
+        await loadWorkers();
+
+        const updatedWorker = workers.find((w) => w._id === workerId);
+        if (updatedWorker) openPaymentPanel(updatedWorker);
+    } catch (error) {
+        showNotice(error.message, "error");
+    } finally {
+        $("savePaymentBtn").disabled = false;
+    }
+}
+
+async function deletePayment(workerId, paymentId) {
+    if (!confirm("ही पगाराची नोंद Delete करायची आहे का?")) return;
+
+    try {
+        const result = await api(
+            `/${encodeURIComponent(workerId)}/payments/${encodeURIComponent(paymentId)}`,
+            { method: "DELETE" }
+        );
+
+        showNotice(result.message || "पगाराची नोंद Delete झाली.");
+        await loadWorkers();
+
+        const updatedWorker = workers.find((w) => w._id === workerId);
+        if (updatedWorker) openPaymentPanel(updatedWorker);
+    } catch (error) {
+        showNotice(error.message, "error");
+    }
+}
+
+function initYearFilter() {
+    const currentYear = new Date().getFullYear();
+    $("yearFilter").innerHTML = "";
+    for (let year = currentYear - 3; year <= currentYear + 2; year++) {
+        const option = document.createElement("option");
+        option.value = year;
+        option.textContent = year;
+        if (year === currentYear) option.selected = true;
+        $("yearFilter").appendChild(option);
+    }
+}
+
+$("workerForm").addEventListener("submit", saveWorker);
+$("paymentForm").addEventListener("submit", savePayment);
+$("salaryType").addEventListener("change", updateSalaryFields);
+$("refreshBtn").addEventListener("click", loadWorkers);
+
+$("addWorkerBtn").addEventListener("click", () => {
+    resetWorkerForm();
+    $("workerFormPanel").scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
+$("cancelEditBtn").addEventListener("click", resetWorkerForm);
+$("searchInput").addEventListener("input", renderWorkers);
+$("monthFilter").addEventListener("change", loadWorkers);
+$("yearFilter").addEventListener("change", loadWorkers);
+$("closePaymentBtn").addEventListener("click", closePaymentPanel);
+
+$("reportBtn").addEventListener("click", () => {
+    $("reportPanel").classList.toggle("hidden");
+    $("reportPanel").scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
+$("printReportBtn").addEventListener("click", () => window.print());
+
+$("workerTableBody").addEventListener("click", async (event) => {
+    const button = event.target.closest("button[data-action]");
+    if (!button) return;
+
+    const worker = workers.find((w) => w._id === button.dataset.id);
+    if (!worker) return;
+
+    switch (button.dataset.action) {
+        case "pay":
+            openPaymentPanel(worker);
+            break;
+        case "edit":
+            editWorker(worker);
+            break;
+        case "delete":
+            await deleteWorker(worker);
+            break;
+    }
+});
+
+$("paymentTableBody").addEventListener("click", async (event) => {
+    const button = event.target.closest('button[data-action="delete-payment"]');
+    if (!button) return;
+    await deletePayment(button.dataset.id, button.dataset.paymentId);
+});
+
+initYearFilter();
+$("monthFilter").value = String(new Date().getMonth() + 1);
+$("joiningDate").value = todayString();
+$("paymentDate").value = todayString();
+resetWorkerForm();
+loadWorkers();
+</script>
+</body>
+</html>

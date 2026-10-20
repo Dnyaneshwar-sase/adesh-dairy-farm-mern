@@ -1,0 +1,362 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login | Adesh Dairy Farm</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #e8f5e9, #fffde7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 25px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 440px;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 24px;
+            padding: 38px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .logo {
+            width: 95px;
+            height: 95px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+
+        .farm-name {
+            color: #1b5e20;
+            font-size: 27px;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            color: #777;
+            font-size: 14px;
+            margin-top: 7px;
+        }
+
+        .login-title {
+            text-align: center;
+            color: #333;
+            font-size: 25px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px 15px;
+            border: 1px solid #d5d5d5;
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #2e7d32;
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.12);
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 8px;
+            border: none;
+            border-radius: 10px;
+            background: #2e7d32;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .login-button:hover {
+            background: #1b5e20;
+            transform: translateY(-2px);
+        }
+
+        .login-button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: 15px;
+        }
+
+        .forgot-password a,
+        .register-link,
+        .back-link {
+            color: #2e7d32;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .forgot-password a:hover,
+        .register-link:hover,
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .register-text {
+            text-align: center;
+            margin-top: 22px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 20px;
+            color: #888;
+            font-size: 12px;
+        }
+
+        .message {
+            display: none;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 18px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .error-message {
+            display: block;
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .success-message {
+            display: block;
+            background: #e8f5e9;
+            color: #1b5e20;
+        }
+
+        .home-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 500px) {
+            body {
+                padding: 15px;
+            }
+
+            .login-card {
+                padding: 28px 20px;
+            }
+
+            .farm-name {
+                font-size: 23px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="login-container">
+        <section class="login-card">
+
+            <div class="logo-section">
+                <img
+                    src="images/logo.png"
+                    alt="Adesh Dairy Farm Logo"
+                    class="logo"
+                >
+
+                <div class="farm-name">आदेश डेअरी फार्म</div>
+
+                <div class="subtitle">
+                    Jeur (Ba) • Dairy Farm Management
+                </div>
+            </div>
+
+            <h2 class="login-title">Welcome Back</h2>
+
+            <div
+                id="message"
+                class="message"
+                role="alert"
+                aria-live="polite"
+            ></div>
+
+            <form id="loginForm">
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="तुमचा Registered Email टाका"
+                        autocomplete="username"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="तुमचा Password टाका"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
+
+                <button
+                    type="submit"
+                    class="login-button"
+                    id="loginButton"
+                >
+                    Login करा
+                </button>
+
+            </form>
+
+            <div class="forgot-password">
+                <a href="forgot-password.html">Forgot Password?</a>
+            </div>
+
+            <div class="register-text">
+                नवीन आहात?
+                <a href="register.html" class="register-link">
+                    Registration करा
+                </a>
+            </div>
+
+            <a href="index.html" class="back-link home-link">
+                ← मुख्य पानावर जा
+            </a>
+
+            <div class="footer-text">
+                © 2026 Adesh Dairy Farm
+            </div>
+
+        </section>
+    </main>
+
+    <script>
+        const API_BASE = "http://localhost:5000";
+
+        const loginForm = document.getElementById("loginForm");
+        const message = document.getElementById("message");
+        const loginButton = document.getElementById("loginButton");
+
+        function showMessage(text, type) {
+            message.textContent = text;
+            message.className = "message " + type;
+        }
+
+        loginForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+
+            message.textContent = "";
+            message.className = "message";
+
+            loginButton.disabled = true;
+            loginButton.textContent = "Login सुरू आहे...";
+
+            try {
+                const response = await fetch(
+                    `${API_BASE}/api/auth/login`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            email,
+                            password
+                        })
+                    }
+                );
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.message || "Login अयशस्वी झाला."
+                    );
+                }
+
+                if (!data.token || !data.user) {
+                    throw new Error(
+                        "Server कडून Login माहिती योग्य मिळाली नाही."
+                    );
+                }
+
+                localStorage.setItem("authToken", data.token);
+                localStorage.setItem(
+                    "currentUser",
+                    JSON.stringify(data.user)
+                );
+
+                window.location.replace("dashboard.html");
+
+            } catch (error) {
+                showMessage(
+                    error.message === "Failed to fetch"
+                        ? "Backend Server सुरू आहे का ते तपासा."
+                        : error.message,
+                    "error-message"
+                );
+
+                loginButton.disabled = false;
+                loginButton.textContent = "Login करा";
+            }
+        });
+    </script>
+
+</body>
+</html>

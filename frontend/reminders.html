@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reminder Management - आदेश डेअरी फार्म</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f4f8f4;
+            font-family: Arial, sans-serif;
+            color: #26332a;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .header h1 {
+            color: #176b3a;
+            margin-top: 0;
+            margin-bottom: 6px;
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        .header p {
+            margin-top: 0;
+            line-height: 1.5;
+        }
+
+        .nav-button {
+            display: inline-block;
+            background: #e8f5e9;
+            color: #176b3a;
+            padding: 11px 16px;
+            border: 1px solid #c8e6c9;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 3px;
+        }
+
+        .nav-button:hover {
+            background: #d7edd9;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 22px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .panel h2 {
+            margin-top: 0;
+            color: #26332a;
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+            margin-top: 18px;
+        }
+
+        .filters label {
+            display: block;
+            font-weight: normal;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-top: 7px;
+            background: white;
+            color: #26332a;
+            font-size: 15px;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #287a43;
+        }
+
+        #resultCount {
+            color: #176b3a;
+            font-weight: bold;
+            margin-bottom: 0;
+        }
+
+        .reminder-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+            gap: 18px;
+        }
+
+        .cow-card {
+            min-width: 0;
+            border: 1px solid #dce8dd;
+            border-radius: 12px;
+            padding: 18px;
+            background: #fff;
+        }
+
+        .cow-card h3 {
+            margin-top: 0;
+            color: #176b3a;
+            font-size: 21px;
+            font-weight: 800;
+            overflow-wrap: anywhere;
+        }
+
+        .cow-card p {
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .cow-card strong {
+            font-weight: 700;
+            color: #26332a;
+        }
+
+        .countdown {
+            background: #e8f5e9;
+            border-radius: 8px;
+            padding: 12px;
+            font-weight: bold;
+            color: #176b3a;
+            line-height: 1.6;
+        }
+
+        .status {
+            display: inline-block;
+            border-radius: 20px;
+            padding: 5px 10px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .status-today {
+            background: #fff3e0;
+            color: #a44b00;
+        }
+
+        .status-past {
+            background: #ffebee;
+            color: #b71c1c;
+        }
+
+        .status-upcoming {
+            background: #e3f2fd;
+            color: #0d47a1;
+        }
+
+        .edit-button,
+        .delete-button {
+            display: inline-block;
+            padding: 11px 16px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 15px;
+            margin-top: 12px;
+        }
+
+        .edit-button {
+            background: #176b3a;
+            color: white;
+        }
+
+        .edit-button:hover {
+            background: #10552d;
+        }
+
+        .delete-button {
+            background: #dc3545;
+            color: white;
+        }
+
+        .delete-button:hover {
+            background: #b02a37;
+        }
+
+        .delete-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .reminder-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .reminder-actions .edit-button,
+        .reminder-actions .delete-button {
+            margin-top: 0;
+        }
+
+        .empty-message {
+            padding: 25px;
+            text-align: center;
+            color: #666;
+            background: white;
+            border-radius: 10px;
+            line-height: 1.6;
+        }
+
+        .error-message {
+            padding: 18px;
+            text-align: center;
+            color: #b71c1c;
+            background: #ffebee;
+            border-radius: 10px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #778279;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            .panel {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .reminder-list {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .reminder-actions {
+                flex-direction: column;
+            }
+
+            .reminder-actions .edit-button,
+            .reminder-actions .delete-button {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <header class="header">
+        <div>
+            <h1>🔔 Reminder Management</h1>
+            <p>AI केलेल्या गायींचे reminders आणि वेताचा countdown</p>
+        </div>
+
+        <div>
+            <a href="dashboard.html" class="nav-button">← Dashboard</a>
+            <a href="breeding.html" class="nav-button">Breeding Management</a>
+        </div>
+    </header>
+
+    <section class="panel">
+        <h2>🐄 AI केलेल्या गायींची यादी</h2>
+
+        <div class="filters">
+            <div>
+                <label for="searchCow">गाय शोधा</label>
+                <input
+                    type="text"
+                    id="searchCow"
+                    placeholder="नाव किंवा Tag टाका"
+                    autocomplete="off"
+                >
+            </div>
+
+            <div>
+                <label for="filterType">Reminder प्रकार</label>
+                <select id="filterType">
+                    <option value="ALL">सर्व AI गायी</option>
+                    <option value="HEAT">21-Day Heat Reminder</option>
+                    <option value="PREGNANCY">45-Day Pregnancy Check</option>
+                    <option value="CALVING">Expected Calving</option>
+                    <option value="OVERDUE">मुदत संपलेले reminders</option>
+                </select>
+            </div>
+        </div>
+
+        <p id="resultCount">दिसणाऱ्या गायी: 0</p>
+    </section>
+
+    <div id="pageMessage" style="display:none;"></div>
+
+    <section id="reminderList" class="reminder-list"></section>
+
+    <div id="emptyMessage" class="empty-message" style="display:none;">
+        सध्या AI Date असलेले records उपलब्ध नाहीत.
+    </div>
+
+    <footer class="footer">
+        आदेश डेअरी फार्म | स्मार्ट डेअरी व्यवस्थापन प्रणाली
+    </footer>
+</div>
+
+<script>
+"use strict";
+
+const API_BASE = "http://localhost:5000";
+
+const searchInput = document.getElementById("searchCow");
+const filterSelect = document.getElementById("filterType");
+const reminderList = document.getElementById("reminderList");
+const resultCount = document.getElementById("resultCount");
+const emptyMessage = document.getElementById("emptyMessage");
+const pageMessage = document.getElementById("pageMessage");
+
+let allReminders = [];
+let cowsById = new Map();
+
+function getToken() {
+    return localStorage.getItem("authToken")
+        || localStorage.getItem("token")
+        || sessionStorage.getItem("authToken")
+        || sessionStorage.getItem("token");
+}
+
+function authHeaders() {
+    const token = getToken();
+
+    return {
+        "Authorization": "Bearer " + token,
+        "Accept": "application/json"
+    };
+}
+
+function escapeHtml(value) {
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function parseDate(value) {
+    if (!value) return null;
+
+    const text = String(value).trim();
+    const match = text.match(/^(\d{4})-(\d{2})-(\d{2})/);
+
+    if (!match) return null;
+
+    const date = new Date(
+        Number(match[1]),
+        Number(match[2]) - 1,
+        Number(match[3])
+    );
+
+    if (
+        date.getFullYear() !== Number(match[1]) ||
+        date.getMonth() !== Number(match[2]) - 1 ||
+        date.getDate() !== Number(match[3])
+    ) {
+        return null;
+    }
+
+    return date;
+}
+
+function formatDate(date) {
+    if (!date) return "तारीख उपलब्ध नाही";
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+}
+
+function getTodayDate() {
+    return formatDate(new Date());
+}
+
+function addDays(date, days) {
+    if (!date) return null;
+
+    const result = new Date(date);
+    result.setDate(result.getDate() + days);
+
+    return result;
+}
+
+function addMonthsClamped(date, months) {
+    if (!date) return null;
+
+    const result = new Date(date);
+    const originalDay = result.getDate();
+
+    result.setDate(1);
+    result.setMonth(result.getMonth() + months);
+
+    const lastDay = new Date(
+        result.getFullYear(),
+        result.getMonth() + 1,
+        0
+    ).getDate();
+
+    result.setDate(Math.min(originalDay, lastDay));
+
+    return result;
+}
+
+function isRecordNotPregnant(record) {
+    const status = String(record.pregnancyStatus || "")
+        .trim()
+        .toLowerCase();
+
+    return [
+        "not pregnant",
+        "negative",
+        "गर्भवती नाही",
+        "गर्भधारणा नाही",
+        "निगेटिव्ह"
+    ].includes(status);
+}
+
+function isPregnancyTestPending(record) {
+    const status = String(record.pregnancyStatus || "तपासणी बाकी")
+        .trim()
+        .toLowerCase();
+
+    return [
+        "",
+        "तपासणी बाकी",
+        "test बाकी",
+        "test baki",
+        "pending",
+        "तपासणी प्रलंबित"
+    ].includes(status);
+}
+
+function getDateStatus(date) {
+    if (!date) {
+        return {
+            text: "तारीख उपलब्ध नाही",
+            className: "status-upcoming"
+        };
+    }
+
+    const dateText = formatDate(date);
+    const today = getTodayDate();
+
+    if (dateText < today) {
+        return {
+            text: "तारीख उलटली",
+            className: "status-past"
+        };
+    }
+
+    if (dateText === today) {
+        return {
+            text: "आज",
+            className: "status-today"
+        };
+    }
+
+    return {
+        text: "आगामी",
+        className: "status-upcoming"
+    };
+}
+
+function getCowId(record) {
+    const cow = record.cowId || record.cow || record.cowDetails;
+
+    if (cow && typeof cow === "object") {
+        return String(cow._id || cow.id || "");
+    }
+
+    return String(cow || "");
+}
+
+function getCowForRecord(record) {
+    const cow = record.cowId || record.cow || record.cowDetails;
+
+    if (cow && typeof cow === "object") {
+        return cow;
+    }
+
+    return cowsById.get(getCowId(record)) || {};
+}
+
+function getCowName(record) {
+    const cow = getCowForRecord(record);
+
+    return cow.name ||
+        cow.cowName ||
+        record.cowName ||
+        "नाव उपलब्ध नाही";
+}
+
+function getCowTag(record) {
+    const cow = getCowForRecord(record);
+
+    return cow.cowTag ||
+        cow.tag ||
+        cow.tagNumber ||
+        record.cowTag ||
+        record.tag ||
+        "";
+}
+
+function getCalvingDate(record) {
+    if (isRecordNotPregnant(record)) return null;
+
+    if (record.expectedCalvingDate) {
+        return parseDate(record.expectedCalvingDate);
+    }
+
+    const aiDate = parseDate(record.aiDate);
+
+    if (!aiDate) return null;
+
+    return addDays(addMonthsClamped(aiDate, 9), 9);
+}
+
+function getCountdown(calvingDate) {
+    if (!calvingDate) {
+        return "वेताची तारीख उपलब्ध नाही";
+    }
+
+    const today = parseDate(getTodayDate());
+
+    const difference = Math.round(
+        (calvingDate.getTime() - today.getTime()) / 86400000
+    );
+
+    if (difference === 0) {
+        return "आज अपेक्षित वेताची तारीख आहे";
+    }
+
+    if (difference < 0) {
+        return "अपेक्षित तारीख उलटून " +
+            Math.abs(difference) + " दिवस झाले";
+    }
+
+    let years = calvingDate.getFullYear() - today.getFullYear();
+    let months = calvingDate.getMonth() - today.getMonth();
+    let days = calvingDate.getDate() - today.getDate();
+
+    if (days < 0) {
+        months--;
+
+        const previousMonthDays = new Date(
+            calvingDate.getFullYear(),
+            calvingDate.getMonth(),
+            0
+        ).getDate();
+
+        days += previousMonthDays;
+    }
+
+    if (months < 0) {
+        years--;
+        months += 12;
+    }
+
+    if (years > 0) {
+        return `${years} वर्षे ${months} महिने ${days} दिवस बाकी`;
+    }
+
+    return `${months} महिने ${days} दिवस बाकी`;
+}
+
+function getReminderDetails(record) {
+    const aiDate = parseDate(record.aiDate);
+
+    if (!aiDate) return null;
+
+    const heatDate = addDays(aiDate, 21);
+    const pregnancyDate = addDays(aiDate, 45);
+    const calvingDate = getCalvingDate(record);
+
+    return {
+        record,
+        recordId: String(record._id || record.id || ""),
+        cowName: getCowName(record),
+        cowTag: getCowTag(record),
+        aiDate,
+        heatDate,
+        pregnancyDate,
+        calvingDate,
+        heatStatus: getDateStatus(heatDate),
+        pregnancyReminderStatus: getDateStatus(pregnancyDate),
+        pregnancyStatusText: record.pregnancyStatus || "तपासणी बाकी",
+        remainingDays: calvingDate
+            ? Math.round(
+                (calvingDate.getTime() -
+                parseDate(getTodayDate()).getTime()) / 86400000
+            )
+            : -1,
+        countdown: getCountdown(calvingDate)
+    };
+}
+
+function extractRecords(data) {
+    if (Array.isArray(data)) return data;
+    if (Array.isArray(data.records)) return data.records;
+    if (Array.isArray(data.data)) return data.data;
+    if (Array.isArray(data.breedingRecords)) return data.breedingRecords;
+
+    return [];
+}
+
+function hasActiveReminder(item) {
+    const today = getTodayDate();
+    const status = item.record.pregnancyStatus || "तपासणी बाकी";
+
+    if (isRecordNotPregnant(item.record)) return false;
+
+    const heatActive = formatDate(item.heatDate) >= today;
+
+    const pregnancyActive =
+        isPregnancyTestPending({ pregnancyStatus: status });
+
+    const calvingActive =
+        item.calvingDate && formatDate(item.calvingDate) >= today;
+
+    return Boolean(heatActive || pregnancyActive || calvingActive);
+}
+
+function renderCard(item) {
+    const editLink = item.recordId
+        ? "breeding.html?editId=" + encodeURIComponent(item.recordId)
+        : "breeding.html";
+
+    const notPregnant = isRecordNotPregnant(item.record);
+    const pending = isPregnancyTestPending(item.record);
+    const today = getTodayDate();
+
+    const heatActive = formatDate(item.heatDate) >= today;
+    const pregnancyActive = !notPregnant && pending;
+    const calvingActive =
+        !notPregnant &&
+        item.calvingDate &&
+        formatDate(item.calvingDate) >= today;
+
+    return `
+        <article
+            class="cow-card"
+            data-search="${escapeHtml(item.cowName + " " + item.cowTag)}"
+        >
+            <h3>
+                🐄 ${escapeHtml(item.cowName)}
+                ${item.cowTag ? "(" + escapeHtml(item.cowTag) + ")" : ""}
+            </h3>
+
+            <p>
+                <strong>AI Date:</strong>
+                ${escapeHtml(formatDate(item.aiDate))}
+            </p>
+
+            ${heatActive ? `
+                <p>
+                    <strong>21-Day Heat Reminder:</strong>
+                    ${escapeHtml(formatDate(item.heatDate))}
+                    <br>
+                    <span class="status ${item.heatStatus.className}">
+                        ${escapeHtml(item.heatStatus.text)}
+                    </span>
+                </p>
+            ` : ""}
+
+            ${pregnancyActive ? `
+                <p>
+                    <strong>45-Day Pregnancy Check:</strong>
+                    ${escapeHtml(formatDate(item.pregnancyDate))}
+                    <br>
+                    <span class="status ${item.pregnancyReminderStatus.className}">
+                        ${escapeHtml(item.pregnancyReminderStatus.text)}
+                    </span>
+                    <br>
+                    <span class="status status-upcoming">तपासणी बाकी</span>
+                </p>
+            ` : ""}
+
+            <p>
+                <strong>Pregnancy Status:</strong>
+                ${escapeHtml(item.pregnancyStatusText)}
+            </p>
+
+            ${calvingActive ? `
+                <p>
+                    <strong>Expected Calving:</strong>
+                    ${escapeHtml(formatDate(item.calvingDate))}
+                </p>
+
+                <div class="countdown">
+                    ⏳ ${escapeHtml(item.countdown)}
+                </div>
+            ` : ""}
+
+            <div class="reminder-actions">
+                <a class="edit-button" href="${escapeHtml(editLink)}">
+                    ✏️ Edit Breeding Record
+                </a>
+
+                <button
+                    type="button"
+                    class="delete-button"
+                    data-delete-id="${escapeHtml(item.recordId)}">
+                    🗑️ Delete Record
+                </button>
+            </div>
+        </article>
+    `;
+}
+
+function showError(message) {
+    pageMessage.className = "error-message";
+    pageMessage.textContent = message;
+    pageMessage.style.display = "block";
+    reminderList.innerHTML = "";
+    emptyMessage.style.display = "none";
+    resultCount.textContent = "दिसणाऱ्या गायी: 0";
+}
+
+function applyFilters() {
+    const search = searchInput.value.trim().toLowerCase();
+    const filter = filterSelect.value;
+
+    const filtered = allReminders.filter(item => {
+        const searchText =
+            (item.cowName + " " + item.cowTag).toLowerCase();
+
+        if (!searchText.includes(search)) return false;
+
+        const heatStatus = item.heatStatus.text;
+        const pregnancyStatus = item.pregnancyReminderStatus.text;
+
+        const overdue =
+            heatStatus === "तारीख उलटली" ||
+            pregnancyStatus === "तारीख उलटली" ||
+            (item.calvingDate && item.remainingDays < 0);
+
+        if (filter === "HEAT") {
+            return formatDate(item.heatDate) >= getTodayDate();
+        }
+
+        if (filter === "PREGNANCY") {
+            return isPregnancyTestPending(item.record);
+        }
+
+        if (filter === "CALVING") {
+            return Boolean(
+                item.calvingDate &&
+                formatDate(item.calvingDate) >= getTodayDate()
+            );
+        }
+
+        if (filter === "OVERDUE") {
+            return overdue;
+        }
+
+        return true;
+    });
+
+    resultCount.textContent = "दिसणारे records: " + filtered.length;
+    reminderList.innerHTML = filtered.map(renderCard).join("");
+    emptyMessage.style.display = filtered.length === 0 ? "block" : "none";
+}
+
+async function loadReminders() {
+    const token = getToken();
+
+    if (!token) {
+        showError(
+            "Login Session उपलब्ध नाही. कृपया login.html वरून Login करा."
+        );
+        return;
+    }
+
+    try {
+        const [cowResponse, breedingResponse] = await Promise.all([
+            fetch(`${API_BASE}/api/cows`, {
+                method: "GET",
+                headers: authHeaders()
+            }),
+            fetch(`${API_BASE}/api/breeding`, {
+                method: "GET",
+                headers: authHeaders()
+            })
+        ]);
+
+        if (
+            cowResponse.status === 401 ||
+            cowResponse.status === 403 ||
+            breedingResponse.status === 401 ||
+            breedingResponse.status === 403
+        ) {
+            showError(
+                "Login Token स्वीकारला गेला नाही. कृपया पुन्हा Login करा."
+            );
+            return;
+        }
+
+        if (!cowResponse.ok) {
+            throw new Error(
+                "गायींची यादी लोड करता आली नाही. HTTP " +
+                cowResponse.status
+            );
+        }
+
+        if (!breedingResponse.ok) {
+            throw new Error(
+                "Breeding records लोड करता आले नाहीत. HTTP " +
+                breedingResponse.status
+            );
+        }
+
+        const cowsData = await cowResponse.json();
+        const breedingData = await breedingResponse.json();
+
+        const cows = extractRecords(cowsData);
+
+        cowsById = new Map(
+            cows.map(cow => [String(cow._id || cow.id), cow])
+        );
+
+        const records = extractRecords(breedingData);
+
+        allReminders = records
+            .filter(record => {
+                if (!record) return false;
+                if (!getCowId(record)) return false;
+                if (!parseDate(record.aiDate)) return false;
+                if (isRecordNotPregnant(record)) return false;
+
+                return true;
+            })
+            .map(getReminderDetails)
+            .filter(Boolean)
+            // Expected Calving तारीख उलटल्यावर Reminder मधून गायब होईल.
+            // Breeding Record मात्र डेटाबेसमध्ये कायम राहील.
+            .filter(item => {
+                if (!item.calvingDate) return true;
+                return formatDate(item.calvingDate) >= getTodayDate();
+            })
+            .filter(hasActiveReminder)
+            .sort((a, b) => b.aiDate - a.aiDate);
+
+        pageMessage.style.display = "none";
+        applyFilters();
+
+    } catch (error) {
+        console.error("Reminder loading error:", error);
+        showError(
+            error.message || "Reminder records लोड करताना समस्या आली."
+        );
+    }
+}
+
+searchInput.addEventListener("input", applyFilters);
+filterSelect.addEventListener("change", applyFilters);
+
+/*
+ * Reminder page वरून Breeding Record delete करणे.
+ * Backend मध्ये DELETE /api/breeding/:id route आवश्यक आहे.
+ */
+reminderList.addEventListener("click", async function (event) {
+    const button = event.target.closest(".delete-button");
+
+    if (!button) return;
+
+    const recordId = button.dataset.deleteId;
+
+    if (!recordId) {
+        alert("Record ID मिळाला नाही.");
+        return;
+    }
+
+    const confirmed = confirm(
+        "हा Breeding Record डेटाबेसमधून कायमचा delete करायचा आहे का?\n\n" +
+        "Delete केल्यानंतर हा record परत मिळवता येणार नाही, " +
+        "जोपर्यंत backup उपलब्ध नाही."
+    );
+
+    if (!confirmed) return;
+
+    button.disabled = true;
+    button.textContent = "Deleting...";
+
+    try {
+        const response = await fetch(
+            `${API_BASE}/api/breeding/${encodeURIComponent(recordId)}`,
+            {
+                method: "DELETE",
+                headers: authHeaders()
+            }
+        );
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+            throw new Error(
+                data.message ||
+                `Record delete झाला नाही (HTTP ${response.status}).`
+            );
+        }
+
+        alert("Breeding Record delete झाला.");
+        await loadReminders();
+
+    } catch (error) {
+        console.error("Breeding record delete error:", error);
+
+        alert(
+            error.message ||
+            "Delete करताना समस्या आली. Backend DELETE API तपासा."
+        );
+
+        button.disabled = false;
+        button.textContent = "🗑️ Delete Record";
+    }
+});
+
+loadReminders();
+
+/* दिवस बदलल्यावर Reminder यादी refresh करणे */
+function scheduleDailyRefresh() {
+    const now = new Date();
+    const nextMidnight = new Date(now);
+
+    nextMidnight.setHours(24, 0, 0, 0);
+
+    const delay = nextMidnight.getTime() - now.getTime();
+
+    setTimeout(() => {
+        loadReminders();
+        scheduleDailyRefresh();
+    }, delay);
+}
+
+scheduleDailyRefresh();
+</script>
+</body>
+</html>

@@ -1,0 +1,746 @@
+
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports | आदेश डेअरी फार्म</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 22px;
+            background: #f3f7ef;
+            color: #254333;
+            font-family: "Noto Sans Devanagari", "Segoe UI", sans-serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, #174c2d, #2d8049);
+            color: white;
+            padding: 26px;
+            border-radius: 18px;
+            margin-bottom: 22px;
+        }
+
+        header h1 {
+            margin: 0 0 9px;
+            font-size: 30px;
+        }
+
+        header p {
+            margin: 0;
+            color: #e0f1e2;
+        }
+
+        .navigation {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            display: inline-block;
+            padding: 10px 15px;
+            border-radius: 9px;
+            background: white;
+            color: #176536;
+            border: 1px solid #cce5cc;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border: 1px solid #e0e9e1;
+            border-radius: 16px;
+            margin-bottom: 22px;
+            box-shadow: 0 5px 18px #23422a0c;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #176b3c;
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        label {
+            display: block;
+            font-weight: 650;
+            margin-bottom: 8px;
+        }
+
+        input,
+        button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 9px;
+            border: 1px solid #d2dce5;
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+            background: #e8f5e8;
+            color: #176536;
+            border-color: #cce5cc;
+            font-weight: 700;
+        }
+
+        button:hover {
+            background: #d9eedb;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .stat {
+            padding: 20px;
+            background: #f7fbf5;
+            border: 1px solid #e0e9df;
+            border-radius: 13px;
+            min-width: 0;
+        }
+
+        .stat-label {
+            color: #718074;
+            font-size: 14px;
+        }
+
+        .stat-value {
+            margin-top: 10px;
+            color: #176536;
+            font-size: 25px;
+            font-weight: 750;
+            overflow-wrap: anywhere;
+        }
+
+        .income-stat {
+            background: #eaf7eb;
+            border-color: #c7e5ca;
+        }
+
+        .status {
+            margin-top: 12px;
+            color: #657568;
+        }
+
+        .error {
+            color: #a32727;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        th,
+        td {
+            padding: 13px;
+            text-align: left;
+            border-bottom: 1px solid #e7ede6;
+        }
+
+        th {
+            background: #f0f7ed;
+            color: #245c35;
+        }
+
+        .money {
+            color: #176536;
+            font-weight: 700;
+        }
+
+        .empty {
+            padding: 25px;
+            text-align: center;
+            color: #718074;
+        }
+
+        @media (max-width: 850px) {
+            .stats {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 560px) {
+            body {
+                padding: 12px;
+            }
+
+            header {
+                padding: 20px;
+            }
+
+            header h1 {
+                font-size: 25px;
+            }
+
+            .filters,
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 16px;
+            }
+
+            .stat-value {
+                font-size: 23px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <nav class="navigation">
+        <a class="nav-btn" href="dashboard.html">← Dashboard</a>
+        <a class="nav-btn" href="milk-records.html">🥛 दूध नोंदी</a>
+    </nav>
+
+    <header>
+        <h1>📊 दूध उत्पादन आणि उत्पन्न Reports</h1>
+        <p>दैनिक दूध, विक्री दर आणि महिन्याच्या उत्पन्नाचा हिशोब</p>
+    </header>
+
+    <section class="card">
+        <h2>📅 Report निवडा</h2>
+
+        <div class="filters">
+            <div>
+                <label for="selectedDate">दिवसाची तारीख</label>
+                <input type="date" id="selectedDate">
+            </div>
+
+            <div>
+                <label for="selectedMonth">महिना निवडा</label>
+                <input type="month" id="selectedMonth">
+            </div>
+        </div>
+
+        <div style="margin-top:16px">
+            <button id="applyBtn" type="button">Report दाखवा</button>
+        </div>
+
+        <div class="filters" style="margin-top:18px">
+            <div>
+                <label for="milkRateInput">
+                    निवडलेल्या दिवसाचा दूध विक्री दर (₹ / लिटर)
+                </label>
+
+                <input
+                    type="number"
+                    id="milkRateInput"
+                    min="0"
+                    step="0.01"
+                    placeholder="उदा. 40">
+            </div>
+
+            <div style="display:flex;align-items:end">
+                <button id="saveRateBtn" type="button">
+                    💾 दर सेव्ह करा आणि उत्पन्न मोजा
+                </button>
+            </div>
+        </div>
+
+        <p id="status" class="status" role="status"></p>
+    </section>
+
+    <section class="stats">
+        <div class="stat">
+            <div class="stat-label">
+                🌅 निवडलेल्या दिवसाचे सकाळचे दूध
+            </div>
+            <div class="stat-value" id="morningTotal">0.00 L</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">
+                🌙 निवडलेल्या दिवसाचे संध्याकाळचे दूध
+            </div>
+            <div class="stat-value" id="eveningTotal">0.00 L</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">
+                🥛 निवडलेल्या दिवसाचे एकूण दूध
+            </div>
+            <div class="stat-value" id="dailyMilk">0.00 L</div>
+        </div>
+
+        <div class="stat income-stat">
+            <div class="stat-label">
+                💰 निवडलेल्या दिवसाचे उत्पन्न
+            </div>
+            <div class="stat-value" id="dailyIncome">₹0.00</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">📦 महिन्याचे एकूण दूध</div>
+            <div class="stat-value" id="monthlyMilk">0.00 L</div>
+        </div>
+
+        <div class="stat income-stat">
+            <div class="stat-label">💵 महिन्याचे एकूण उत्पन्न</div>
+            <div class="stat-value" id="monthlyIncome">₹0.00</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">🗓️ महिन्यातील नोंदी</div>
+            <div class="stat-value" id="recordCount">0</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">📈 सरासरी दैनिक दूध</div>
+            <div class="stat-value" id="dailyAverage">0.00 L</div>
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>📋 निवडलेल्या महिन्याच्या नोंदी</h2>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>तारीख</th>
+                        <th>सकाळचे दूध</th>
+                        <th>संध्याकाळचे दूध</th>
+                        <th>एकूण दूध</th>
+                        <th>दर / लिटर</th>
+                        <th>उत्पन्न</th>
+                    </tr>
+                </thead>
+
+                <tbody id="recordsBody">
+                    <tr>
+                        <td colspan="6">नोंदी लोड होत आहेत...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</div>
+
+<script>
+    const API_URL = "http://localhost:5000/api/milk";
+
+    const dateInput = document.getElementById("selectedDate");
+    const monthInput = document.getElementById("selectedMonth");
+    const statusEl = document.getElementById("status");
+    const recordsBody = document.getElementById("recordsBody");
+    const milkRateInput = document.getElementById("milkRateInput");
+    const saveRateBtn = document.getElementById("saveRateBtn");
+
+    let allRecords = [];
+
+    function getAuthToken() {
+        const keys = [
+            "authToken",
+            "token",
+            "jwtToken",
+            "accessToken",
+            "access_token"
+        ];
+
+        for (const key of keys) {
+            const token =
+                sessionStorage.getItem(key) ||
+                localStorage.getItem(key);
+
+            if (token && token.split(".").length === 3) {
+                return token;
+            }
+        }
+
+        return null;
+    }
+
+    async function readResponse(response) {
+        const text = await response.text();
+
+        try {
+            return text ? JSON.parse(text) : {};
+        } catch {
+            throw new Error(
+                "Backend कडून JSON ऐवजी HTML प्रतिसाद मिळाला. Backend आणि API route तपासा."
+            );
+        }
+    }
+
+    function money(value) {
+        return "₹" + (Number(value) || 0).toLocaleString("en-IN", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+
+    function liters(value) {
+        return (Number(value) || 0).toFixed(2) + " L";
+    }
+
+    function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, character => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        })[character]);
+    }
+
+    function getTotal(record) {
+        return Number(
+            record.totalMilk ??
+            ((Number(record.morningMilk) || 0) +
+             (Number(record.eveningMilk) || 0))
+        );
+    }
+
+    function getIncome(record) {
+        if (
+            record.income === undefined ||
+            record.income === null ||
+            record.income === "" ||
+            !Number.isFinite(Number(record.income))
+        ) {
+            return null;
+        }
+
+        return Number(record.income);
+    }
+
+    function showValue(id, value) {
+        document.getElementById(id).textContent = value;
+    }
+
+    function renderReport() {
+        const selectedDate = dateInput.value;
+        const selectedMonth = monthInput.value;
+
+        const dayRecords = allRecords.filter(record =>
+            record.date === selectedDate
+        );
+
+        const monthRecords = allRecords.filter(record =>
+            typeof record.date === "string" &&
+            record.date.startsWith(selectedMonth)
+        );
+
+        const morning = dayRecords.reduce(
+            (sum, record) =>
+                sum + (Number(record.morningMilk) || 0),
+            0
+        );
+
+        const evening = dayRecords.reduce(
+            (sum, record) =>
+                sum + (Number(record.eveningMilk) || 0),
+            0
+        );
+
+        const existingRateRecord = dayRecords.find(record =>
+            record.milkRate !== undefined &&
+            record.milkRate !== null &&
+            record.milkRate !== ""
+        );
+
+        milkRateInput.value = existingRateRecord
+            ? existingRateRecord.milkRate
+            : "";
+
+        const dailyIncomeRecords = dayRecords
+            .map(getIncome)
+            .filter(value => value !== null);
+
+        const monthlyIncomeRecords = monthRecords
+            .map(getIncome)
+            .filter(value => value !== null);
+
+        const dailyIncome = dailyIncomeRecords.reduce(
+            (sum, value) => sum + value,
+            0
+        );
+
+        const monthlyIncome = monthlyIncomeRecords.reduce(
+            (sum, value) => sum + value,
+            0
+        );
+
+        const monthlyTotal = monthRecords.reduce(
+            (sum, record) => sum + getTotal(record),
+            0
+        );
+
+        const uniqueDays = new Set(
+            monthRecords.map(record => record.date)
+        ).size;
+
+        showValue("morningTotal", liters(morning));
+        showValue("eveningTotal", liters(evening));
+        showValue("dailyMilk", liters(morning + evening));
+
+        showValue(
+            "dailyIncome",
+            dailyIncomeRecords.length
+                ? money(dailyIncome)
+                : "दराची नोंद नाही"
+        );
+
+        showValue("monthlyMilk", liters(monthlyTotal));
+
+        showValue(
+            "monthlyIncome",
+            monthlyIncomeRecords.length
+                ? money(monthlyIncome)
+                : "दराची नोंद नाही"
+        );
+
+        showValue("recordCount", monthRecords.length);
+
+        showValue(
+            "dailyAverage",
+            liters(uniqueDays ? monthlyTotal / uniqueDays : 0)
+        );
+
+        if (monthRecords.length === 0) {
+            recordsBody.innerHTML =
+                '<tr><td colspan="6" class="empty">या महिन्यात दूध नोंदी उपलब्ध नाहीत.</td></tr>';
+        } else {
+            recordsBody.innerHTML = monthRecords.map(record => {
+                const rate = record.milkRate;
+                const income = getIncome(record);
+
+                return `
+                    <tr>
+                        <td>${escapeHtml(record.date || "")}</td>
+                        <td>${liters(record.morningMilk)}</td>
+                        <td>${liters(record.eveningMilk)}</td>
+                        <td>${liters(getTotal(record))}</td>
+                        <td>${
+                            rate !== undefined &&
+                            rate !== null &&
+                            rate !== ""
+                                ? money(rate)
+                                : "—"
+                        }</td>
+                        <td class="money">${
+                            income !== null
+                                ? money(income)
+                                : "दराची नोंद नाही"
+                        }</td>
+                    </tr>
+                `;
+            }).join("");
+        }
+
+        if (monthRecords.some(record => getIncome(record) === null)) {
+            statusEl.textContent =
+                "काही नोंदींमध्ये दर किंवा उत्पन्न सेव्ह केलेले नाही. उत्पन्न पाहण्यासाठी त्या दिवसाचा दर सेव्ह करा.";
+        } else {
+            statusEl.textContent = "Report अपडेट झाला.";
+        }
+
+        statusEl.className = "status";
+    }
+
+    async function loadReports() {
+        const token = getAuthToken();
+
+        if (!token) {
+            statusEl.textContent =
+                "Login token सापडला नाही. आधी Login करा आणि पुन्हा Reports उघडा.";
+
+            statusEl.className = "status error";
+
+            recordsBody.innerHTML =
+                '<tr><td colspan="6">Login आवश्यक आहे.</td></tr>';
+
+            return;
+        }
+
+        statusEl.textContent = "Reports लोड होत आहेत...";
+        statusEl.className = "status";
+
+        try {
+            const response = await fetch(API_URL, {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            });
+
+            const result = await readResponse(response);
+
+            if (!response.ok) {
+                throw new Error(
+                    result.message || "Reports लोड करता आले नाहीत."
+                );
+            }
+
+            if (!Array.isArray(result)) {
+                throw new Error(
+                    "Backend कडून नोंदींचा योग्य प्रतिसाद मिळाला नाही."
+                );
+            }
+
+            allRecords = result;
+            renderReport();
+
+        } catch (error) {
+            statusEl.textContent = error.message;
+            statusEl.className = "status error";
+
+            recordsBody.innerHTML =
+                '<tr><td colspan="6">Backend सुरू आहे आणि Login केले आहे याची खात्री करा.</td></tr>';
+        }
+    }
+
+    async function saveDailyRate() {
+        const token = getAuthToken();
+        const date = dateInput.value;
+        const rawRate = milkRateInput.value;
+
+        if (!token) {
+            statusEl.textContent =
+                "Login token सापडला नाही. आधी Login करा.";
+
+            statusEl.className = "status error";
+            return;
+        }
+
+        if (!date) {
+            statusEl.textContent = "कृपया तारीख निवडा.";
+            statusEl.className = "status error";
+            return;
+        }
+
+        if (
+            rawRate === "" ||
+            !Number.isFinite(Number(rawRate)) ||
+            Number(rawRate) < 0
+        ) {
+            statusEl.textContent = "कृपया योग्य दूध विक्री दर भरा.";
+            statusEl.className = "status error";
+            return;
+        }
+
+        const dayRecords = allRecords.filter(
+            record => record.date === date
+        );
+
+        if (dayRecords.length === 0) {
+            statusEl.textContent =
+                "या तारखेची दूध नोंद उपलब्ध नाही. आधी Milk Records पेजवर दूधाची नोंद सेव्ह करा.";
+
+            statusEl.className = "status error";
+            return;
+        }
+
+        saveRateBtn.disabled = true;
+        saveRateBtn.textContent = "सेव्ह होत आहे...";
+
+        try {
+            const response = await fetch(API_URL + "/rate", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+                body: JSON.stringify({
+                    date: date,
+                    milkRate: Number(rawRate)
+                })
+            });
+
+            const result = await readResponse(response);
+
+            if (!response.ok) {
+                throw new Error(
+                    result.message || "दूध दर सेव्ह करता आला नाही."
+                );
+            }
+
+            await loadReports();
+
+            statusEl.textContent =
+                (result.message || "दूध दर सेव्ह झाला.") +
+                " एकूण उत्पन्न: " + money(result.totalIncome);
+
+            statusEl.className = "status";
+
+        } catch (error) {
+            statusEl.textContent = error.message;
+            statusEl.className = "status error";
+        } finally {
+            saveRateBtn.disabled = false;
+            saveRateBtn.textContent =
+                "💾 दर सेव्ह करा आणि उत्पन्न मोजा";
+        }
+    }
+
+    function setDefaultDates() {
+        const now = new Date();
+
+        dateInput.value = [
+            now.getFullYear(),
+            String(now.getMonth() + 1).padStart(2, "0"),
+            String(now.getDate()).padStart(2, "0")
+        ].join("-");
+
+        monthInput.value = dateInput.value.slice(0, 7);
+    }
+
+    document.getElementById("applyBtn").addEventListener(
+        "click",
+        renderReport
+    );
+
+    saveRateBtn.addEventListener("click", saveDailyRate);
+
+    dateInput.addEventListener("change", () => {
+        if (dateInput.value) {
+            monthInput.value = dateInput.value.slice(0, 7);
+            renderReport();
+        }
+    });
+
+    monthInput.addEventListener("change", renderReport);
+
+    setDefaultDates();
+    loadReports();
+</script>
+</body>
+</html>

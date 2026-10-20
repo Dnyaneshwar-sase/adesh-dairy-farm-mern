@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="mr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>आदेश डेअरी फार्म | Adesh Dairy Farm</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- फोटो पूर्ण दिसण्यासाठी आणि Footer icons साठी -->
+    <style>
+        .about-image,
+        .gallery-image {
+            display: block;
+            width: 100%;
+            height: auto;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .gallery-image {
+            border-radius: 12px;
+        }
+
+        .footer-links a {
+            display: inline-block;
+            margin: 5px;
+        }
+
+        /* Phone icon only */
+        .footer-phone-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            margin: 8px 0;
+            color: #25d366;
+            text-decoration: none;
+            transition: transform 0.2s ease;
+        }
+
+        .footer-phone-link svg {
+            width: 25px;
+            height: 25px;
+        }
+
+        .footer-phone-link:hover {
+            color: #ffffff;
+            transform: scale(1.08);
+        }
+
+        /* Instagram icon only */
+        .instagram-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 46px;
+            height: 46px;
+            margin-top: 8px;
+            border-radius: 50%;
+            background: #ffffff;
+            color: #C13584;
+            text-decoration: none;
+            transition: transform 0.2s ease;
+        }
+
+        .instagram-link:hover {
+            transform: scale(1.08);
+        }
+
+        .instagram-link svg {
+            width: 25px;
+            height: 25px;
+        }
+
+        @media (max-width: 767px) {
+            .about-image,
+            .gallery-image {
+                width: 100%;
+                height: auto;
+                object-fit: contain;
+            }
+        }
+        .logout-btn {
+    background: linear-gradient(135deg, #198754, #28a745);
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+    background: linear-gradient(135deg, #157347, #198754);
+    color: #ffffff;
+}
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg farm-navbar">
+        <div class="container">
+
+            <a class="navbar-brand" href="#home">
+                <img src="images/logo.png"
+                     alt="आदेश डेअरी फार्म Logo"
+                     class="farm-logo">
+            </a>
+
+            <button class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarMenu"
+                    aria-label="मेनू उघडा">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarMenu">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#home">⌂ मुख्यपृष्ठ</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">फार्मविषयी</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#services">आमच्या सुविधा</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="gallery.html">फोटो गॅलरी</a>
+                    </li>
+                </ul>
+
+              
+<div id="authNavActions" class="d-flex align-items-center gap-2 flex-wrap">
+    <a href="login.html" class="login-btn">♟ Login करा ↗</a>
+</div>
+  
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Banner -->
+    <header class="hero-section" id="home">
+        <div class="container">
+            <div class="hero-content">
+
+                <span class="farm-badge">🌿 आमचा ग्रामीण डेअरी फार्म</span>
+
+                <h1>आदेश डेअरी फार्म</h1>
+                <h2>ताजेपणा आणि काळजीची परंपरा</h2>
+
+                <p>
+                    आमच्या डेअरी फार्ममध्ये गायींची काळजी, स्वच्छ परिसर
+                    आणि दुधाची गुणवत्ता यांना महत्त्व दिले जाते.
+                    आमच्या फार्मविषयी अधिक जाणून घ्या.
+                </p>
+
+                
+<a href="#about" class="btn-farm">
+    फार्मविषयी जाणून घ्या ↗
+</a>
+
+
+                <a href="gallery.html" class="btn-gallery">
+                    फोटो पाहा ▣
+                </a>
+
+                <div class="farm-location">
+                    📍 आमचे ठिकाण<br>
+                    जेऊर (बा.), अहिल्यानगर, महाराष्ट्र
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- About Farm -->
+    <section class="about-section section-padding" id="about">
+        <div class="container">
+            <div class="row align-items-center g-4">
+
+                <div class="col-lg-4">
+                    <img src="images/farm-about.jpg"
+                         alt="आदेश डेअरी फार्ममधील गायी"
+                         class="about-image">
+                </div>
+
+                <div class="col-lg-5">
+                    <span class="section-label">🌿 आमच्याविषयी</span>
+
+                    <h2>आदेश डेअरी फार्म</h2>
+
+                    <p>
+                        आमचा डेअरी फार्म जेऊर (बा.), अहिल्यानगर येथे आहे.
+                        आम्ही दर्जेदार दुग्ध उत्पादन, जनावरांची उत्तम काळजी
+                        आणि स्वच्छ व सुयोग्य परिसर यांसाठी प्रयत्नशील आहोत.
+                        आमचे ध्येय – निरोगी जनावरे, शुद्ध दूध आणि
+                        शेतकरीबांधवांचा आदर.
+                    </p>
+
+                   
+<a href="#about" class="btn-farm">अधिक वाचा ↗</a>
+
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="quality-card">
+
+                        <div class="quality-item">
+                            <span class="quality-icon">🐄</span>
+                            <div>
+                                <h3>स्वस्थ जनावरे</h3>
+                                <p>आधुनिक देखरेखीसह काळजी</p>
+                            </div>
+                        </div>
+
+                        <div class="quality-item">
+                            <span class="quality-icon">🥛</span>
+                            <div>
+                                <h3>शुद्ध व दर्जेदार दूध</h3>
+                                <p>नैसर्गिक आणि सुरक्षित</p>
+                            </div>
+                        </div>
+
+                        <div class="quality-item">
+                            <span class="quality-icon">🌿</span>
+                            <div>
+                                <h3>स्वच्छ परिसर</h3>
+                                <p>आरोग्यदायी वातावरण</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Services -->
+    <section class="services-section section-padding" id="services">
+        <div class="container text-center">
+
+            <span class="section-label">♙ आमच्या सुविधा</span>
+            <h2>आमच्या फार्ममधील प्रमुख सुविधा</h2>
+
+            <div class="row g-4 mt-3">
+
+                <div class="col-6 col-lg-3">
+                    <div class="service-item">
+                        <span class="service-icon">🐄</span>
+                        <h3>उत्तम जातीच्या गायी</h3>
+                        <p>उच्च दर्जाच्या गायींचे पालन</p>
+                    </div>
+                </div>
+
+                <div class="col-6 col-lg-3">
+                    <div class="service-item">
+                        <span class="service-icon">🛡️</span>
+                        <h3>आरोग्याची काळजी</h3>
+                        <p>नियमित तपासणी व लसीकरण</p>
+                    </div>
+                </div>
+
+                <div class="col-6 col-lg-3">
+                    <div class="service-item">
+                        <span class="service-icon">🏡</span>
+                        <h3>आधुनिक गोठा</h3>
+                        <p>स्वच्छ व देखरेखीची व्यवस्था</p>
+                    </div>
+                </div>
+
+                <div class="col-6 col-lg-3">
+                    <div class="service-item">
+                        <span class="service-icon">🥛</span>
+                        <h3>दूध प्रक्रिया</h3>
+                        <p>दुधाची गुणवत्तापूर्ण तपासणी</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Preview -->
+    <section class="gallery-section section-padding" id="gallery">
+        <div class="container text-center">
+
+            <span class="section-label">📷 फोटो गॅलरी</span>
+            <h2>आमच्या फार्ममधील काही सुंदर क्षण</h2>
+            <p>आमच्या डेअरी फार्मची छायाचित्रे पाहा.</p>
+
+            <div class="row g-3 mt-3">
+
+                <div class="col-6 col-md-4 col-lg-2">
+                    <img src="images/gallery-1.jpg"
+                         alt="फार्मचे प्रवेशद्वार"
+                         class="gallery-image">
+                </div>
+
+                <div class="col-6 col-md-4 col-lg-2">
+                    <img src="images/gallery-2.jpg"
+                         alt="गायींचा गोठा"
+                         class="gallery-image">
+                </div>
+
+                <div class="col-6 col-md-4 col-lg-2">
+                    <img src="images/gallery-3.jpg"
+                         alt="फार्ममधील गाय"
+                         class="gallery-image">
+                </div>
+
+                <div class="col-6 col-md-4 col-lg-2">
+                    <img src="images/gallery-4.jpg"
+                         alt="वासरू"
+                         class="gallery-image">
+                </div>
+
+                <div class="col-6 col-md-4 col-lg-2">
+                    <img src="images/gallery-5.jpg"
+                         alt="ताजे दूध"
+                         class="gallery-image">
+                </div>
+
+                <div class="col-6 col-md-4 col-lg-2">
+                    <img src="images/gallery-6.jpg"
+                         alt="हिरवागार फार्म"
+                         class="gallery-image">
+                </div>
+
+            </div>
+
+            <div class="mt-4">
+                <a href="gallery.html" class="btn-farm">
+                    सर्व फोटो आणि व्हिडिओ पाहा ↗
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="farm-footer">
+        <div class="container">
+            <div class="row align-items-center g-4">
+
+                <div class="col-md-4 footer-brand">
+                    <img src="images/logo.png"
+                         alt="आदेश डेअरी फार्म Logo">
+
+                    <div>
+                        <h2>आदेश डेअरी फार्म</h2>
+                        <p>जेऊर (बा.), अहिल्यानगर</p>
+                    </div>
+                </div>
+
+                <!-- Contact: नंबर न दाखवता फक्त फोन चिन्ह -->
+                <div class="col-md-4 footer-contact">
+
+                    <p>☎ संपर्क</p>
+
+                    
+                </div>
+                <p>📍 जेऊर (बा.), अहिल्यानगर महाराष्ट्र</p>
+
+                <div class="col-md-4 footer-links">
+                    <a href="#home">मुख्यपृष्ठ</a>
+                    <a href="about.html">फार्मविषयी</a>
+                    <a href="gallery.html">फोटो गॅलरी</a>
+                </div>
+
+            </div>
+
+            <div class="copyright">
+                © 2026 आदेश डेअरी फार्म. सर्व हक्क राखीव.
+            </div>
+
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/script.js"></script>
+
+<script>
+    function updateAuthNavigation() {
+        const container = document.getElementById("authNavActions");
+
+        const token =
+            localStorage.getItem("authToken") ||
+            sessionStorage.getItem("authToken");
+
+        const savedUser =
+            localStorage.getItem("currentUser") ||
+            sessionStorage.getItem("currentUser");
+
+        let user = null;
+
+        try {
+            user = savedUser ? JSON.parse(savedUser) : null;
+        } catch (error) {
+            user = null;
+        }
+
+        container.replaceChildren();
+
+        if (token && user) {
+            const dashboardLink = document.createElement("a");
+            dashboardLink.href = "dashboard.html";
+            dashboardLink.className = "login-btn";
+            dashboardLink.textContent = "Dashboard";
+
+            const logoutButton = document.createElement("button");
+            logoutButton.type = "button";
+            logoutButton.className = "login-btn";
+            logoutButton.textContent = "Logout";
+
+            logoutButton.addEventListener("click", function () {
+                [
+                    "authToken",
+                    "currentUser",
+                    "token",
+                    "jwtToken",
+                    "accessToken",
+                    "access_token"
+                ].forEach(function (key) {
+                    localStorage.removeItem(key);
+                    sessionStorage.removeItem(key);
+                });
+
+                window.location.href = "index.html";
+            });
+
+            container.append(dashboardLink, logoutButton);
+        } else {
+            const loginLink = document.createElement("a");
+            loginLink.href = "login.html";
+            loginLink.className = "login-btn";
+            loginLink.textContent = "♟ Login करा ↗";
+
+            container.appendChild(loginLink);
+        }
+    }
+
+    updateAuthNavigation();
+</script>
+
+
+</body>
+</html>

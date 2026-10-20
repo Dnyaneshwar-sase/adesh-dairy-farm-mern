@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="mr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heat & Breeding - आदेश डेअरी फार्म</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        body {
+            background: #e8f5e9 !important;
+        }
+
+        .breeding-page {
+            max-width: 1200px;
+            margin: 25px auto;
+            padding: 20px;
+        }
+
+        .breeding-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        .breeding-back-button {
+            display: inline-block;
+            padding: 10px 16px;
+            background: #e8f5e9;
+            color: #176b3a;
+            border: 1px solid #c8e6c9;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .breeding-form-card,
+        .breeding-records-card {
+            background: #fff !important;
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, .1);
+        }
+
+        .breeding-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            margin-bottom: 16px;
+        }
+
+        .breeding-form-group input,
+        .breeding-form-group select {
+            width: 100%;
+            box-sizing: border-box;
+            min-height: 50px;
+            padding: 12px;
+            border: 1px solid #b7d8bd;
+            border-radius: 10px;
+        }
+
+        .breeding-save-button,
+        .breeding-cancel-edit,
+        .edit-breeding-button,
+        .delete-breeding-button {
+            padding: 11px 17px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all .2s ease;
+        }
+
+        .breeding-save-button {
+            background: #198754;
+            color: white;
+            padding: 14px 22px;
+            width: 100%;
+        }
+
+        .breeding-save-button:hover {
+            background: #146c43;
+        }
+
+        .breeding-cancel-edit {
+            background: #eee;
+            color: #333;
+            margin-top: 10px;
+        }
+
+        .breeding-record {
+            position: relative;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            background: #fff;
+            overflow: hidden;
+        }
+
+        .breeding-info {
+            position: relative;
+            z-index: 2;
+            overflow-wrap: anywhere;
+        }
+
+        .breeding-info p {
+            margin: 10px 0;
+            color: #555;
+        }
+
+        .breeding-info strong {
+            font-size: 18px;
+            color: #176b3a;
+        }
+
+        .breeding-actions {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 22px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            position: relative;
+            z-index: 3;
+        }
+
+        .edit-breeding-button {
+            background: #1976d2;
+            color: white;
+            min-width: 100px;
+        }
+
+        .edit-breeding-button:hover {
+            background: #0d47a1;
+            transform: translateY(-2px);
+        }
+
+        .delete-breeding-button {
+            background: #dc3545;
+            color: white;
+            min-width: 100px;
+        }
+
+        .delete-breeding-button:hover {
+            background: #b71c1c;
+            transform: translateY(-2px);
+        }
+
+        .reminder-status {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .status-overdue {
+            background: #ffebee;
+            color: #b71c1c;
+        }
+
+        .status-today {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .status-upcoming {
+            background: #e3f2fd;
+            color: #0d47a1;
+        }
+
+        .status-completed {
+            background: #e8f5e9;
+            color: #1b5e20;
+        }
+
+        .breeding-filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 18px 0;
+        }
+
+        .breeding-filter-buttons button {
+            padding: 11px 16px;
+            border: 1px solid #c8e6c9;
+            border-radius: 8px;
+            cursor: pointer;
+            background: #e8f5e9;
+            color: #176b3a;
+            font-weight: bold;
+        }
+
+        .breeding-filter-buttons button.active {
+            background: #176b3a;
+            color: white;
+        }
+
+        .breeding-record.not-pregnant-record {
+            border: 2px solid #efb3b3;
+            background: #fffafa;
+        }
+
+        .not-pregnant-stamp {
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-18deg);
+            border: 4px solid rgba(200, 0, 0, .23);
+            color: rgba(200, 0, 0, .23);
+            padding: 8px 14px;
+            font-size: clamp(20px, 4vw, 34px);
+            font-weight: 900;
+            letter-spacing: 2px;
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .no-results {
+            padding: 18px;
+            text-align: center;
+            color: #666;
+        }
+
+        @media (max-width: 600px) {
+            .breeding-page {
+                padding: 10px;
+            }
+
+            .breeding-form-card,
+            .breeding-records-card {
+                padding: 15px;
+            }
+
+            .breeding-actions {
+                justify-content: flex-end;
+                gap: 8px;
+            }
+
+            .edit-breeding-button,
+            .delete-breeding-button {
+                min-width: 90px;
+            }
+        }
+
+        .breeding-form-group label {
+            font-weight: 700 !important;
+            font-size: 17px;
+            color: #173d2a;
+        }
+
+        .breeding-page h1,
+        .breeding-page h2 {
+            font-weight: 800 !important;
+            color: #174b32;
+        }
+
+        .breeding-header .breeding-back-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 13px 22px;
+            background: linear-gradient(135deg, #176b3a, #229954);
+            color: #ffffff !important;
+            border: 2px solid #176b3a;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 700;
+            box-shadow: 0 4px 10px rgba(23, 107, 58, 0.18);
+            transition: all 0.25s ease;
+        }
+
+        .breeding-header .breeding-back-button:hover {
+            background: #ffffff;
+            color: #176b3a !important;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 16px rgba(23, 107, 58, 0.22);
+        }
+
+        @media (max-width: 600px) {
+            .breeding-header .breeding-back-button {
+                padding: 11px 16px;
+                font-size: 14px;
+            }
+
+            .breeding-form-group label {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="breeding-page">
+
+    <div class="breeding-header">
+        <div>
+            <h1>🔥 Heat & Breeding</h1>
+            <p>गायींची Heat, AI आणि Pregnancy माहिती</p>
+        </div>
+
+        <a href="dashboard.html" class="breeding-back-button">
+            ← Dashboard
+        </a>
+    </div>
+
+    <div class="breeding-form-card">
+
+        <h2 id="formTitle">नवीन Breeding Record</h2>
+
+        <form id="breedingForm">
+
+            <div class="breeding-form-group">
+                <label for="cowId">🐄 गाय निवडा</label>
+                <select id="cowId" required>
+                    <option value="">-- गाय निवडा --</option>
+                </select>
+            </div>
+
+            <div class="breeding-form-group">
+                <label for="heatDate">🔥 Heat Date</label>
+                <input type="date" id="heatDate" required>
+            </div>
+
+            <div class="breeding-form-group">
+                <label for="aiDate">🧬 AI Date</label>
+                <input type="date" id="aiDate" required>
+                <p id="aiReminderDate" style="color:#176b3a;font-weight:bold;"></p>
+            </div>
+
+            <div class="breeding-form-group" id="pregnancyStatusGroup" style="display:none;">
+                <label for="pregnancyStatus">🤰 Pregnancy Status</label>
+                <select id="pregnancyStatus">
+                    <option value="तपासणी बाकी" selected>तपासणी बाकी</option>
+                    <option value="गर्भवती">गर्भवती</option>
+                    <option value="गर्भवती नाही">गर्भवती नाही</option>
+                </select>
+            </div>
+
+            <div class="breeding-form-group">
+                <label for="pregnancyCheckDate">🔍 Pregnancy Check Date</label>
+                <input type="date" id="pregnancyCheckDate">
+            </div>
+
+            <div class="breeding-form-group" id="calvingDateGroup">
+                <label for="expectedCalvingDate">🐄 Expected Calving Date</label>
+                <input type="date" id="expectedCalvingDate">
+            </div>
+
+            <button type="submit" id="saveButton" class="breeding-save-button">
+                💾 Breeding Record जतन करा
+            </button>
+
+            <button type="button" id="cancelEditButton" class="breeding-cancel-edit" style="display:none;">
+                ❌ Edit Cancel करा
+            </button>
+
+        </form>
+    </div>
+
+    <div class="breeding-records-card">
+        <h2>📋 Breeding History</h2>
+
+        <div class="breeding-filter-buttons">
+            <button type="button" class="active" onclick="filterBreedingRecords('ALL',this)">
+                सर्व Records
+            </button>
+
+            <button type="button" onclick="filterBreedingRecords('ACTIVE',this)">
+                Pregnant / Pending
+            </button>
+
+            <button type="button" onclick="filterBreedingRecords('NOT_PREGNANT',this)">
+                Not Pregnant Records
+            </button>
+        </div>
+
+        <p id="noBreedingRecords">Breeding records load होत आहेत...</p>
+        <div id="breedingRecords"></div>
+    </div>
+</div>
+
+<script>
+const API_BASE = "http://localhost:5000";
+
+let editRecordId = null;
+let originalPregnancyStatus = "तपासणी बाकी";
+let pregnancyStatusEditable = false;
+let allBreedingRecords = [];
+let currentFilter = "ALL";
+
+const breedingForm = document.getElementById("breedingForm");
+const formTitle = document.getElementById("formTitle");
+const saveButton = document.getElementById("saveButton");
+const cancelEditButton = document.getElementById("cancelEditButton");
+const recordsContainer = document.getElementById("breedingRecords");
+const noRecordsMessage = document.getElementById("noBreedingRecords");
+const cowSelect = document.getElementById("cowId");
+
+function getAuthToken() {
+    return localStorage.getItem("authToken")
+        || localStorage.getItem("token");
+}
+
+function authHeaders(json = false) {
+    const headers = {};
+    const token = getAuthToken();
+
+    if (token) {
+        headers.Authorization = "Bearer " + token;
+    }
+
+    if (json) {
+        headers["Content-Type"] = "application/json";
+    }
+
+    return headers;
+}
+
+async function apiRequest(path, options = {}) {
+    const response = await fetch(API_BASE + path, {
+        ...options,
+        headers: {
+            ...authHeaders(Boolean(options.body)),
+            ...(options.headers || {})
+        }
+    });
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+        throw new Error(data.message || "Request पूर्ण झाली नाही. Login तपासा.");
+    }
+
+    return data;
+}
+
+function recordId(record) {
+    return record?._id || record?.id || "";
+}
+
+function cowIdFromRecord(record) {
+    if (record?.cowId && typeof record.cowId === "object") {
+        return record.cowId._id || record.cowId.id || "";
+    }
+
+    return record?.cowId || "";
+}
+
+function formatDate(date) {
+    return date.getFullYear() + "-" +
+        String(date.getMonth() + 1).padStart(2, "0") + "-" +
+        String(date.getDate()).padStart(2, "0");
+}
+
+function parseDate(value) {
+    if (!value) return null;
+
+    const date = new Date(value + "T00:00:00");
+
+    return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function getTodayDate() {
+    return formatDate(new Date());
+}
+
+const aiDateInput = document.getElementById("aiDate");
+
+function setAiDateLimit() {
+    aiDateInput.max = getTodayDate();
+}
+
+setAiDateLimit();
+
+aiDateInput.addEventListener("change", function () {
+    if (this.value && this.value > getTodayDate()) {
+        alert("भविष्यातील AI Date निवडता येणार नाही.");
+        this.value = "";
+        calculateCalvingDate();
+    }
+});
+
+function addDays(value, days) {
+    const date = parseDate(value);
+    if (!date) return "";
+
+    date.setDate(date.getDate() + days);
+    return formatDate(date);
+}
+
+function addMonthsClamped(date, months) {
+    const result = new Date(date);
+    const originalDay = result.getDate();
+
+    result.setDate(1);
+    result.setMonth(result.getMonth() + months);
+
+    const lastDay = new Date(
+        result.getFullYear(),
+        result.getMonth() + 1,
+        0
+    ).getDate();
+
+    result.setDate(Math.min(originalDay, lastDay));
+    return result;
+}
+
+function calculateExpectedCalvingDate(aiDate) {
+    const date = parseDate(aiDate);
+    if (!date) return "";
+
+    const afterNineMonths = addMonthsClamped(date, 9);
+    afterNineMonths.setDate(afterNineMonths.getDate() + 9);
+
+    return formatDate(afterNineMonths);
+}
+
+function calculateCalvingDate() {
+    const aiDate = aiDateInput.value;
+    const calvingInput = document.getElementById("expectedCalvingDate");
+    const reminderText = document.getElementById("aiReminderDate");
+
+    if (!aiDate) {
+        calvingInput.value = "";
+        reminderText.textContent = "";
+        return;
+    }
+
+    const expectedDate = calculateExpectedCalvingDate(aiDate);
+    calvingInput.value = expectedDate;
+
+    const pregnancyCheckDate = addDays(aiDate, 45);
+
+    reminderText.textContent =
+        "Pregnancy Test Reminder: " + pregnancyCheckDate +
+        " | Expected Calving: " + expectedDate;
+}
+
+aiDateInput.addEventListener("change", calculateCalvingDate);
+function isRecordNotPregnant(record) {
+    const status = (record.pregnancyStatus || "")
+        .trim()
+        .toLowerCase();
+
+    return status === "not pregnant" ||
+        status === "गर्भवती नाही" ||
+        status === "गर्भधारणा नाही";
+}
+
+function calculateAiReminder() {
+    const aiDate = document.getElementById("aiDate").value;
+
+    document.getElementById("aiReminderDate").innerText =
+        aiDate
+            ? "🔔 21-Day Reminder Date: " + addDays(aiDate, 21)
+            : "";
+}
+
+document.getElementById("pregnancyStatus").addEventListener(
+    "change",
+    function () {
+        const notPregnant = isRecordNotPregnant({
+            pregnancyStatus: this.value
+        });
+
+        document.getElementById("calvingDateGroup").style.display =
+            notPregnant ? "none" : "flex";
+
+        if (notPregnant) {
+            document.getElementById("expectedCalvingDate").value = "";
+        } else {
+            calculateCalvingDate();
+        }
+    }
+);
+
+/* MongoDB मधून गायींची यादी आणणे */
+async function loadCows(selectedCowId = "") {
+    try {
+        const cows = await apiRequest("/api/cows");
+
+        cowSelect.innerHTML =
+            '<option value="">-- गाय निवडा --</option>';
+
+        if (!Array.isArray(cows)) return;
+
+        cows.forEach(cow => {
+            const option = document.createElement("option");
+            const id = cow._id || cow.id;
+
+            option.value = id;
+            option.textContent =
+                (cow.cowTag || "-") + " - " + (cow.name || "नाव नाही");
+
+            if (String(id) === String(selectedCowId)) {
+                option.selected = true;
+            }
+
+            cowSelect.appendChild(option);
+        });
+    } catch (error) {
+        console.error("Cows load error:", error);
+        alert("गायींची यादी load झाली नाही. Login आणि backend तपासा.");
+    }
+}
+
+function getReminderDetails(record) {
+    const today = getTodayDate();
+    const candidates = [];
+
+    const reminderDate = record.aiDate
+        ? addDays(record.aiDate, 21)
+        : "";
+
+    const pregnancyDate = record.pregnancyCheckDate || "";
+
+    const calvingDate = isRecordNotPregnant(record)
+        ? ""
+        : (record.expectedCalvingDate || "");
+
+    const status = record.pregnancyStatus || "तपासणी बाकी";
+    const pregnancyChecked =
+        status !== "तपासणी बाकी" && status !== "";
+
+    if (reminderDate) {
+        candidates.push({
+            type: "HEAT",
+            date: reminderDate,
+            completed: pregnancyChecked
+        });
+    }
+
+    if (pregnancyDate) {
+        candidates.push({
+            type: "PREGNANCY",
+            date: pregnancyDate,
+            completed: pregnancyChecked
+        });
+    }
+
+    if (calvingDate) {
+        candidates.push({
+            type: "CALVING",
+            date: calvingDate,
+            completed: false
+        });
+    }
+
+    const pending = candidates
+        .filter(item => !item.completed)
+        .sort((a, b) => a.date.localeCompare(b.date));
+
+    if (!pending.length) {
+        return {
+            type: "COMPLETED",
+            date: "",
+            status: "COMPLETED"
+        };
+    }
+
+    const next = pending[0];
+
+    if (next.date < today) {
+        return { ...next, status: "OVERDUE" };
+    }
+
+    if (next.date === today) {
+        return { ...next, status: "TODAY" };
+    }
+
+    return { ...next, status: "UPCOMING" };
+}
+
+/* नवीन record जतन करणे किंवा जुना record update करणे */
+breedingForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const cowId = cowSelect.value;
+
+    if (!cowId) {
+        alert("कृपया गाय निवडा.");
+        return;
+    }
+
+    const isEditing = editRecordId !== null;
+    let statusToSave = "तपासणी बाकी";
+
+    if (isEditing) {
+        if (pregnancyStatusEditable) {
+            statusToSave =
+                document.getElementById("pregnancyStatus").value || "तपासणी बाकी";
+
+            if (!document.getElementById("pregnancyCheckDate").value) {
+                alert("कृपया Pregnancy Check Date निवडा.");
+                return;
+            }
+        } else {
+            statusToSave = originalPregnancyStatus;
+        }
+    }
+
+    const isNotPregnant = isRecordNotPregnant({
+        pregnancyStatus: statusToSave
+    });
+
+    const aiDate = document.getElementById("aiDate").value;
+
+    const record = {
+        cowId: cowId,
+        heatDate: document.getElementById("heatDate").value,
+        aiDate: aiDate,
+        pregnancyStatus: statusToSave,
+        pregnancyCheckDate:
+            document.getElementById("pregnancyCheckDate").value,
+        expectedCalvingDate: isNotPregnant
+            ? ""
+            : calculateExpectedCalvingDate(aiDate)
+    };
+
+    const url = isEditing
+        ? "/api/breeding/" + editRecordId
+        : "/api/breeding";
+
+    try {
+        await apiRequest(url, {
+            method: isEditing ? "PUT" : "POST",
+            body: JSON.stringify(record)
+        });
+
+        alert(isEditing
+            ? "Breeding record successfully update झाला! ✏️"
+            : "Breeding record यशस्वीरित्या जतन झाला! 🐄");
+
+        resetEditMode();
+        await loadBreedingRecords();
+    } catch (error) {
+        console.error(error);
+        alert(error.message || "Record save/update करताना समस्या आली.");
+    }
+});
+
+/* Breeding History load करणे */
+async function loadBreedingRecords() {
+    noRecordsMessage.style.display = "block";
+    noRecordsMessage.innerText = "Breeding records load होत आहेत...";
+
+    try {
+        const records = await apiRequest("/api/breeding");
+
+        allBreedingRecords = Array.isArray(records) ? records : [];
+
+        renderBreedingRecords(allBreedingRecords);
+    } catch (error) {
+        console.error(error);
+
+        recordsContainer.innerHTML = "";
+        noRecordsMessage.style.display = "block";
+        noRecordsMessage.innerText =
+            error.message || "Breeding records load झाले नाहीत.";
+    }
+}
+
+function getStatusPriority(record) {
+    const status = (record.pregnancyStatus || "")
+        .trim()
+        .toLowerCase();
+
+    if (status === "pregnant" || status === "गर्भवती") return 1;
+
+    if (
+        status === "not pregnant" ||
+        status === "गर्भवती नाही" ||
+        status === "गर्भधारणा नाही"
+    ) {
+        return 3;
+    }
+
+    return 2;
+}
+
+function renderBreedingRecords(records) {
+    recordsContainer.innerHTML = "";
+
+    if (!records || records.length === 0) {
+        noRecordsMessage.style.display = "block";
+        noRecordsMessage.innerText =
+            "कोणताही Breeding Record उपलब्ध नाही.";
+        return;
+    }
+
+    noRecordsMessage.style.display = "none";
+
+    const sortedRecords = [...records].sort((a, b) => {
+        const priorityDifference =
+            getStatusPriority(a) - getStatusPriority(b);
+
+        if (priorityDifference !== 0) return priorityDifference;
+
+        const dateA = a.aiDate || a.heatDate || "";
+        const dateB = b.aiDate || b.heatDate || "";
+
+        if (dateA !== dateB) {
+            return dateB.localeCompare(dateA);
+        }
+
+        return String(recordId(b)).localeCompare(String(recordId(a)));
+    });
+
+    sortedRecords.forEach(record => {
+        const cow = record.cowId && typeof record.cowId === "object"
+            ? record.cowId
+            : {};
+
+        const isNotPregnant = isRecordNotPregnant(record);
+        const reminderDate = record.aiDate
+            ? addDays(record.aiDate, 21)
+            : "";
+
+        const reminderDetails = getReminderDetails(record);
+
+        const card = document.createElement("div");
+
+        card.className = isNotPregnant
+            ? "breeding-record not-pregnant-record"
+            : "breeding-record";
+
+        card.dataset.pregnancyGroup = isNotPregnant
+            ? "NOT_PREGNANT"
+            : "ACTIVE";
+
+        if (isNotPregnant) {
+            const stamp = document.createElement("div");
+            stamp.className = "not-pregnant-stamp";
+            stamp.textContent = "NOT PREGNANT";
+            stamp.setAttribute("aria-hidden", "true");
+            card.appendChild(stamp);
+        }
+
+        const info = document.createElement("div");
+        info.className = "breeding-info";
+
+        const name = document.createElement("strong");
+        name.textContent = "🐄 " + (cow.name || "-") +
+            " (" + (cow.cowTag || "-") + ")";
+        info.appendChild(name);
+
+        addInfoLine(info, "🔥 Heat: ", record.heatDate || "-");
+        addInfoLine(info, "🧬 AI: ", record.aiDate || "-");
+        addInfoLine(info, "🔔 21-Day Reminder: ", reminderDate || "-");
+
+        addInfoLine(
+            info,
+            "🔍 Pregnancy Check Date: ",
+            record.pregnancyCheckDate || "-"
+        );
+
+        addInfoLine(
+            info,
+            "🤰 Pregnancy Status: ",
+            record.pregnancyStatus || "तपासणी बाकी"
+        );
+
+        if (!isNotPregnant) {
+            addInfoLine(
+                info,
+                "📅 Expected Calving: ",
+                record.expectedCalvingDate || "-"
+            );
+        }
+
+        const reminderStatus = document.createElement("span");
+        reminderStatus.className = "reminder-status";
+
+        if (reminderDetails.status === "OVERDUE") {
+            reminderStatus.classList.add("status-overdue");
+            reminderStatus.textContent = "⚠️ Overdue";
+        } else if (reminderDetails.status === "TODAY") {
+            reminderStatus.classList.add("status-today");
+            reminderStatus.textContent = "📅 Due Today";
+        } else if (reminderDetails.status === "UPCOMING") {
+            reminderStatus.classList.add("status-upcoming");
+            reminderStatus.textContent = "🔜 Upcoming";
+        } else {
+            reminderStatus.classList.add("status-completed");
+            reminderStatus.textContent =
+                "✅ Pregnancy Status Updated";
+        }
+
+        info.appendChild(reminderStatus);
+
+        const actions = document.createElement("div");
+        actions.className = "breeding-actions";
+
+        const editButton = document.createElement("button");
+        editButton.type = "button";
+        editButton.className = "edit-breeding-button";
+        editButton.textContent = "✏️ Edit";
+        editButton.addEventListener("click", () => {
+            editBreedingRecord(recordId(record));
+        });
+
+        const deleteButton = document.createElement("button");
+        deleteButton.type = "button";
+        deleteButton.className = "delete-breeding-button";
+        deleteButton.textContent = "🗑️ Delete";
+        deleteButton.addEventListener("click", () => {
+            deleteBreedingRecord(recordId(record));
+        });
+
+        if (!isNotPregnant) {
+            actions.appendChild(editButton);
+            actions.appendChild(deleteButton);
+        }
+
+        card.appendChild(info);
+        card.appendChild(actions);
+        recordsContainer.appendChild(card);
+    });
+
+    applyCurrentFilter();
+}
+
+function addInfoLine(parent, label, value) {
+    const line = document.createElement("p");
+    line.textContent = label + value;
+    parent.appendChild(line);
+}
+
+function filterBreedingRecords(filter, button) {
+    currentFilter = filter;
+
+    document.querySelectorAll(".breeding-filter-buttons button")
+        .forEach(btn => btn.classList.remove("active"));
+
+    if (button) button.classList.add("active");
+
+    applyCurrentFilter();
+}
+
+function applyCurrentFilter() {
+    document.querySelectorAll("#breedingRecords .breeding-record")
+        .forEach(card => {
+            const group = card.dataset.pregnancyGroup || "ACTIVE";
+
+            card.style.display =
+                currentFilter === "ALL" || group === currentFilter
+                    ? ""
+                    : "none";
+        });
+}
+
+/* Record edit करणे */
+async function editBreedingRecord(id) {
+    try {
+        const record = await apiRequest("/api/breeding/" + id);
+
+        editRecordId = recordId(record);
+
+        await loadCows(cowIdFromRecord(record));
+
+        document.getElementById("heatDate").value =
+            record.heatDate || "";
+
+        document.getElementById("aiDate").value =
+            record.aiDate || "";
+
+        originalPregnancyStatus =
+            record.pregnancyStatus || "तपासणी बाकी";
+
+        const checkDone = confirm(
+            "गायीची गर्भधारणा तपासणी केली आहे का?\n\n" +
+            "OK = होय, तपासणी केली आहे\n" +
+            "Cancel = नाही, अजून तपासणी केलेली नाही"
+        );
+
+        pregnancyStatusEditable = checkDone;
+
+        document.getElementById("pregnancyStatusGroup").style.display =
+            checkDone ? "flex" : "none";
+
+        const statusSelect = document.getElementById("pregnancyStatus");
+
+        if (checkDone) {
+            if (
+                originalPregnancyStatus === "गर्भवती" ||
+                originalPregnancyStatus === "गर्भवती नाही"
+            ) {
+                statusSelect.value = originalPregnancyStatus;
+            } else {
+                statusSelect.value = "तपासणी बाकी";
+            }
+        }
+
+        document.getElementById("pregnancyCheckDate").value =
+            record.pregnancyCheckDate || "";
+
+        document.getElementById("expectedCalvingDate").value =
+            record.expectedCalvingDate || "";
+
+        const notPregnant = isRecordNotPregnant(record);
+
+        document.getElementById("calvingDateGroup").style.display =
+            notPregnant ? "none" : "flex";
+
+        calculateAiReminder();
+
+        formTitle.innerText = "✏️ Breeding Record Edit करा";
+        saveButton.innerText = "✏️ Record Update करा";
+        cancelEditButton.style.display = "inline-block";
+
+        document.querySelector(".breeding-form-card")
+            .scrollIntoView({ behavior: "smooth" });
+
+    } catch (error) {
+        console.error(error);
+        alert(error.message || "Record edit करताना समस्या आली.");
+    }
+}
+
+cancelEditButton.addEventListener("click", resetEditMode);
+
+function resetEditMode() {
+    editRecordId = null;
+    originalPregnancyStatus = "तपासणी बाकी";
+    pregnancyStatusEditable = false;
+
+    breedingForm.reset();
+
+    document.getElementById("pregnancyStatusGroup").style.display = "none";
+    document.getElementById("calvingDateGroup").style.display = "flex";
+    document.getElementById("aiReminderDate").innerText = "";
+
+    formTitle.innerText = "नवीन Breeding Record";
+    saveButton.innerText = "💾 Breeding Record जतन करा";
+    cancelEditButton.style.display = "none";
+
+    loadCows();
+}
+
+/* Record delete करणे */
+async function deleteBreedingRecord(id) {
+    if (!confirm("हा breeding record कायमचा delete करायचा आहे का?")) {
+        return;
+    }
+
+    try {
+        await apiRequest("/api/breeding/" + id, {
+            method: "DELETE"
+        });
+
+        alert("Breeding record delete झाला.");
+        await loadBreedingRecords();
+    } catch (error) {
+        console.error(error);
+        alert(error.message || "Record delete करताना समस्या आली.");
+    }
+}
+
+/* Page सुरू होताच data load करणे */
+async function initializeBreedingPage() {
+    if (!getAuthToken()) {
+        noRecordsMessage.style.display = "block";
+        noRecordsMessage.innerText =
+            "Login token मिळाला नाही. कृपया आधी login करा.";
+        return;
+    }
+
+    await loadCows();
+    await loadBreedingRecords();
+}
+
+initializeBreedingPage();
+
+/* Reminder page वरून Edit उघडल्यास तोच record edit करा */
+const reminderEditParams = new URLSearchParams(window.location.search);
+const reminderEditId = reminderEditParams.get("editId");
+
+if (reminderEditId) {
+    window.addEventListener("load", function () {
+        editBreedingRecord(reminderEditId);
+    });
+}
+</script>
+
+</body>
+</html>

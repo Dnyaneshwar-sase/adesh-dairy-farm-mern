@@ -1,0 +1,431 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Verify OTP | Adesh Dairy Farm</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #e8f5e9, #fffde7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 16px;
+        }
+
+        .card {
+            background: white;
+            width: 100%;
+            max-width: 460px;
+            padding: 36px;
+            border-radius: 24px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .logo img {
+            width: 85px;
+            height: 85px;
+            object-fit: contain;
+        }
+
+        .farm-name {
+            color: #1b5e20;
+            font-size: 25px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 14px;
+            color: #263238;
+        }
+
+        .description {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #cbd5ce;
+            border-radius: 10px;
+            font-size: 15px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #2e7d32;
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.12);
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 5px;
+            background: #2e7d32;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .submit-button:hover {
+            background: #1b5e20;
+        }
+
+        .submit-button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .message {
+            display: none;
+            margin-bottom: 18px;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .error {
+            display: block;
+            background: #ffebee;
+            color: #b71c1c;
+        }
+
+        .success {
+            display: block;
+            background: #e8f5e9;
+            color: #1b5e20;
+        }
+
+        .back {
+            text-align: center;
+            margin-top: 24px;
+        }
+
+        .back a {
+            color: #2e7d32;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 500px) {
+            .card {
+                padding: 28px 22px;
+            }
+
+            .farm-name {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="card">
+
+        <div class="logo">
+            <img src="images/logo.png" alt="Adesh Dairy Farm Logo">
+            <div class="farm-name">आदेश डेअरी फार्म</div>
+        </div>
+
+        <section id="otpSection">
+            <h2>Verify OTP</h2>
+
+            <p class="description">
+                तुमच्या registered email वर आलेला 6 अंकी OTP टाका.
+            </p>
+
+            <div id="otpMessage" class="message" role="status"></div>
+
+            <form id="otpForm">
+                <div class="form-group">
+                    <label for="otp">6-Digit OTP</label>
+
+                    <input
+                        type="text"
+                        id="otp"
+                        inputmode="numeric"
+                        pattern="[0-9]{6}"
+                        maxlength="6"
+                        autocomplete="one-time-code"
+                        placeholder="Enter OTP"
+                        required
+                    >
+                </div>
+
+                <button class="submit-button" id="verifyButton" type="submit">
+                    Verify OTP
+                </button>
+            </form>
+        </section>
+
+        <section id="passwordSection" class="hidden">
+            <h2>Reset Password</h2>
+
+            <p class="description">
+                OTP verify झाला आहे. आता नवीन password सेट करा.
+            </p>
+
+            <div id="passwordMessage" class="message" role="status"></div>
+
+            <form id="passwordForm">
+                <div class="form-group">
+                    <label for="newPassword">New Password</label>
+                    <input
+                        type="password"
+                        id="newPassword"
+                        minlength="8"
+                        autocomplete="new-password"
+                        placeholder="Minimum 8 characters"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm New Password</label>
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        minlength="8"
+                        autocomplete="new-password"
+                        placeholder="Enter password again"
+                        required
+                    >
+                </div>
+
+                <button class="submit-button" id="resetButton" type="submit">
+                    Reset Password
+                </button>
+            </form>
+        </section>
+
+        <div class="back">
+            <a href="login.html">← Back to Login</a>
+        </div>
+
+    </main>
+
+    <script>
+        const API_BASE = "http://localhost:5000";
+
+        const email = sessionStorage.getItem("passwordResetEmail");
+
+        const otpSection = document.getElementById("otpSection");
+        const passwordSection = document.getElementById("passwordSection");
+
+        const otpForm = document.getElementById("otpForm");
+        const otpInput = document.getElementById("otp");
+        const verifyButton = document.getElementById("verifyButton");
+        const otpMessage = document.getElementById("otpMessage");
+
+        const passwordForm = document.getElementById("passwordForm");
+        const newPasswordInput = document.getElementById("newPassword");
+        const confirmPasswordInput = document.getElementById("confirmPassword");
+        const resetButton = document.getElementById("resetButton");
+        const passwordMessage = document.getElementById("passwordMessage");
+
+        function showMessage(element, text, type) {
+            element.textContent = text;
+            element.className = "message " + type;
+        }
+
+        function showPasswordForm() {
+            otpSection.classList.add("hidden");
+            passwordSection.classList.remove("hidden");
+        }
+
+        if (!email) {
+            otpForm.classList.add("hidden");
+            showMessage(
+                otpMessage,
+                "Email session सापडली नाही. Forgot Password पेजवर पुन्हा जा.",
+                "error"
+            );
+        } else if (
+            sessionStorage.getItem("passwordOtpVerified") === email
+        ) {
+            showPasswordForm();
+        }
+
+        otpForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            if (!email) return;
+
+            const otp = otpInput.value.trim();
+
+            if (!/^\d{6}$/.test(otp)) {
+                showMessage(otpMessage, "6 अंकी योग्य OTP टाका.", "error");
+                return;
+            }
+
+            verifyButton.disabled = true;
+            verifyButton.textContent = "Verifying...";
+
+            try {
+                const response = await fetch(
+                    `${API_BASE}/api/auth/verify-reset-otp`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ email, otp })
+                    }
+                );
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || "OTP verify झाला नाही.");
+                }
+
+                sessionStorage.setItem("passwordOtpVerified", email);
+
+                showMessage(
+                    otpMessage,
+                    data.message || "OTP verified successfully.",
+                    "success"
+                );
+
+                showPasswordForm();
+
+            } catch (error) {
+                showMessage(
+                    otpMessage,
+                    error.message === "Failed to fetch"
+                        ? "Backend server सुरू आहे का ते तपासा."
+                        : error.message,
+                    "error"
+                );
+            } finally {
+                verifyButton.disabled = false;
+                verifyButton.textContent = "Verify OTP";
+            }
+        });
+
+        passwordForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            if (!email ||
+                sessionStorage.getItem("passwordOtpVerified") !== email) {
+                showMessage(
+                    passwordMessage,
+                    "आधी OTP verify करा.",
+                    "error"
+                );
+                return;
+            }
+
+            const newPassword = newPasswordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+
+            if (newPassword.length < 8) {
+                showMessage(
+                    passwordMessage,
+                    "Password किमान 8 characters चा असावा.",
+                    "error"
+                );
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                showMessage(
+                    passwordMessage,
+                    "दोन्ही passwords जुळत नाहीत.",
+                    "error"
+                );
+                return;
+            }
+
+            resetButton.disabled = true;
+            resetButton.textContent = "Updating Password...";
+
+            try {
+                const response = await fetch(
+                    `${API_BASE}/api/auth/reset-password`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ email, newPassword })
+                    }
+                );
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.message || "Password reset झाला नाही."
+                    );
+                }
+
+                sessionStorage.removeItem("passwordResetEmail");
+                sessionStorage.removeItem("passwordOtpVerified");
+
+                alert(data.message || "Password successfully reset झाला.");
+
+                window.location.replace("login.html");
+
+            } catch (error) {
+                showMessage(
+                    passwordMessage,
+                    error.message === "Failed to fetch"
+                        ? "Backend server सुरू आहे का ते तपासा."
+                        : error.message,
+                    "error"
+                );
+            } finally {
+                resetButton.disabled = false;
+                resetButton.textContent = "Reset Password";
+            }
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,419 @@
+
+
+
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>फार्म फोटो आणि व्हिडिओ</title>
+
+    <style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 24px;
+    background: #f5f8f5;
+    color: #26352b;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+}
+
+.top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 18px 22px;
+    background: #ffffff;
+    border: 1px solid #e1e9e1;
+    border-left: 5px solid #388e3c;
+    border-radius: 10px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+}
+
+.top h2 {
+    margin: 0;
+    font-size: 24px;
+    color: #246b36;
+}
+
+.top a {
+    color: #2e7d32;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.top a:hover {
+    text-decoration: underline;
+}
+
+.upload-box {
+    margin: 24px 0;
+    padding: 22px;
+    background: #ffffff;
+    border: 1px solid #dce8dc;
+    border-radius: 10px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+.upload-box[hidden] {
+    display: none !important;
+}
+
+.upload-box h3 {
+    margin-top: 0;
+    color: #286b37;
+}
+
+input[type="file"] {
+    display: block;
+    width: 100%;
+    margin: 16px 0;
+    padding: 12px;
+    background: #f8fbf8;
+    border: 1px dashed #9dbca0;
+    border-radius: 8px;
+}
+
+button {
+    padding: 11px 20px;
+    background: #2e7d32;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+button:hover {
+    background: #1b5e20;
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+#uploadStatus,
+#galleryStatus {
+    overflow-wrap: anywhere;
+    color: #526456;
+}
+
+#uploadStatus {
+    margin-bottom: 0;
+}
+
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.item {
+    min-width: 0;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #e0e8e0;
+    border-radius: 10px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 7px 18px rgba(0, 0, 0, 0.10);
+}
+
+.item img,
+.item video {
+    display: block;
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    background: #edf1ed;
+}
+
+.caption {
+    padding: 13px;
+    overflow-wrap: anywhere;
+}
+
+.caption p {
+    margin: 4px 0;
+    color: #334b38;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 12px;
+    }
+
+    .top {
+        padding: 16px;
+    }
+
+    .top h2 {
+        font-size: 20px;
+    }
+
+    .gallery {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .item img,
+    .item video {
+        height: 150px;
+    }
+
+    .caption {
+        padding: 9px;
+    }
+}
+
+@media (max-width: 360px) {
+    .gallery {
+        grid-template-columns: 1fr;
+    }
+
+    .item img,
+    .item video {
+        height: 210px;
+    }
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+    <div class="top">
+        <h2>फार्म फोटो आणि व्हिडिओ</h2>
+        <a href="index.html">मुख्यपृष्ठावर परत जा</a>
+    </div>
+
+    <!-- फक्त Owner ला दिसेल -->
+    <section id="uploadBox" class="upload-box" hidden>
+        <h3>फोटो / व्हिडिओ अपलोड करा</h3>
+
+        <form id="uploadForm">
+            <input
+                id="media"
+                type="file"
+                name="media"
+                accept="image/jpeg,image/png,image/webp,video/mp4,video/webm,video/quicktime"
+                required
+            >
+
+            <button id="uploadButton" type="submit">
+                Upload
+            </button>
+        </form>
+
+        <p id="uploadStatus" role="status"></p>
+    </section>
+
+    <!-- सर्वांना दिसणारी Gallery -->
+    <h3>फार्मची गॅलरी</h3>
+
+    <p id="galleryStatus" role="status">
+        फोटो लोड होत आहेत...
+    </p>
+
+    <div id="gallery" class="gallery"></div>
+
+</div>
+
+<script>
+    // Local development साठी Backend URL
+    const API_BASE = "http://localhost:5000";
+
+    const uploadBox = document.getElementById("uploadBox");
+    const uploadForm = document.getElementById("uploadForm");
+    const uploadButton = document.getElementById("uploadButton");
+    const uploadStatus = document.getElementById("uploadStatus");
+    const gallery = document.getElementById("gallery");
+    const galleryStatus = document.getElementById("galleryStatus");
+
+    function getUser() {
+        try {
+            return JSON.parse(
+                localStorage.getItem("currentUser") ||
+                sessionStorage.getItem("currentUser") ||
+                "null"
+            );
+        } catch {
+            return null;
+        }
+    }
+
+    function getToken() {
+        return localStorage.getItem("authToken") ||
+               sessionStorage.getItem("authToken");
+    }
+
+    function checkOwner() {
+        const user = getUser();
+        const token = getToken();
+
+        uploadBox.hidden = !(
+            token &&
+            user &&
+            user.role === "owner"
+        );
+    }
+
+    async function loadGallery() {
+        galleryStatus.textContent = "फोटो लोड होत आहेत...";
+        gallery.replaceChildren();
+
+        try {
+            const response = await fetch(`${API_BASE}/api/gallery`);
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(
+                    data.message || "Gallery लोड झाली नाही."
+                );
+            }
+
+            const items = data.media || [];
+
+            if (items.length === 0) {
+                galleryStatus.textContent =
+                    "अजून फोटो किंवा व्हिडिओ अपलोड केलेले नाहीत.";
+                return;
+            }
+
+            galleryStatus.textContent = "";
+
+            for (const item of items) {
+                const card = document.createElement("div");
+                card.className = "item";
+
+                const url = new URL(item.url, API_BASE).href;
+                let mediaElement;
+
+                if (item.mediaType === "video") {
+                    mediaElement = document.createElement("video");
+                    mediaElement.controls = true;
+                    mediaElement.preload = "metadata";
+                } else {
+                    mediaElement = document.createElement("img");
+                    mediaElement.alt = item.title || "फार्म फोटो";
+                    mediaElement.loading = "lazy";
+                }
+
+                mediaElement.src = url;
+
+                const caption = document.createElement("div");
+                caption.className = "caption";
+
+                const title = document.createElement("p");
+                title.textContent = item.title || "फार्म फोटो";
+
+                caption.appendChild(title);
+                card.append(mediaElement, caption);
+                gallery.appendChild(card);
+            }
+        } catch (error) {
+            console.error("Gallery Error:", error);
+
+            galleryStatus.textContent =
+                "Gallery लोड झाली नाही. Backend सुरू आहे का ते तपासा.";
+        }
+    }
+
+    uploadForm.addEventListener("submit", async function(event) {
+        event.preventDefault();
+
+        const user = getUser();
+        const token = getToken();
+
+        if (!token || !user || user.role !== "owner") {
+            uploadBox.hidden = true;
+            uploadStatus.textContent = "फक्त Owner Upload करू शकतो.";
+            return;
+        }
+
+        const file = document.getElementById("media").files[0];
+
+        if (!file) {
+            uploadStatus.textContent = "फोटो किंवा व्हिडिओ निवडा.";
+            return;
+        }
+
+        if (file.size > 100 * 1024 * 1024) {
+            uploadStatus.textContent = "फाइल 100 MB पेक्षा मोठी आहे.";
+            return;
+        }
+
+        const formData = new FormData();
+
+        // शीर्षक फाइलच्या नावावरून आपोआप तयार होईल.
+        formData.append(
+            "title",
+            file.name.replace(/\.[^/.]+$/, "")
+        );
+
+        formData.append("description", "");
+        formData.append("media", file);
+
+        uploadButton.disabled = true;
+        uploadStatus.textContent = "Upload होत आहे...";
+
+        try {
+            const response = await fetch(
+                `${API_BASE}/api/gallery/upload`,
+                {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                    body: formData
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(
+                    data.message || "Upload अयशस्वी."
+                );
+            }
+
+            uploadStatus.textContent = "Upload यशस्वी झाला.";
+            uploadForm.reset();
+
+            await loadGallery();
+
+        } catch (error) {
+            uploadStatus.textContent = error.message;
+            console.error("Upload Error:", error);
+        } finally {
+            uploadButton.disabled = false;
+        }
+    });
+
+    checkOwner();
+    loadGallery();
+</script>
+</body>
+</html>

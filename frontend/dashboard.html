@@ -1,0 +1,713 @@
+
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>आदेश डेअरी फार्म | डॅशबोर्ड</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <style>
+        :root {
+            --farm-green: #176b3a;
+            --farm-dark: #10542d;
+            --farm-light: #e8f5e9;
+            --farm-bg: #f4f8f4;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--farm-bg);
+            font-family: Arial, sans-serif;
+            color: #344054;
+        }
+
+        .dashboard-container {
+            max-width: 1450px;
+            margin: auto;
+            padding: 24px;
+        }
+
+        .top-header {
+            background: #fff;
+            padding: 18px 24px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 18px;
+            box-shadow: 0 5px 18px rgba(20, 60, 30, .08);
+            margin-bottom: 28px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand img {
+            width: 72px;
+            height: 72px;
+            object-fit: contain;
+        }
+
+        .brand h1 {
+            margin: 0;
+            color: var(--farm-green);
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .brand p {
+            margin: 5px 0 0;
+            color: #667085;
+        }
+
+        .header-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .header-btn {
+            display: inline-block;
+            padding: 12px 18px;
+            background: var(--farm-green);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: .2s;
+        }
+
+        .header-btn:hover {
+            background: var(--farm-dark);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .welcome-box {
+            padding: 28px;
+            margin-bottom: 28px;
+            border: 1px solid #d8eadb;
+            border-radius: 18px;
+            background: linear-gradient(120deg, #e5f5e9, #f7fbf5);
+        }
+
+        .welcome-box h2 {
+            color: var(--farm-green);
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .welcome-box p {
+            margin: 0;
+            line-height: 1.7;
+            color: #5d6b61;
+        }
+
+        /* एका Row मध्ये 4 कार्ड्स */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .dashboard-card {
+            background: #fff;
+            padding: 26px 24px;
+            border: 1px solid #e0e9e1;
+            border-radius: 20px;
+            min-width: 0;
+            box-shadow: 0 7px 22px rgba(26, 68, 38, .07);
+            transition: transform .25s, box-shadow .25s;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 28px rgba(26, 68, 38, .13);
+        }
+
+        .card-icon {
+            font-size: 38px;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #344054;
+        }
+
+        .card-count {
+            color: var(--farm-green);
+            font-size: 40px;
+            font-weight: 750;
+            margin-bottom: 18px;
+            overflow-wrap: anywhere;
+        }
+
+        .card-description {
+            color: #667085;
+            line-height: 1.7;
+            min-height: 48px;
+            margin-bottom: 18px;
+        }
+
+        .card-link {
+            color: var(--farm-green);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .card-link:hover {
+            color: var(--farm-dark);
+            text-decoration: underline;
+        }
+
+        .section-title {
+            color: var(--farm-green);
+            font-size: 25px;
+            font-weight: 700;
+            margin: 38px 0 20px;
+        }
+
+        .quick-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .quick-link {
+            display: block;
+            background: white;
+            border: 1px solid #dce9dd;
+            padding: 18px;
+            border-radius: 12px;
+            color: var(--farm-green);
+            text-decoration: none;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(26, 68, 38, .05);
+            transition: .2s;
+        }
+
+        .quick-link:hover {
+            background: var(--farm-light);
+            transform: translateY(-2px);
+        }
+
+        .user-management {
+            display: none;
+            margin-top: 32px;
+            background: white;
+            padding: 24px;
+            border: 1px solid #dce9dd;
+            border-radius: 16px;
+            box-shadow: 0 5px 18px rgba(26, 68, 38, .07);
+        }
+
+        .user-management h2 {
+            color: var(--farm-green);
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .user-management p {
+            color: #667085;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 32px 10px 12px;
+            color: #667085;
+        }
+
+        @media (max-width: 1050px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .quick-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 600px) {
+            .dashboard-container {
+                padding: 14px;
+            }
+
+            .dashboard-grid,
+            .quick-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .top-header {
+                padding: 16px;
+            }
+
+            .brand img {
+                width: 56px;
+                height: 56px;
+            }
+
+            .brand h1 {
+                font-size: 21px;
+            }
+
+            .welcome-box {
+                padding: 20px;
+            }
+
+            .welcome-box h2 {
+                font-size: 23px;
+            }
+
+            .dashboard-card {
+                padding: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="dashboard-container">
+
+    <header class="top-header">
+        <div class="brand">
+            <!-- logo.png ही frontend/images/ मध्ये ठेवा -->
+            <img src="images/logo.png" alt="आदेश डेअरी फार्म लोगो"
+                 onerror="this.style.display='none'">
+
+            <div>
+                <h1>आदेश डेअरी फार्म</h1>
+                <p>स्मार्ट डेअरी व्यवस्थापन प्रणाली</p>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <a href="index.html" class="header-btn">🏠 मुख्य पान</a>
+            <a href="cows.html" class="header-btn">🐄 गायी व्यवस्थापन</a>
+        </div>
+    </header>
+
+    <section class="welcome-box">
+        <h2>नमस्कार! 👋</h2>
+        <p>
+            आपल्या डेअरी फार्मची महत्त्वाची माहिती आणि दैनंदिन कामे
+            एका ठिकाणी व्यवस्थापित करा.
+        </p>
+    </section>
+
+    <!-- मुख्य आकडेवारी -->
+    <section class="dashboard-grid">
+
+        <article class="dashboard-card">
+            <div class="card-icon">🐄</div>
+            <h3>एकूण गायी</h3>
+            <div class="card-count" id="totalCows">0</div>
+            <p class="card-description">
+                आपल्या फार्ममध्ये नोंदवलेल्या एकूण गायी.
+            </p>
+            <a href="cows.html" class="card-link">गायींची यादी पाहा →</a>
+        </article>
+         <!-- लहान वासरे -->
+        <article class="dashboard-card">
+            <div class="card-icon">🐮</div>
+            <h3>लहान वासरे</h3>
+            <div class="card-count" id="totalCalves">0</div>
+            <p class="card-description">
+                नवीन वासरांची नोंद करा, फोटो जोडा आणि वासरांची माहिती व्यवस्थापित करा.
+            </p>
+            
+            <a href="calves.html" class="card-link">
+                वासरांची माहिती पाहा →
+            </a>
+        </article>
+
+        <article class="dashboard-card">
+            <div class="card-icon">🥛</div>
+            <h3>आजचे दूध</h3>
+            <div class="card-count">
+                <span id="todayMilk">0.00</span>
+                <span style="font-size:20px">लिटर</span>
+            </div>
+            <p class="card-description">
+                आज नोंदवलेले एकूण दूध उत्पादन.
+            </p>
+            <a href="milk-records.html" class="card-link">दुधाच्या नोंदी पाहा →</a>
+        </article>
+
+        <article class="dashboard-card">
+            <div class="card-icon">🤰</div>
+            <h3>गर्भवती गायी</h3>
+            <div class="card-count" id="pregnantCows">0</div>
+            <p class="card-description">
+                गर्भवती म्हणून नोंदवलेल्या गायी.
+            </p>
+            
+<a href="pregnant-cows.html" class="card-link">गर्भवती गायींची यादी पाहा →</a>
+
+        </article>
+
+        <article class="dashboard-card">
+            <div class="card-icon">🔔</div>
+            <h3>स्मरणपत्रे</h3>
+            <div class="card-count" id="totalReminders">0</div>
+            <p class="card-description">
+                कृत्रिम रेतन, गर्भधारणा तपासणी आणि वेताची स्मरणपत्रे.
+            </p>
+            <a href="reminders.html" class="card-link">स्मरणपत्रे पाहा →</a>
+        </article>
+
+        <article class="dashboard-card">
+            <div class="card-icon">❤️</div>
+            <h3>प्रजनन व्यवस्थापन</h3>
+            <p class="card-description">
+                माज, कृत्रिम रेतन, गर्भधारणा आणि अपेक्षित वेताच्या तारखा व्यवस्थापित करा.
+            </p>
+            <a href="breeding.html" class="card-link">प्रजनन व्यवस्थापन उघडा →</a>
+        </article>
+
+        <article class="dashboard-card">
+            <div class="card-icon">📊</div>
+            <h3>दूध उत्पादन अहवाल</h3>
+            <p class="card-description">
+                दूध संकलनाच्या नोंदी आणि उत्पादनाचा अहवाल तपासा.
+            </p>
+            <a href="reports.html" class="card-link">अहवाल पाहा →</a>
+        </article>
+
+        <article class="dashboard-card">
+            <div class="card-icon">🤖</div>
+            <h3>एआय डेअरी सहाय्यक</h3>
+            <p class="card-description">
+                गायी, दूध उत्पादन, प्रजनन आणि जनावरांच्या देखभालीविषयी प्रश्न विचारा.
+            </p>
+            <a href="chatbot.html" class="card-link">सहाय्यक सुरू करा →</a>
+        </article>
+
+        <article class="dashboard-card">
+            <div class="card-icon">📝</div>
+            <h3>फार्ममधील नोंदी</h3>
+            <p class="card-description">
+                फार्ममधील महत्त्वाच्या नोंदी लिहा आणि जतन करा.
+            </p>
+            <a href="notes.html" class="card-link">नोंदी पाहा →</a>
+            
+        </article>
+        
+        <!-- खर्च व उत्पन्न -->
+        <article class="dashboard-card">
+            <div class="card-icon">💰</div>
+            <h3>खर्च व उत्पन्न</h3>
+            <p class="card-description">
+                डेअरी फार्मचे उत्पन्न, खर्च आणि शिल्लक रक्कम व्यवस्थापित करा.
+            </p>
+            <a href="income-expense.html" class="card-link">
+                खर्च व उत्पन्न पाहा →
+            </a>
+        </article>
+
+        <!-- पशुखाद्य व्यवस्थापन -->
+        <article class="dashboard-card">
+            <div class="card-icon">🌾</div>
+            <h3>पशुखाद्य व्यवस्थापन</h3>
+            <p class="card-description">
+                चारा, पशुखाद्य, खरेदी, उपलब्ध साठा आणि त्याची माहिती व्यवस्थापित करा.
+            </p>
+            <a href="feed-management.html" class="card-link">
+                पशुखाद्य व्यवस्थापन उघडा →
+            </a>
+        </article>
+
+       
+
+        <!-- कामगार व पगार -->
+        <article class="dashboard-card">
+            <div class="card-icon">👷</div>
+            <h3>कामगार व पगार</h3>
+            <p class="card-description">
+                कामगारांची माहिती, ठरलेला पगार, दिलेली रक्कम आणि बाकी पगार तपासा.
+            </p>
+            <a href="worker-salary.html" class="card-link">
+                कामगारांची माहिती पाहा →
+            </a>
+        </article>
+
+
+    </section>
+
+    <!-- जलद कृती -->
+    <section>
+        <h2 class="section-title">⚡ जलद कृती</h2>
+        <div class="quick-grid">
+            <a href="add-cow.html" class="quick-link">➕ नवीन गाय जोडा</a>
+            <a href="milk-records.html" class="quick-link">🥛 दूध नोंदवा</a>
+            <a href="breeding.html" class="quick-link">❤️ प्रजनन नोंदवा</a>
+            <a href="reports.html" class="quick-link">📊 अहवाल पाहा</a>
+            <a href="reminders.html" class="quick-link">🔔 स्मरणपत्रे पाहा</a>
+            <a href="notes.html" class="quick-link">📝 फार्म नोंदी</a>
+        </div>
+    </section>
+
+    <!-- हा विभाग फक्त Owner साठी -->
+    <section id="userManagement" class="user-management">
+        <h2>👥 वापरकर्ता व्यवस्थापन</h2>
+        <p>
+            नवीन वापरकर्त्यांच्या विनंत्या मंजूर करा आणि वापरकर्ता खाती
+            सक्रिय किंवा निष्क्रिय करा.
+        </p>
+        <a href="owner-requests.html" class="header-btn">
+            वापरकर्ता व्यवस्थापन उघडा →
+        </a>
+    </section>
+
+    <footer class="footer">
+        आदेश डेअरी फार्म | स्मार्ट डेअरी व्यवस्थापन प्रणाली
+    </footer>
+
+</div>
+<script>
+    // लॉगिन माहिती तपासा
+    const token = localStorage.getItem("authToken");
+    const savedUser = localStorage.getItem("currentUser");
+
+    if (!token || !savedUser) {
+        window.location.replace("login.html");
+    } else {
+        try {
+            const currentUser = JSON.parse(savedUser);
+
+            // User Management फक्त Owner ला दिसेल.
+            if (currentUser.role === "owner") {
+                document.getElementById("userManagement").style.display = "block";
+            }
+        } catch (error) {
+            localStorage.removeItem("currentUser");
+            localStorage.removeItem("authToken");
+            window.location.replace("login.html");
+        }
+    }
+
+    // Dashboard वरील आकडे Database मधून मिळवा.
+    async function loadDashboardStats() {
+        const token = localStorage.getItem("authToken");
+
+        if (!token) {
+            window.location.replace("login.html");
+            return;
+        }
+
+        try {
+            // 1. गायींची संख्या मिळवा.
+            const response = await fetch(
+                "http://localhost:5000/api/cows",
+                {
+                    method: "GET",
+                    headers: {
+                        "Authorization": "Bearer " + token,
+                        "Accept": "application/json"
+                    }
+                }
+
+                
+            );
+
+            if (!response.ok) {
+                throw new Error(
+                    "गायींची संख्या मिळाली नाही. HTTP " + response.status
+                );
+            }
+
+            const cows = await response.json();
+
+            if (!Array.isArray(cows)) {
+                throw new Error("गायींची यादी योग्य स्वरूपात मिळाली नाही.");
+            }
+
+            // एकूण गायींची संख्या अपडेट करा.
+            const cowElement = document.getElementById("totalCows");
+
+            if (cowElement) {
+                cowElement.textContent = cows.length;
+            }
+
+            console.log("Dashboard वर एकूण गायी:", cows.length);
+
+            // 2. दुधाच्या नोंदी मिळवा.
+            const milkResponse = await fetch(
+                "http://localhost:5000/api/milk",
+                {
+                    method: "GET",
+                    headers: {
+                        "Authorization": "Bearer " + token,
+                        "Accept": "application/json"
+                    }
+                }
+            );
+
+            if (!milkResponse.ok) {
+                throw new Error(
+                    "दुधाची नोंद मिळाली नाही. HTTP " + milkResponse.status
+                );
+            }
+
+            const milkRecords = await milkResponse.json();
+
+            if (!Array.isArray(milkRecords)) {
+                throw new Error("दुधाची यादी योग्य स्वरूपात मिळाली नाही.");
+            }
+
+            // आजची तारीख YYYY-MM-DD स्वरूपात मिळवा.
+            const now = new Date();
+
+            const todayDate =
+                now.getFullYear() + "-" +
+                String(now.getMonth() + 1).padStart(2, "0") + "-" +
+                String(now.getDate()).padStart(2, "0");
+
+            // फक्त आजच्या दुधाची बेरीज करा.
+            const todayMilk = milkRecords
+                .filter(record => record.date === todayDate)
+                .reduce(
+                    (total, record) =>
+                        total + Number(record.totalMilk || 0),
+                    0
+                );
+
+            // Dashboard वरील दूधाचा count अपडेट करा.
+            const milkElement = document.getElementById("todayMilk");
+
+            if (milkElement) {
+                milkElement.textContent = todayMilk.toFixed(2) + " L";
+            } else {
+                console.warn(
+                    'दूधाचा count दाखवण्यासाठी HTML मध्ये id="todayMilk" शोधता आला नाही.'
+                );
+            }
+
+            console.log("आजचे एकूण दूध:", todayMilk);
+
+        } catch (error) {
+            console.error(
+                "Dashboard वरील आकडे लोड करताना त्रुटी:",
+                error
+            );
+        }
+    }
+
+async function loadPregnantCowCount() {
+    const token = localStorage.getItem("authToken");
+    const countElement = document.getElementById("pregnantCows");
+
+    if (!token || !countElement) return;
+
+    try {
+        const response = await fetch(
+            "http://localhost:5000/api/breeding",
+            {
+                headers: {
+                    "Authorization": "Bearer " + token,
+                    "Accept": "application/json"
+                }
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error("Breeding records load झाले नाहीत.");
+        }
+
+        const records = await response.json();
+
+        const pregnantCowIds = new Set(
+            records
+                .filter(record => {
+                    const status = String(record.pregnancyStatus || "")
+                        .trim()
+                        .toLowerCase();
+
+                    return [
+                        "pregnant",
+                        "गर्भवती",
+                        "गाभण",
+                        "गाभण आहे"
+                    ].includes(status);
+                })
+                .map(record => {
+                    const cow = record.cowId;
+                    return cow && typeof cow === "object"
+                        ? String(cow._id || cow.id || "")
+                        : String(cow || "");
+                })
+                .filter(Boolean)
+        );
+
+        countElement.textContent = pregnantCowIds.size;
+
+    } catch (error) {
+        console.error("Pregnant cow count error:", error);
+    }
+}
+
+loadPregnantCowCount();
+
+    // Dashboard आकडे लोड करा.
+    loadDashboardStats();
+</script>
+
+<script>
+
+async function loadTotalCalves() {
+    const token = localStorage.getItem("authToken");
+    const countElement = document.getElementById("totalCalves");
+
+    if (!token || !countElement) return;
+
+    try {
+        const response = await fetch("http://localhost:5000/api/calves", {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: "application/json"
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Calves API Error: HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (Array.isArray(data)) {
+            countElement.textContent = data.length;
+        } else if (Array.isArray(data.calves)) {
+            countElement.textContent = data.calves.length;
+        } else if (Number.isFinite(data.totalCalves)) {
+            countElement.textContent = data.totalCalves;
+        } else {
+            throw new Error("वासरांच्या API चा response तपासणे आवश्यक आहे.");
+        }
+
+    } catch (error) {
+        console.error("लहान वासरांची संख्या:", error);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", loadTotalCalves);
+
+</script>
+
+
+</body>
+</html>

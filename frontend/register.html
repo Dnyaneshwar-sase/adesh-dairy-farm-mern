@@ -1,0 +1,304 @@
+
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Registration | Adesh Dairy Farm</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 25px 15px;
+            background: linear-gradient(135deg, #e8f5e9, #fff8e1);
+            font-family: Arial, sans-serif;
+        }
+
+        .register-card {
+            width: 100%;
+            max-width: 480px;
+            padding: 32px;
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.12);
+        }
+
+        .farm-logo {
+            width: 105px;
+            height: 105px;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto 15px;
+        }
+
+        .register-title {
+            color: #216e39;
+            font-weight: 700;
+        }
+
+        .form-control {
+            padding: 11px;
+            border-radius: 10px;
+        }
+
+        .register-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: #267642;
+            color: white;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .register-btn:hover {
+            background: #19552e;
+        }
+
+        .register-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .page-link {
+            color: #267642;
+            text-decoration: none;
+        }
+
+        .page-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .register-card {
+                padding: 25px 20px;
+            }
+
+            .farm-logo {
+                width: 90px;
+                height: 90px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="register-card">
+
+        <!-- Adesh Dairy Farm Logo -->
+        <div class="text-center mb-4">
+            <img
+                src="images/logo.png"
+                alt="Adesh Dairy Farm Logo"
+                class="farm-logo"
+            >
+
+            <h2 class="register-title">Adesh Dairy Farm</h2>
+            <p class="text-muted">नवीन खाते तयार करा</p>
+        </div>
+
+        <!-- Registration Messages -->
+        <div
+            id="message"
+            class="alert d-none"
+            role="alert"
+            aria-live="polite"
+        ></div>
+
+        <!-- Registration Form -->
+        <form id="registerForm">
+
+            <div class="mb-3">
+                <label for="name" class="form-label">पूर्ण नाव</label>
+                <input
+                    type="text"
+                    id="name"
+                    class="form-control"
+                    placeholder="तुमचे पूर्ण नाव"
+                    autocomplete="name"
+                    maxlength="100"
+                    required
+                >
+            </div>
+
+            <div class="mb-3">
+                <label for="mobileNumber" class="form-label">
+                    मोबाईल नंबर
+                </label>
+
+                <input
+                    type="tel"
+                    id="mobileNumber"
+                    class="form-control"
+                    placeholder="10 अंकी मोबाईल नंबर"
+                    pattern="[6-9][0-9]{9}"
+                    maxlength="10"
+                    inputmode="numeric"
+                    autocomplete="tel"
+                    required
+                >
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label">
+                    Email Address
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    class="form-control"
+                    placeholder="तुमचा Email"
+                    autocomplete="email"
+                    maxlength="254"
+                    required
+                >
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    class="form-control"
+                    placeholder="किमान 8 characters"
+                    minlength="8"
+                    maxlength="128"
+                    autocomplete="new-password"
+                    required
+                >
+            </div>
+
+            <div class="mb-4">
+                <label for="confirmPassword" class="form-label">
+                    Password पुन्हा टाका
+                </label>
+
+                <input
+                    type="password"
+                    id="confirmPassword"
+                    class="form-control"
+                    placeholder="Password पुन्हा टाका"
+                    minlength="8"
+                    maxlength="128"
+                    autocomplete="new-password"
+                    required
+                >
+            </div>
+
+            <button
+                type="submit"
+                id="registerButton"
+                class="register-btn"
+            >
+                Registration करा
+            </button>
+
+        </form>
+
+        <p class="text-center mt-4 mb-2">
+            आधीच खाते आहे?
+            <a href="login.html" class="page-link">Login करा</a>
+        </p>
+
+        <p class="text-center mb-0">
+            <a href="index.html" class="page-link">
+                ← मुख्य पानावर जा
+            </a>
+        </p>
+
+    </main>
+
+    <!-- Bootstrap 5 JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Registration Logic -->
+    <script>
+        const form = document.getElementById("registerForm");
+        const message = document.getElementById("message");
+        const registerButton = document.getElementById("registerButton");
+
+        form.addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const name = document.getElementById("name").value.trim();
+            const mobileNumber = document.getElementById("mobileNumber").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+
+            message.className = "alert d-none";
+            message.textContent = "";
+
+            if (password !== confirmPassword) {
+                message.className = "alert alert-danger";
+                message.textContent =
+                    "दोन्ही Password सारखे असणे आवश्यक आहे.";
+                return;
+            }
+
+            registerButton.disabled = true;
+            registerButton.textContent = "Registration सुरू आहे...";
+
+            try {
+                const response = await fetch(
+                    "http://localhost:5000/api/auth/register",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            name,
+                            mobileNumber,
+                            email,
+                            password
+                        })
+                    }
+                );
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.message || "Registration अयशस्वी झाले."
+                    );
+                }
+
+                message.className = "alert alert-success";
+                message.textContent =
+                    "Registration यशस्वी झाले! Owner ची मंजुरी मिळेपर्यंत प्रतीक्षा करा.";
+
+                form.reset();
+
+            } catch (error) {
+                message.className = "alert alert-danger";
+                message.textContent =
+                    error.message === "Failed to fetch"
+                        ? "Backend Server सुरू आहे का ते तपासा."
+                        : error.message;
+
+            } finally {
+                registerButton.disabled = false;
+                registerButton.textContent = "Registration करा";
+            }
+        });
+    </script>
+
+</body>
+</html>

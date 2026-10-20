@@ -1,0 +1,703 @@
+
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>खर्च व उत्पन्न | आदेश डेअरी फार्म</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+ --green:#176b45;--dark:#104a32;--light:#e8f6ed;
+ --red:#d64545;--text:#24352b;--muted:#718078;
+ --border:#e3ebe5;--bg:#f5f8f5;--white:#fff
+}
+body{
+ font-family:"Noto Sans Devanagari","Segoe UI",Arial,sans-serif;
+ background:var(--bg);color:var(--text);min-height:100vh
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.topbar{
+ background:linear-gradient(120deg,#104a32,#207b4f);
+ color:white;padding:18px 5%;display:flex;align-items:center;
+ justify-content:space-between;gap:16px;flex-wrap:wrap;
+ box-shadow:0 5px 20px #104a321c
+}
+.brand{display:flex;align-items:center;gap:13px}
+.brand img{
+ width:58px;height:58px;object-fit:contain;background:white;
+ padding:4px;border-radius:14px
+}
+.brand h1{font-size:21px;margin-bottom:4px}
+.brand p{font-size:12px;opacity:.85}
+.back-btn{
+ color:white;text-decoration:none;border:1px solid #ffffff65;
+ border-radius:10px;padding:10px 15px;font-size:14px
+}
+.container{max-width:1450px;margin:auto;padding:30px 5%}
+.page-heading{
+ display:flex;justify-content:space-between;align-items:center;
+ flex-wrap:wrap;gap:12px;margin-bottom:22px
+}
+.page-heading h2{font-size:26px;margin-bottom:7px}
+.page-heading p{color:var(--muted);font-size:14px}
+.date-badge{
+ background:white;border:1px solid var(--border);border-radius:12px;
+ padding:12px 16px;color:var(--green);font-size:14px
+}
+.period-panel{
+ display:flex;align-items:center;justify-content:space-between;
+ flex-wrap:wrap;gap:14px;background:white;border:1px solid var(--border);
+ border-radius:15px;padding:17px 19px;margin-bottom:12px;
+ box-shadow:0 4px 15px #183c2408
+}
+.period-panel h3{font-size:17px;margin-bottom:5px}
+.period-panel p{font-size:12px;color:var(--muted)}
+.period-controls{display:flex;flex-wrap:wrap;gap:10px}
+.period-controls select,.period-controls input{
+ min-width:145px;padding:10px 12px;border:1px solid #dce5de;
+ background:#fbfdfb;border-radius:9px;color:var(--text);font-size:13px
+}
+.period-note{font-size:13px;color:var(--muted);margin:0 0 18px}
+.summary-grid{
+ display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+ gap:17px;margin-bottom:26px
+}
+.summary-card{
+ position:relative;background:white;padding:23px 20px;
+ border-radius:17px;border:1px solid var(--border);
+ box-shadow:0 5px 20px #183c2410;overflow:hidden
+}
+.summary-card:after{
+ content:"";position:absolute;width:75px;height:75px;right:-28px;
+ bottom:-28px;border-radius:50%;background:var(--card-light)
+}
+.summary-label{font-size:13px;color:var(--muted);margin-bottom:13px}
+.summary-value{font-size:clamp(19px,2vw,27px);font-weight:800;overflow-wrap:anywhere}
+.income-card{--card-light:#d8f5e3;border-top:4px solid #24a267}
+.income-card .summary-value{color:#198754}
+.expense-card{--card-light:#ffe2dc;border-top:4px solid #e56c51}
+.expense-card .summary-value{color:#d94f3b}
+.profit-card{--card-light:#dceaff;border-top:4px solid #397bd3}
+.profit-card .summary-value{color:#2867b2}
+.count-card{--card-light:#fff0d4;border-top:4px solid #e5a329}
+.count-card .summary-value{color:#b57b11}
+.content-grid{
+ display:grid;grid-template-columns:minmax(300px,.85fr) minmax(0,1.6fr);
+ gap:23px;align-items:start
+}
+.panel{
+ background:white;border:1px solid var(--border);border-radius:18px;
+ padding:24px;box-shadow:0 5px 20px #183c2408;min-width:0
+}
+.panel-heading{margin-bottom:22px}
+.panel-heading h3{font-size:19px;margin-bottom:6px}
+.panel-heading p{font-size:13px;color:var(--muted)}
+.type-switch{
+ display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:22px
+}
+.type-btn{
+ border:1px solid var(--border);background:#f7f9f7;color:#56645b;
+ border-radius:11px;padding:12px 8px;font-weight:700
+}
+.type-btn.active.income{background:#e6f6ec;color:#187b48;border-color:#8bd0a6}
+.type-btn.active.expense{background:#fff0ed;color:#c44436;border-color:#efb0a6}
+.form-group{margin-bottom:17px}
+.form-group label{display:block;font-size:13px;font-weight:700;margin-bottom:8px}
+.required{color:var(--red)}
+.form-group input,.form-group select,.form-group textarea{
+ width:100%;border:1px solid #dce5de;background:#fbfdfb;
+ padding:12px 13px;border-radius:10px;outline:none;color:var(--text);font-size:14px
+}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{
+ border-color:#48a777;box-shadow:0 0 0 3px #48a77718
+}
+.form-group textarea{resize:vertical;min-height:75px}
+.primary-btn{
+ width:100%;background:var(--green);color:white;border:0;
+ border-radius:11px;padding:14px;font-weight:700
+}
+.primary-btn:hover{background:var(--dark)}
+.primary-btn:disabled{opacity:.65;cursor:wait}
+.secondary-btn{
+ background:#eef3ef;color:#354c3d;border:1px solid var(--border);
+ padding:10px 13px;border-radius:9px
+}
+.form-actions{display:flex;gap:10px}
+.form-actions .primary-btn{flex:1}
+.hidden{display:none!important}
+.filters{
+ display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:18px
+}
+.filters input,.filters select{
+ width:100%;min-width:0;padding:10px;border:1px solid var(--border);
+ background:#fbfdfb;border-radius:9px;font-size:13px
+}
+.table-wrap{overflow-x:auto;width:100%}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{
+ text-align:left;padding:13px 11px;background:#f4f8f4;
+ color:#65746a;font-weight:700;white-space:nowrap
+}
+td{padding:14px 11px;border-bottom:1px solid #edf1ed;vertical-align:middle}
+tbody tr:hover{background:#fbfdfb}
+.record-name{font-weight:700;margin-bottom:4px}
+.record-description{color:var(--muted);font-size:11px;max-width:180px;overflow-wrap:anywhere}
+.type-tag{
+ display:inline-block;padding:5px 9px;border-radius:20px;
+ font-size:11px;font-weight:700;white-space:nowrap
+}
+.type-tag.income{color:#167442;background:#e3f6e9}
+.type-tag.expense{color:#c03d32;background:#fff0ed}
+.amount-income{color:#16834b;font-weight:800;white-space:nowrap}
+.amount-expense{color:#d34b3b;font-weight:800;white-space:nowrap}
+.actions{display:flex;gap:6px}
+.action-btn{border:0;padding:7px 9px;border-radius:7px;font-size:12px}
+.edit-btn{color:#235ea5;background:#eaf2ff}
+.delete-btn{color:#c33737;background:#fff0f0}
+.empty-state{text-align:center;padding:38px 15px;color:var(--muted)}
+.empty-state .empty-icon{font-size:34px;margin-bottom:12px}
+.empty-state h4{color:var(--text);margin-bottom:7px}
+.status-message{
+ padding:12px 14px;border-radius:10px;font-size:13px;
+ margin-bottom:17px;overflow-wrap:anywhere
+}
+.status-message.success{background:#e8f7ed;color:#176b45}
+.status-message.error{background:#fff0ed;color:#bd352c}
+.status-message.info{background:#edf4ff;color:#245c9d}
+.table-footer{
+ display:flex;justify-content:space-between;gap:10px;align-items:center;
+ margin-top:17px;flex-wrap:wrap;font-size:12px;color:var(--muted)
+}
+.refresh-btn{
+ border:1px solid var(--border);background:white;padding:9px 12px;
+ border-radius:9px;color:var(--green);font-weight:700
+}
+.footer{text-align:center;padding:28px 15px;color:#89958d;font-size:12px}
+@media(max-width:1050px){
+ .summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .content-grid{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+ .topbar{padding:14px 4%}
+ .brand img{width:47px;height:47px}
+ .brand h1{font-size:16px}
+ .brand p{font-size:10px}
+ .container{padding:23px 4%}
+ .page-heading h2{font-size:22px}
+ .summary-grid{gap:10px}
+ .summary-card{padding:17px 13px;border-radius:13px}
+ .summary-label{font-size:11px}
+ .summary-value{font-size:19px}
+ .panel{padding:17px 13px;border-radius:14px}
+ .filters{grid-template-columns:1fr}
+ .period-controls{width:100%}
+ .period-controls select,.period-controls input{flex:1;min-width:0;width:100%}
+ th,td{padding:11px 8px}
+}
+</style>
+</head>
+
+<body>
+<header class="topbar">
+ <div class="brand">
+  <img src="images/logo.png" alt="आदेश डेअरी फार्म लोगो">
+  <div>
+   <h1>आदेश डेअरी फार्म</h1>
+   <p>Adesh Dairy Farm · आर्थिक व्यवस्थापन</p>
+  </div>
+ </div>
+ <a class="back-btn" href="dashboard.html">← Dashboard वर जा</a>
+</header>
+
+<main class="container">
+ <section class="page-heading">
+  <div>
+   <h2>💰 खर्च व उत्पन्न व्यवस्थापन</h2>
+   <p>तुमच्या डेअरी फार्मचा आर्थिक हिशोब एकाच ठिकाणी.</p>
+  </div>
+  <div class="date-badge" id="todayDate">📅 तारीख</div>
+ </section>
+
+ <div id="statusMessage" class="status-message hidden" role="status"></div>
+
+ <section class="period-panel">
+  <div>
+   <h3>📅 महिन्याचा / वर्षाचा हिशोब</h3>
+   <p>महिना किंवा वर्ष निवडा; उत्पन्न, खर्च आणि शिल्लक आपोआप मोजली जाईल.</p>
+  </div>
+  <div class="period-controls">
+   <select id="periodMode" aria-label="हिशोबाचा कालावधी">
+    <option value="month">महिन्यानुसार</option>
+    <option value="year">वर्षानुसार</option>
+   </select>
+   <input type="month" id="periodMonth" aria-label="महिना निवडा">
+   <select id="periodYear" class="hidden" aria-label="वर्ष निवडा"></select>
+  </div>
+ </section>
+ <p class="period-note" id="periodNote">निवडलेल्या महिन्याचा हिशोब</p>
+
+ <section class="summary-grid">
+  <div class="summary-card income-card">
+   <div class="summary-label">↗ एकूण उत्पन्न</div>
+   <div class="summary-value" id="totalIncome">₹0.00</div>
+  </div>
+  <div class="summary-card expense-card">
+   <div class="summary-label">↘ एकूण खर्च</div>
+   <div class="summary-value" id="totalExpense">₹0.00</div>
+  </div>
+  <div class="summary-card profit-card">
+   <div class="summary-label" id="profitLabel">निव्वळ नफा / तोटा</div>
+   <div class="summary-value" id="profitLoss">₹0.00</div>
+  </div>
+  <div class="summary-card count-card">
+   <div class="summary-label">एकूण नोंदी</div>
+   <div class="summary-value" id="totalRecords">0</div>
+  </div>
+ </section>
+
+ <section class="content-grid">
+  <div class="panel">
+   <div class="panel-heading">
+    <h3 id="formHeading">＋ नवीन आर्थिक नोंद</h3>
+    <p>उत्पन्न किंवा खर्चाची माहिती भरा.</p>
+   </div>
+
+   <form id="recordForm">
+    <input type="hidden" id="recordId">
+    <div class="type-switch">
+     <button type="button" class="type-btn active income" data-type="income">＋ उत्पन्न</button>
+     <button type="button" class="type-btn" data-type="expense">− खर्च</button>
+    </div>
+    <input type="hidden" id="recordType" value="income">
+
+    <div class="form-group">
+     <label for="category">प्रकार / कारण <span class="required">*</span></label>
+     <select id="category" required>
+      <option value="">प्रकार निवडा</option>
+     </select>
+    </div>
+    <div class="form-group">
+     <label for="amount">रक्कम (₹) <span class="required">*</span></label>
+     <input type="number" id="amount" min="0.01" step="0.01" placeholder="उदा. 1500" required>
+    </div>
+    <div class="form-group">
+     <label for="recordDate">तारीख <span class="required">*</span></label>
+     <input type="date" id="recordDate" required>
+    </div>
+    <div class="form-group">
+     <label for="paymentMethod">पैसे देण्याची / मिळण्याची पद्धत</label>
+     <select id="paymentMethod">
+      <option value="cash">रोख (Cash)</option>
+      <option value="online">ऑनलाइन (UPI)</option>
+      <option value="bank">बँक (Bank)</option>
+      <option value="other">इतर</option>
+     </select>
+    </div>
+    <div class="form-group">
+     <label for="description">अधिक माहिती (ऐच्छिक)</label>
+     <textarea id="description" maxlength="1000" placeholder="उदा. ग्राहकाचे नाव, चाऱ्याचे तपशील..."></textarea>
+    </div>
+    <div class="form-actions">
+     <button type="submit" class="primary-btn" id="submitBtn">नोंद जतन करा</button>
+     <button type="button" class="secondary-btn hidden" id="cancelEditBtn">रद्द करा</button>
+    </div>
+   </form>
+  </div>
+
+  <div class="panel">
+   <div class="panel-heading">
+    <h3>📋 उत्पन्न व खर्चाच्या नोंदी</h3>
+    <p>सर्व नोंदी पाहा, शोधा किंवा बदल करा.</p>
+   </div>
+   <div class="filters">
+    <input type="date" id="filterDate" aria-label="तारखेनुसार फिल्टर">
+    <select id="filterType" aria-label="नोंदीच्या प्रकारानुसार फिल्टर">
+     <option value="all">सर्व नोंदी</option>
+     <option value="income">फक्त उत्पन्न</option>
+     <option value="expense">फक्त खर्च</option>
+    </select>
+   </div>
+   <div id="recordsContainer">
+    <div class="empty-state"><div class="empty-icon">📒</div><h4>नोंदी लोड होत आहेत...</h4></div>
+   </div>
+   <div class="table-footer">
+    <span id="recordCountLabel">0 नोंदी</span>
+    <button type="button" class="refresh-btn" id="refreshBtn">↻ Refresh</button>
+   </div>
+  </div>
+ </section>
+</main>
+
+<footer class="footer">
+ © <span id="year"></span> Adesh Dairy Farm · आर्थिक व्यवस्थापन
+</footer>
+
+<script>
+const API_BASE = "http://localhost:5000/api/financial";
+const $ = id => document.getElementById(id);
+
+let records = [];
+let selectedType = "income";
+let messageTimer;
+
+const categories = {
+ income: [
+  {value:"दूध विक्री",label:"दूध विक्री"},
+  {value:"दही विक्री",label:"दही विक्री"},
+  {value:"तूप विक्री",label:"तूप विक्री"},
+  {value:"इतर उत्पन्न",label:"इतर उत्पन्न"}
+ ],
+ expense: [
+  {value:"चारा",label:"चारा"},
+  {value:"पशुखाद्य",label:"पशुखाद्य"},
+  {value:"औषधे",label:"औषधे"},
+  {value:"पशुवैद्यकीय खर्च",label:"पशुवैद्यकीय खर्च"},
+  {value:"मजुरी",label:"मजुरी"},
+  {value:"वीज बिल",label:"वीज बिल"},
+  {value:"वाहतूक",label:"वाहतूक"},
+  {value:"जनावरांची खरेदी",label:"जनावरांची खरेदी"},
+  {value:"इतर खर्च",label:"इतर खर्च"}
+ ]
+};
+
+function money(value) {
+ return "₹" + Number(value || 0).toLocaleString("en-IN",{
+  minimumFractionDigits:2,maximumFractionDigits:2
+ });
+}
+
+function localDateInputValue(date = new Date()) {
+ return date.getFullYear() + "-" +
+  String(date.getMonth()+1).padStart(2,"0") + "-" +
+  String(date.getDate()).padStart(2,"0");
+}
+
+function escapeHTML(value) {
+ return String(value ?? "").replace(/[&<>"']/g,char=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ })[char]);
+}
+
+function showMessage(message,type="success") {
+ clearTimeout(messageTimer);
+ const box=$("statusMessage");
+ box.textContent=message;
+ box.className="status-message "+type;
+ messageTimer=setTimeout(()=>box.classList.add("hidden"),5000);
+}
+
+function getToken() {
+ return localStorage.getItem("authToken");
+}
+
+async function apiRequest(url,options={}) {
+ const token=getToken();
+ if(!token) {
+  throw new Error("Login token मिळाला नाही. Dashboard वरून लॉगिन करून हे पेज उघडा.");
+ }
+ const response=await fetch(API_BASE+url,{
+  ...options,
+  headers:{
+   "Content-Type":"application/json",
+   Authorization:"Bearer "+token,
+   ...(options.headers||{})
+  }
+ });
+ let data;
+ try { data=await response.json(); } catch { data={}; }
+ if(response.status===401||response.status===403) {
+  throw new Error(data.message||"लॉगिन किंवा Owner परवानगी तपासा.");
+ }
+ if(!response.ok) throw new Error(data.message||"विनंती पूर्ण करता आली नाही.");
+ return data;
+}
+
+function updateCategoryOptions(preferredValue="") {
+ const select=$("category");
+ select.replaceChildren();
+ const placeholder=document.createElement("option");
+ placeholder.value="";
+ placeholder.textContent="प्रकार निवडा";
+ select.appendChild(placeholder);
+
+ categories[selectedType].forEach(item=>{
+  const option=document.createElement("option");
+  option.value=item.value;
+  option.textContent=item.label;
+  select.appendChild(option);
+ });
+
+ if(preferredValue&&!categories[selectedType].some(item=>item.value===preferredValue)) {
+  const option=document.createElement("option");
+  option.value=preferredValue;
+  option.textContent=preferredValue;
+  select.appendChild(option);
+ }
+ select.value=preferredValue;
+}
+
+function setType(type) {
+ if(!["income","expense"].includes(type)) return;
+ selectedType=type;
+ $("recordType").value=type;
+ document.querySelectorAll(".type-btn").forEach(button=>{
+  const active=button.dataset.type===type;
+  button.classList.toggle("active",active);
+  button.classList.toggle("income",active&&type==="income");
+  button.classList.toggle("expense",active&&type==="expense");
+  button.setAttribute("aria-pressed",String(active));
+ });
+ updateCategoryOptions();
+}
+
+function getPeriodRecords() {
+ const mode=$("periodMode").value;
+ let start,end;
+
+ if(mode==="month") {
+  const value=$("periodMonth").value;
+  if(!value) return [];
+  const [year,month]=value.split("-").map(Number);
+  start=new Date(year,month-1,1);
+  end=new Date(year,month,1);
+ } else {
+  const year=Number($("periodYear").value);
+  if(!year) return [];
+  start=new Date(year,0,1);
+  end=new Date(year+1,0,1);
+ }
+
+ return records.filter(record=>{
+  const date=new Date(record.date);
+  return !Number.isNaN(date.getTime())&&date>=start&&date<end;
+ });
+}
+
+function renderSummary() {
+ const periodRecords=getPeriodRecords();
+ let income=0,expense=0;
+
+ periodRecords.forEach(record=>{
+  if(record.type==="income") income+=Number(record.amount||0);
+  if(record.type==="expense") expense+=Number(record.amount||0);
+ });
+
+ const difference=income-expense;
+ $("totalIncome").textContent=money(income);
+ $("totalExpense").textContent=money(expense);
+ $("profitLoss").textContent=(difference>0?"+":"")+money(difference);
+ $("profitLabel").textContent=difference<0?"निव्वळ तोटा":"निव्वळ नफा / शिल्लक";
+ $("profitLoss").style.color=difference<0?"#d64545":"#2867b2";
+ $("totalRecords").textContent=periodRecords.length;
+
+ if($("periodMode").value==="month") {
+  const value=$("periodMonth").value;
+  if(value) {
+   const [year,month]=value.split("-").map(Number);
+   $("periodNote").textContent=
+    new Date(year,month-1,1).toLocaleDateString("mr-IN",{month:"long",year:"numeric"})+
+    " या महिन्याचा हिशोब";
+  }
+ } else {
+  $("periodNote").textContent=$("periodYear").value+" या वर्षाचा हिशोब";
+ }
+}
+
+function setupPeriodControls() {
+ const now=new Date();
+ $("periodMonth").value=localDateInputValue().slice(0,7);
+
+ const yearSelect=$("periodYear");
+ const currentYear=now.getFullYear();
+ for(let year=currentYear-10;year<=currentYear+2;year++) {
+  const option=document.createElement("option");
+  option.value=year;
+  option.textContent=year;
+  yearSelect.appendChild(option);
+ }
+ yearSelect.value=currentYear;
+
+ $("periodMode").addEventListener("change",()=>{
+  const yearly=$("periodMode").value==="year";
+  $("periodMonth").classList.toggle("hidden",yearly);
+  $("periodYear").classList.toggle("hidden",!yearly);
+  renderSummary();
+ });
+ $("periodMonth").addEventListener("change",renderSummary);
+ $("periodYear").addEventListener("change",renderSummary);
+}
+
+function formatDate(value) {
+ const date=new Date(value);
+ if(Number.isNaN(date.getTime())) return "—";
+ return date.toLocaleDateString("en-IN",{
+  day:"2-digit",month:"short",year:"numeric"
+ });
+}
+
+function getFilteredRecords() {
+ const date=$("filterDate").value;
+ const type=$("filterType").value;
+ return records.filter(record=>{
+  const recordDate=localDateInputValue(new Date(record.date));
+  return (!date||recordDate===date)&&(type==="all"||record.type===type);
+ });
+}
+
+function renderRecords() {
+ const filtered=getFilteredRecords();
+ const container=$("recordsContainer");
+ $("recordCountLabel").textContent=filtered.length+" नोंदी दाखवत आहोत";
+
+ if(!filtered.length) {
+  container.innerHTML='<div class="empty-state"><div class="empty-icon">📒</div><h4>नोंद उपलब्ध नाही</h4><p>नवीन नोंद जोडा किंवा फिल्टर बदला.</p></div>';
+  return;
+ }
+
+ const rows=filtered.map(record=>{
+  const income=record.type==="income";
+  return `<tr>
+   <td>${escapeHTML(formatDate(record.date))}</td>
+   <td><div class="record-name">${escapeHTML(record.category)}</div>
+   <div class="record-description">${escapeHTML(record.description||"")}</div></td>
+   <td><span class="type-tag ${income?"income":"expense"}">${income?"उत्पन्न":"खर्च"}</span></td>
+   <td class="${income?"amount-income":"amount-expense"}">${income?"+":"−"}${escapeHTML(money(record.amount))}</td>
+   <td><div class="actions">
+    <button type="button" class="action-btn edit-btn" data-action="edit" data-id="${escapeHTML(record._id)}">बदल</button>
+    <button type="button" class="action-btn delete-btn" data-action="delete" data-id="${escapeHTML(record._id)}">हटवा</button>
+   </div></td>
+  </tr>`;
+ }).join("");
+
+ container.innerHTML=`<div class="table-wrap"><table>
+  <thead><tr><th>तारीख</th><th>तपशील</th><th>प्रकार</th><th>रक्कम</th><th>कृती</th></tr></thead>
+  <tbody>${rows}</tbody>
+ </table></div>`;
+}
+
+async function loadRecords() {
+ $("refreshBtn").disabled=true;
+ try {
+  const data=await apiRequest("");
+  if(!Array.isArray(data)) throw new Error("Backend कडून नोंदींची योग्य यादी मिळाली नाही.");
+  records=data;
+  renderSummary();
+  renderRecords();
+ } catch(error) {
+  showMessage(error.message,"error");
+  $("recordsContainer").innerHTML=`<div class="empty-state">
+   <div class="empty-icon">⚠️</div><h4>नोंदी लोड झाल्या नाहीत</h4>
+   <p>${escapeHTML(error.message)}</p><p>Backend सुरू आहे का ते तपासा.</p>
+  </div>`;
+ } finally {
+  $("refreshBtn").disabled=false;
+ }
+}
+
+function resetForm() {
+ $("recordForm").reset();
+ $("recordId").value="";
+ $("recordDate").value=localDateInputValue();
+ $("paymentMethod").value="cash";
+ $("formHeading").textContent="＋ नवीन आर्थिक नोंद";
+ $("submitBtn").textContent="नोंद जतन करा";
+ $("cancelEditBtn").classList.add("hidden");
+ setType("income");
+ updateCategoryOptions();
+}
+
+function editRecord(id) {
+ const record=records.find(item=>item._id===id);
+ if(!record) return showMessage("नोंद सापडली नाही.","error");
+
+ $("recordId").value=record._id;
+ setType(record.type);
+ updateCategoryOptions(record.category);
+ $("amount").value=record.amount;
+ $("recordDate").value=localDateInputValue(new Date(record.date));
+ $("paymentMethod").value=record.paymentMethod||"cash";
+ $("description").value=record.description||"";
+ $("formHeading").textContent="✎ आर्थिक नोंद बदला";
+ $("submitBtn").textContent="बदल जतन करा";
+ $("cancelEditBtn").classList.remove("hidden");
+ $("recordForm").scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+async function deleteRecord(id) {
+ const record=records.find(item=>item._id===id);
+ if(!record) return;
+ if(!confirm('"'+record.category+'" ही नोंद कायमची हटवायची आहे का?')) return;
+
+ try {
+  const result=await apiRequest("/"+encodeURIComponent(id),{method:"DELETE"});
+  showMessage(result.message||"नोंद हटवली.");
+  await loadRecords();
+ } catch(error) {
+  showMessage(error.message,"error");
+ }
+}
+
+$("recordForm").addEventListener("submit",async event=>{
+ event.preventDefault();
+ const id=$("recordId").value;
+ const amount=Number($("amount").value);
+ if(!Number.isFinite(amount)||amount<=0) {
+  showMessage("रक्कम शून्यापेक्षा जास्त असावी.","error");
+  return;
+ }
+
+ const payload={
+  type:selectedType,
+  category:$("category").value,
+  amount,
+  date:$("recordDate").value,
+  paymentMethod:$("paymentMethod").value,
+  description:$("description").value.trim()
+ };
+ if(!payload.category) return showMessage("कृपया प्रकार निवडा.","error");
+
+ const button=$("submitBtn");
+ button.disabled=true;
+ try {
+  const result=await apiRequest(id?"/"+encodeURIComponent(id):"",{
+   method:id?"PUT":"POST",body:JSON.stringify(payload)
+  });
+  showMessage(result.message||"नोंद यशस्वीरित्या जतन झाली.");
+  resetForm();
+  await loadRecords();
+ } catch(error) {
+  showMessage(error.message,"error");
+ } finally {
+  button.disabled=false;
+ }
+});
+
+document.querySelectorAll(".type-btn").forEach(button=>{
+ button.addEventListener("click",()=>setType(button.dataset.type));
+});
+$("cancelEditBtn").addEventListener("click",resetForm);
+$("refreshBtn").addEventListener("click",loadRecords);
+$("filterDate").addEventListener("change",renderRecords);
+$("filterType").addEventListener("change",renderRecords);
+
+$("recordsContainer").addEventListener("click",event=>{
+ const button=event.target.closest("button[data-action]");
+ if(!button) return;
+ if(button.dataset.action==="edit") editRecord(button.dataset.id);
+ if(button.dataset.action==="delete") deleteRecord(button.dataset.id);
+});
+
+$("todayDate").textContent="📅 "+new Date().toLocaleDateString("mr-IN",{
+ day:"2-digit",month:"long",year:"numeric"
+});
+$("year").textContent=new Date().getFullYear();
+
+setupPeriodControls();
+resetForm();
+loadRecords();
+</script>
+</body>
+</html>

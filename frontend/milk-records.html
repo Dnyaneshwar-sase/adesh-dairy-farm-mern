@@ -1,0 +1,575 @@
+
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>दूध व्यवस्थापन | आदेश डेअरी फार्म</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 18px;
+            background: #f5f7f4;
+            color: #254333;
+            font-family: "Noto Sans Devanagari", "Segoe UI", sans-serif;
+        }
+
+        .container {
+            max-width: 1090px;
+            margin: 0 auto;
+        }
+
+        .navigation {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+
+        .nav-btn {
+            padding: 11px 17px;
+            background: #eaf5e9;
+            border: 1px solid #cce5cc;
+            border-radius: 9px;
+            color: #175b32;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .page-title {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin: 0 0 8px;
+            color: #176b3c;
+            font-size: 34px;
+        }
+
+        .subtitle {
+            color: #718074;
+            margin: 0 0 27px;
+            font-size: 16px;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid #e0e9e1;
+            border-radius: 17px;
+            padding: 24px;
+            margin-bottom: 29px;
+            box-shadow: 0 7px 22px rgba(35, 66, 42, 0.06);
+        }
+
+        .card h2 {
+            margin: 0 0 24px;
+            font-size: 25px;
+            color: #176b3c;
+        }
+
+        .form-group {
+            margin-bottom: 19px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 9px;
+            font-size: 16px;
+            font-weight: 650;
+            color: #34495e;
+        }
+
+        input {
+            width: 100%;
+            min-width: 0;
+            padding: 12px;
+            border: 1px solid #d2dce5;
+            border-radius: 9px;
+            background: white;
+            color: #263746;
+            font-size: 15px;
+            font-family: inherit;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #66a879;
+            box-shadow: 0 0 0 3px rgba(50, 130, 75, 0.10);
+        }
+
+        .milk-fields {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 17px;
+        }
+
+        .save-btn {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #cce6cc;
+            border-radius: 9px;
+            background: #e8f5e8;
+            color: #176536;
+            font-size: 15px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .save-btn:hover {
+            background: #d9eedb;
+        }
+
+        .save-btn:disabled {
+            opacity: 0.65;
+            cursor: wait;
+        }
+
+        .message {
+            display: none;
+            margin-top: 14px;
+            padding: 12px;
+            border-radius: 8px;
+            overflow-wrap: anywhere;
+        }
+
+        .message.success {
+            display: block;
+            color: #176536;
+            background: #e8f5e8;
+        }
+
+        .message.error {
+            display: block;
+            color: #a32727;
+            background: #fff0f0;
+        }
+
+        .records-card {
+            padding: 24px;
+        }
+
+        .records-card h2 {
+            margin-bottom: 25px;
+        }
+
+        .record {
+            display: grid;
+            grid-template-columns: 1.3fr 0.8fr 0.8fr 0.8fr;
+            align-items: center;
+            gap: 16px;
+            padding: 18px;
+            border: 1px solid #dfe9df;
+            border-radius: 13px;
+            margin-bottom: 12px;
+        }
+
+        .record-info strong {
+            display: block;
+            margin-bottom: 10px;
+            color: #176b3c;
+            font-size: 16px;
+        }
+
+        .record-date {
+            color: #788394;
+            font-size: 14px;
+        }
+
+        .record-value {
+            font-size: 15px;
+            color: #30445a;
+        }
+
+        .record-total {
+            color: #176b3c;
+            font-weight: 750;
+        }
+
+        .empty-state {
+            padding: 27px 12px;
+            text-align: center;
+            color: #778477;
+            line-height: 1.8;
+        }
+
+        .empty-icon {
+            font-size: 33px;
+            margin-bottom: 8px;
+        }
+
+        .records-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .records-header h2 {
+            margin: 0;
+        }
+
+        .refresh-btn {
+            padding: 9px 13px;
+            border: 1px solid #cce5cc;
+            border-radius: 8px;
+            background: #eaf5e9;
+            color: #176536;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .loading {
+            padding: 25px;
+            text-align: center;
+            color: #788394;
+        }
+
+        @media (max-width: 650px) {
+            body {
+                padding: 13px;
+            }
+
+            .page-title {
+                font-size: 27px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .milk-fields {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .record {
+                grid-template-columns: 1fr 1fr;
+                gap: 17px 10px;
+            }
+
+            .record-info {
+                grid-column: 1 / -1;
+            }
+
+            .records-header h2 {
+                font-size: 21px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <nav class="navigation">
+        <a class="nav-btn" href="dashboard.html">← Back</a>
+        <a class="nav-btn" href="dashboard.html">🏠 Dashboard</a>
+    </nav>
+
+    <h1 class="page-title">🥛 दूध व्यवस्थापन</h1>
+    <p class="subtitle">संपूर्ण फार्मच्या दूध उत्पादनाची नोंद</p>
+
+    <section class="card">
+        <h2>नवीन दूध नोंद</h2>
+
+        <form id="milkForm">
+            <div class="form-group">
+                <label for="milkDate">तारीख</label>
+                <input type="date" id="milkDate" required>
+            </div>
+
+            <div class="milk-fields">
+                <div class="form-group">
+                    <label for="morningMilk">🌅 सकाळचे दूध (Liter)</label>
+                    <input
+                        type="number"
+                        id="morningMilk"
+                        min="0"
+                        step="0.01"
+                        placeholder="उदा. 7.5"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="eveningMilk">🌙 संध्याकाळचे दूध (Liter)</label>
+                    <input
+                        type="number"
+                        id="eveningMilk"
+                        min="0"
+                        step="0.01"
+                        placeholder="उदा. 6.5"
+                        required
+                    >
+                </div>
+            </div>
+
+            <button class="save-btn" id="saveBtn" type="submit">
+                💾 दूध नोंद जतन करा
+            </button>
+
+            <div id="formMessage" class="message" role="status"></div>
+        </form>
+    </section>
+
+    <section class="card records-card">
+        <div class="records-header">
+            <h2>📋 दूध नोंदी</h2>
+            <button class="refresh-btn" id="refreshBtn" type="button">
+                ↻ Refresh
+            </button>
+        </div>
+
+        <div id="recordsArea">
+            <div class="loading">दूध नोंदी लोड होत आहेत...</div>
+        </div>
+    </section>
+
+</div>
+
+<script>
+    const API_URL = "http://localhost:5000/api/milk";
+
+    const dateInput = document.getElementById("milkDate");
+    const morningInput = document.getElementById("morningMilk");
+    const eveningInput = document.getElementById("eveningMilk");
+    const saveBtn = document.getElementById("saveBtn");
+    const formMessage = document.getElementById("formMessage");
+    const recordsArea = document.getElementById("recordsArea");
+
+    let milkRecords = [];
+
+    function setTodayDate() {
+        const now = new Date();
+        dateInput.value = [
+            now.getFullYear(),
+            String(now.getMonth() + 1).padStart(2, "0"),
+            String(now.getDate()).padStart(2, "0")
+        ].join("-");
+    }
+
+    function getAuthToken() {
+        const sessionToken = localStorage.getItem("authToken");
+
+        if (sessionToken) {
+            return sessionToken;
+        }
+
+        const keys = [
+            "token", "jwtToken", "accessToken", "access_token"
+        ];
+
+        for (const key of keys) {
+            const value =
+                localStorage.getItem(key) ||
+                localStorage.getItem(key);
+
+            if (value && value.split(".").length === 3) {
+                return value;
+            }
+        }
+
+        return null;
+    }
+
+    function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, character => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        })[character]);
+    }
+
+    function showMessage(text, type) {
+        formMessage.textContent = text;
+        formMessage.className = "message " + type;
+    }
+
+    function formatMilk(value) {
+        return (Number(value) || 0).toFixed(2);
+    }
+
+    function renderRecords() {
+        if (!milkRecords.length) {
+            recordsArea.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">🥛</div>
+                    <strong>अजून दूध नोंदी उपलब्ध नाहीत.</strong>
+                    <div>पहिली नोंद करण्यासाठी वरील फॉर्म वापरा.</div>
+                </div>
+            `;
+            return;
+        }
+
+        recordsArea.innerHTML = milkRecords.map(record => {
+            const morning = Number(record.morningMilk || 0);
+            const evening = Number(record.eveningMilk || 0);
+            const total = Number(record.totalMilk ?? (morning + evening));
+
+            return `
+                <div class="record">
+                    <div class="record-info">
+                        <strong>🐄 संपूर्ण फार्म</strong>
+                        <div class="record-date">
+                            🗓️ ${escapeHtml(record.date || "")}
+                        </div>
+                    </div>
+
+                    <div class="record-value">
+                        🌅 ${formatMilk(morning)} L
+                    </div>
+
+                    <div class="record-value">
+                        🌙 ${formatMilk(evening)} L
+                    </div>
+
+                    <div class="record-value record-total">
+                        🥛 ${formatMilk(total)} L
+                    </div>
+                </div>
+            `;
+        }).join("");
+    }
+
+    async function loadRecords() {
+        const token = getAuthToken();
+
+        if (!token) {
+            recordsArea.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">🔐</div>
+                    Login token सापडला नाही. आधी Login करा.
+                </div>
+            `;
+            return;
+        }
+
+        recordsArea.innerHTML =
+            '<div class="loading">दूध नोंदी लोड होत आहेत...</div>';
+
+        try {
+            const response = await fetch(API_URL, {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(
+                    response.status === 401 || response.status === 403
+                        ? "प्रवेश मिळाला नाही. पुन्हा Login करा."
+                        : "दूध नोंदी लोड करता आल्या नाहीत."
+                );
+            }
+
+            milkRecords = await response.json();
+
+            if (!Array.isArray(milkRecords)) {
+                throw new Error("API कडून अयोग्य प्रतिसाद मिळाला.");
+            }
+
+            renderRecords();
+        } catch (error) {
+            recordsArea.innerHTML = `
+                <div class="empty-state">
+                    ⚠️ ${escapeHtml(error.message)}
+                </div>
+            `;
+        }
+    }
+
+    document.getElementById("milkForm").addEventListener(
+        "submit",
+        async function(event) {
+            event.preventDefault();
+
+            const token = getAuthToken();
+
+            if (!token) {
+                showMessage("आधी Login करा.", "error");
+                return;
+            }
+
+            const date = dateInput.value;
+            const morningText = morningInput.value.trim();
+            const eveningText = eveningInput.value.trim();
+            const morning = Number(morningText);
+            const evening = Number(eveningText);
+
+            if (
+                !date ||
+                morningText === "" ||
+                eveningText === "" ||
+                !Number.isFinite(morning) ||
+                !Number.isFinite(evening) ||
+                morning < 0 ||
+                evening < 0
+            ) {
+                showMessage(
+                    "तारीख आणि दोन्ही वेळचे दूध योग्य प्रकारे भरा.",
+                    "error"
+                );
+                return;
+            }
+
+            saveBtn.disabled = true;
+            saveBtn.textContent = "सेव्ह होत आहे...";
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + token
+                    },
+                    body: JSON.stringify({
+                        date,
+                        morningMilk: morning,
+                        eveningMilk: evening
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        result.message || "दूध नोंद सेव्ह झाली नाही."
+                    );
+                }
+
+                showMessage(
+                    result.message || "दूध नोंद यशस्वीरित्या जतन झाली.",
+                    "success"
+                );
+
+                morningInput.value = "";
+                eveningInput.value = "";
+
+                await loadRecords();
+            } catch (error) {
+                showMessage(error.message, "error");
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = "💾 दूध नोंद जतन करा";
+            }
+        }
+    );
+
+    document.getElementById("refreshBtn").addEventListener(
+        "click", loadRecords
+    );
+
+    setTodayDate();
+    loadRecords();
+</script>
+</body>
+</html>
