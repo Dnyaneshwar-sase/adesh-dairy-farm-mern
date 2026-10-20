@@ -7,11 +7,15 @@ const User = require("../models/User");
 
 async function createOwners() {
     try {
+        // MongoDB connection तपासा
         if (!process.env.MONGODB_URI) {
-            throw new Error("MONGODB_URI .env मध्ये सेट केलेला नाही.");
+            throw new Error(
+                "MONGODB_URI .env मध्ये सेट केलेला नाही."
+            );
         }
 
         await mongoose.connect(process.env.MONGODB_URI);
+        console.log("MongoDB connected successfully.");
 
         const owners = [
             {
@@ -45,7 +49,9 @@ async function createOwners() {
             );
 
             if (allEmpty) {
-                console.log(`${owner.label}: माहिती भरलेली नाही, वगळले.`);
+                console.log(
+                    `${owner.label}: माहिती भरलेली नाही, वगळले.`
+                );
                 continue;
             }
 
@@ -61,12 +67,13 @@ async function createOwners() {
 
             if (owner.password.length < 8) {
                 throw new Error(
-                    `${owner.label}: Password किमान 8 अक्षरांचा असावा.`
+                    `${owner.label}: Password किमान 8 characters चा असावा.`
                 );
             }
 
             const email = owner.email.trim().toLowerCase();
 
+            // Email आधीपासून उपलब्ध आहे का?
             const existingUser = await User.findOne({ email });
 
             if (existingUser) {
@@ -75,19 +82,23 @@ async function createOwners() {
                     existingUser.status !== "approved"
                 ) {
                     throw new Error(
-                        `${email} वर आधीपासून Owner नसलेले किंवा मंजूर नसलेले खाते आहे.`
+                        `${email} वर खाते आधीपासून आहे; ते Owner आणि approved नाही.`
                     );
                 }
 
-                console.log(`Owner आधीपासून उपलब्ध आहे: ${email}`);
+                console.log(
+                    `Owner आधीपासून उपलब्ध आहे: ${email}`
+                );
                 continue;
             }
 
+            // Password hash करा
             const hashedPassword = await bcrypt.hash(
                 owner.password,
                 12
             );
 
+            // Owner account तयार करा
             await User.create({
                 name: owner.name.trim(),
                 mobileNumber: owner.mobileNumber.trim(),
@@ -98,20 +109,28 @@ async function createOwners() {
             });
 
             createdCount++;
-            console.log(`Owner Account तयार झाले: ${email}`);
-        }
 
-        if (createdCount === 0) {
             console.log(
-                "नवीन Owner तयार झाला नाही. .env मधील Owner माहिती तपासा."
+                `${owner.label}: Owner account तयार झाले.`
             );
         }
+
+        console.log(
+            `Owner setup पूर्ण. नवीन accounts: ${createdCount}`
+        );
+
     } catch (error) {
-        console.error("Owner Setup Failed:", error.message);
+        console.error(
+            "Owner Setup Failed:",
+            error.message
+        );
+
         process.exitCode = 1;
+
     } finally {
         if (mongoose.connection.readyState !== 0) {
             await mongoose.disconnect();
+            console.log("MongoDB disconnected.");
         }
     }
 }
