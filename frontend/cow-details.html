@@ -1,9 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="mr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>गायीची संपूर्ण माहिती | आदेश डेअरी फार्म</title>
 
     <style>
@@ -356,7 +356,8 @@
     </main>
 
     <script>
-        const API_URL = "http://localhost:5000/api/cows";
+        const API_URL =
+            "https://adesh-dairy-farm-mern.vercel.app/api/cows";
 
         const params = new URLSearchParams(window.location.search);
         const cowId = params.get("id");
@@ -397,54 +398,58 @@
             });
         }
 
-        function showPhotoPlaceholder(message = "या गायीचा फोटो उपलब्ध नाही") {
+        function showPhotoPlaceholder(
+            message = "या गायीचा फोटो उपलब्ध नाही"
+        ) {
             photo.style.display = "none";
             photo.removeAttribute("src");
             photoMessage.textContent = message;
             placeholder.style.display = "flex";
         }
 
-        
+        function loadPhoto(photoPath) {
+            const defaultPhoto = "images/default-cow.png";
+            let imageUrl;
 
-function loadPhoto(photoPath) {
-    const defaultPhoto = "/images/default-cow.png";
+            if (
+                !photoPath ||
+                photoPath === "/images/default-cow.png" ||
+                photoPath === defaultPhoto
+            ) {
+                imageUrl = new URL(
+                    defaultPhoto,
+                    window.location.href
+                ).href;
+            } else if (
+                /^(https?:\/\/|data:image\/)/i.test(photoPath)
+            ) {
+                imageUrl = photoPath;
+            } else if (photoPath.startsWith("/")) {
+                imageUrl =
+                    "https://adesh-dairy-farm-mern.vercel.app" +
+                    photoPath;
+            } else {
+                imageUrl =
+                    "https://adesh-dairy-farm-mern.vercel.app/" +
+                    photoPath;
+            }
 
-    let imageUrl;
+            photo.onload = function () {
+                photo.style.display = "block";
+                placeholder.style.display = "none";
+            };
 
-    if (!photoPath || photoPath === defaultPhoto) {
-        // Default फोटो frontend मधून लोड करा.
-        imageUrl = new URL(
-            "images/default-cow.png",
-            window.location.href
-        ).href;
-    } else if (/^https?:\/\//i.test(photoPath)) {
-        imageUrl = photoPath;
-    } else {
-        // Upload केलेला फोटो backend मधून लोड करा.
-        imageUrl = photoPath.startsWith("/")
-            ? "http://localhost:5000" + photoPath
-            : "http://localhost:5000/" + photoPath;
-    }
+            photo.onerror = function () {
+                showPhotoPlaceholder(
+                    "फोटो सापडला नाही. फोटोचा path तपासा."
+                );
+                console.error("Photo loading failed:", imageUrl);
+            };
 
-    photo.onload = function () {
-        photo.style.display = "block";
-        placeholder.style.display = "none";
-    };
-
-    photo.onerror = function () {
-        photo.style.display = "none";
-        placeholder.style.display = "flex";
-        photoMessage.textContent = "फोटो सापडला नाही. फोटोचा path तपासा.";
-        console.error("Photo loading failed:", imageUrl);
-    };
-
-    photo.style.display = "none";
-    placeholder.style.display = "flex";
-    photo.src = imageUrl;
-}
-
-
-        
+            photo.style.display = "none";
+            placeholder.style.display = "flex";
+            photo.src = imageUrl;
+        }
 
         function showError(message) {
             errorMessage.textContent = message;
@@ -488,7 +493,10 @@ function loadPhoto(photoPath) {
                 );
 
                 if (!response.ok) {
-                    if (response.status === 401 || response.status === 403) {
+                    if (
+                        response.status === 401 ||
+                        response.status === 403
+                    ) {
                         throw new Error(
                             "Login session संपली आहे किंवा परवानगी नाही. पुन्हा Login करा."
                         );
@@ -509,15 +517,21 @@ function loadPhoto(photoPath) {
                 const cow = result.cow || result.data || result;
 
                 if (!cow || (!cow._id && !cow.id)) {
-                    throw new Error("गायीची योग्य माहिती API मधून मिळाली नाही.");
+                    throw new Error(
+                        "गायीची योग्य माहिती API मधून मिळाली नाही."
+                    );
                 }
 
-                // निवडलेल्या गायीचीच माहिती दाखवा.
                 document.getElementById("cowName").textContent =
                     displayValue(cow.name);
 
                 document.getElementById("cowTag").textContent =
-                    displayValue(cow.cowTag || cow.tagNumber || cow._id || cow.id);
+                    displayValue(
+                        cow.cowTag ||
+                        cow.tagNumber ||
+                        cow._id ||
+                        cow.id
+                    );
 
                 document.getElementById("cowBreed").textContent =
                     displayValue(cow.breed);
@@ -537,10 +551,12 @@ function loadPhoto(photoPath) {
                 console.error("Cow details error:", error);
 
                 showError(
-                    error.message || "गायीची माहिती लोड करता आली नाही."
+                    error.message ||
+                    "गायीची माहिती लोड करता आली नाही."
                 );
 
                 showPhotoPlaceholder();
+
                 document.getElementById("cowName").textContent =
                     "गायीची माहिती लोड झाली नाही";
             }

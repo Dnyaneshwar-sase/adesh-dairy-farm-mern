@@ -441,7 +441,7 @@
 
    
 <script>
-    const API_URL = "http://localhost:5000/api/cows";
+  const API_URL = "https://adesh-dairy-farm-mern.vercel.app/api/cows";
 
     const form = document.getElementById("addCowForm");
     const message = document.getElementById("message");
@@ -520,34 +520,44 @@
     }
 
     // फोटो URL योग्य बनवा.
-    function getPhotoUrl(photoPath) {
-        if (
-            !photoPath ||
-            photoPath === "/images/default-cow.png" ||
-            photoPath === "images/default-cow.png"
-        ) {
-            return DEFAULT_PHOTO;
-        }
-
-        if (/^(https?:\/\/|data:image\/)/i.test(photoPath)) {
-            return photoPath;
-        }
-
-        if (photoPath.startsWith("/")) {
-            return "http://localhost:5000" + photoPath;
-        }
-
-        return "http://localhost:5000/" + photoPath;
+    
+function getPhotoUrl(photoPath) {
+    if (
+        !photoPath ||
+        photoPath === "/images/default-cow.png" ||
+        photoPath === "images/default-cow.png"
+    ) {
+        return DEFAULT_PHOTO;
     }
+
+    if (/^(https?:\/\/|data:image\/)/i.test(photoPath)) {
+        return photoPath;
+    }
+
+    if (photoPath.startsWith("/")) {
+        return "https://adesh-dairy-farm-mern.vercel.app" + photoPath;
+    }
+
+    return "https://adesh-dairy-farm-mern.vercel.app/" + photoPath;
+}
+
+
+       if (photoPath.startsWith("/")) {
+    return "https://adesh-dairy-farm-mern.vercel.app" + photoPath;
+}
+
+       return "https://adesh-dairy-farm-mern.vercel.app/" + photoPath;
 
     function showPhoto(photoPath) {
         const imageUrl = getPhotoUrl(photoPath);
+    }
 
         photoPreview.onerror = function () {
             // Upload केलेला फोटो नसेल किंवा सापडला नाही तर default फोटो वापरा.
             if (photoPreview.src !== DEFAULT_PHOTO) {
                 photoPreview.src = DEFAULT_PHOTO;
-            } else {
+            } 
+            else {
                 photoPreview.style.display = "none";
                 console.error("Default cow photo not found:", DEFAULT_PHOTO);
             }
@@ -557,7 +567,7 @@
             photoPreview.style.display = "block";
         };
 
-        photoPreview.src = imageUrl;
+        photoPreview.src = imageUrl;{
         photoPreview.style.display = "block";
     }
 

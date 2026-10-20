@@ -6,34 +6,20 @@ const fs = require("fs");
 
 const GalleryMedia = require("../models/GalleryMedia");
 const ownerAuth = require("../middleware/ownerAuth");
+const cloudinary = require("../cloudinary");
 
 const router = express.Router();
-
-// Upload folder path
-const uploadDir = path.join(__dirname, "..", "uploads", "gallery");
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, uploadDir);
-    },
-    filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname).toLowerCase();
-        const uniqueName =
-            Date.now() + "-" + Math.round(Math.random() * 1e9) + ext;
-
-        cb(null, uniqueName);
-    }
-});
 
 const allowedExtensions = new Set([
     ".jpg", ".jpeg", ".png", ".webp",
     ".mp4", ".webm", ".mov"
 ]);
 
+// Vercel request-size मर्यादा लक्षात घेऊन 4 MB पर्यंत
 const upload = multer({
-    storage,
+    storage: multer.memoryStorage(),
     limits: {
-        fileSize: 100 * 1024 * 1024
+        fileSize: 4 * 1024 * 1024
     },
     fileFilter: (req, file, cb) => {
         const ext = path.extname(file.originalname).toLowerCase();
@@ -48,7 +34,32 @@ const upload = multer({
     }
 });
 
-// Public Gallery: Login आवश्यक नाही
+// Memory मधून Cloudinary वर Upload
+function uploadToCloudinary(file) {
+    return new Promise((resolve, reject) => {
+        const resourceType = file.mimetype.startsWith("video/")
+            ? "video"
+            : "image";
+
+        const stream = cloudinary.uploader.upload_stream(
+            {
+                folder: "adesh-dairy-gallery",
+                resource_type: resourceType
+            },
+            (error, result) => {
+                if (error) {
+                    return reject(error);
+                }
+
+                resolve(result);
+            }
+        );
+
+        stream.end(file.buffer);
+    });
+}
+
+// Public Gallery
 router.get("/", async (req, res) => {
     try {
         const media = await GalleryMedia.find()
@@ -60,11 +71,16 @@ router.get("/", async (req, res) => {
             success: true,
             media: media.map(item => ({
                 ...item,
-                url: `/uploads/gallery/${encodeURIComponent(item.filename)}`
+                // नवीन Cloudinary फाइलसाठी secure URL.
+                // जुन्या local नोंदींसाठी जुना path.
+                url: item.filePath && item.filePath.startsWith("https://")
+                    ? item.filePath
+                    : `/uploads/gallery/${encodeURIComponent(item.filename)}`
             }))
         });
     } catch (error) {
         console.error("Gallery Fetch Error:", error.message);
+
         res.status(500).json({
             success: false,
             message: "Gallery मिळवता आली नाही."
@@ -78,7 +94,7 @@ router.post(
     ownerAuth,
     upload.single("media"),
     async (req, res) => {
-        let savedPath;
+        let uploadedAsset;
 
         try {
             if (!req.file) {
@@ -88,17 +104,16 @@ router.post(
                 });
             }
 
-            savedPath = req.file.path;
-
             const { title, description } = req.body;
 
             if (!title || !title.trim()) {
-                fs.unlink(savedPath, () => {});
                 return res.status(400).json({
                     success: false,
                     message: "शीर्षक आवश्यक आहे."
                 });
             }
+
+            uploadedAsset = await uploadToCloudinary(req.file);
 
             const mediaType = req.file.mimetype.startsWith("video/")
                 ? "video"
@@ -108,14 +123,15 @@ router.post(
                 title: title.trim(),
                 description: description?.trim() || "",
                 mediaType,
-                filename: req.file.filename,
-                filePath: `/uploads/gallery/${req.file.filename}`,
+                // Cloudinary public_id filename मध्ये साठवतो
+                filename: uploadedAsset.public_id,
+                filePath: uploadedAsset.secure_url,
                 uploadedBy: req.user.id
             });
 
             res.status(201).json({
                 success: true,
-                message: "फाइल यशस्वीपणे अपलोड झाली.",
+                message: "फाइल Cloudinary वर यशस्वीपणे अपलोड झाली.",
                 media: {
                     id: item._id,
                     title: item.title,
@@ -126,11 +142,25 @@ router.post(
                 }
             });
         } catch (error) {
-            if (savedPath) {
-                fs.unlink(savedPath, () => {});
+            // Database save अयशस्वी झाल्यास अपलोड केलेली फाइल हटवण्याचा प्रयत्न
+            if (uploadedAsset?.public_id) {
+                try {
+                    await cloudinary.uploader.destroy(
+                        uploadedAsset.public_id,
+                        {
+                            resource_type: uploadedAsset.resource_type || "image"
+                        }
+                    );
+                } catch (cleanupError) {
+                    console.error(
+                        "Cloudinary Cleanup Error:",
+                        cleanupError.message
+                    );
+                }
             }
 
             console.error("Gallery Upload Error:", error.message);
+
             res.status(500).json({
                 success: false,
                 message: "फाइल अपलोड करता आली नाही."
@@ -151,34 +181,63 @@ router.delete("/:id", ownerAuth, async (req, res) => {
             });
         }
 
-        // उपलब्ध local storage मधील फाइलही हटवण्याचा प्रयत्न
-        const filePath = path.join(uploadDir, path.basename(item.filename));
+        // नवीन Cloudinary फाइल असल्यास Cloudinary मधून हटवा
+        if (item.filePath && item.filePath.startsWith("https://")) {
+            const result = await cloudinary.uploader.destroy(
+                item.filename,
+                {
+                    resource_type: item.mediaType === "video"
+                        ? "video"
+                        : "image"
+                }
+            );
 
-        if (fs.existsSync(filePath)) {
-            fs.unlinkSync(filePath);
+            if (result.result !== "ok" && result.result !== "not found") {
+                return res.status(502).json({
+                    success: false,
+                    message: "Cloudinary मधील फाइल हटवता आली नाही."
+                });
+            }
+        } else {
+            // जुन्या local फाइलसाठी उपलब्ध असल्यासच हटवण्याचा प्रयत्न
+            const uploadDir = path.join(
+                __dirname,
+                "..",
+                "uploads",
+                "gallery"
+            );
+
+            const localPath = path.join(
+                uploadDir,
+                path.basename(item.filename)
+            );
+
+            if (fs.existsSync(localPath)) {
+                fs.unlinkSync(localPath);
+            }
         }
 
         await GalleryMedia.findByIdAndDelete(item._id);
 
         res.json({
             success: true,
-            message: "Gallery मधील फाइल Delete झाली."
+            message: "Gallery मधील फाइल यशस्वीपणे Delete झाली."
         });
     } catch (error) {
         console.error("Gallery Delete Error:", error.message);
 
-        res.status(400).json({
+        res.status(500).json({
             success: false,
             message: "फाइल Delete करता आली नाही."
         });
     }
 });
 
-// Upload साठी Multer errors
+// Multer errors
 router.use((error, req, res, next) => {
     if (error instanceof multer.MulterError) {
         const message = error.code === "LIMIT_FILE_SIZE"
-            ? "फाइलचा आकार 100 MB पेक्षा कमी असावा."
+            ? "फाइलचा आकार 4 MB पेक्षा कमी असावा."
             : "फाइल अपलोड करताना समस्या आली.";
 
         return res.status(400).json({

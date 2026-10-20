@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="mr">
 <head>
@@ -356,7 +355,9 @@
 </div>
 
 <script>
-    const API_URL = "http://localhost:5000/api/milk";
+    // Deployed backend URL
+    const API_URL =
+        "https://adesh-dairy-farm-mern.vercel.app/api/milk";
 
     const dateInput = document.getElementById("selectedDate");
     const monthInput = document.getElementById("selectedMonth");
@@ -597,6 +598,7 @@
 
         try {
             const response = await fetch(API_URL, {
+                method: "GET",
                 headers: {
                     "Authorization": "Bearer " + token
                 }
@@ -620,11 +622,13 @@
             renderReport();
 
         } catch (error) {
+            console.error("Reports loading error:", error);
+
             statusEl.textContent = error.message;
             statusEl.className = "status error";
 
             recordsBody.innerHTML =
-                '<tr><td colspan="6">Backend सुरू आहे आणि Login केले आहे याची खात्री करा.</td></tr>';
+                '<tr><td colspan="6">Backend, API route, CORS आणि Login तपासा.</td></tr>';
         }
     }
 
@@ -697,11 +701,17 @@
 
             statusEl.textContent =
                 (result.message || "दूध दर सेव्ह झाला.") +
-                " एकूण उत्पन्न: " + money(result.totalIncome);
+                (
+                    result.totalIncome !== undefined
+                        ? " एकूण उत्पन्न: " + money(result.totalIncome)
+                        : ""
+                );
 
             statusEl.className = "status";
 
         } catch (error) {
+            console.error("Saving milk rate error:", error);
+
             statusEl.textContent = error.message;
             statusEl.className = "status error";
         } finally {

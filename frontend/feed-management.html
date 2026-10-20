@@ -408,7 +408,9 @@ th { background:#f0f7f1; color:#285b3b; }
 <footer class="footer">© आदेश डेअरी फार्म</footer>
 
 <script>
-const API_BASE = "http://localhost:5000/api/feed";
+// DEPLOY CHANGE: live backend URL
+const API_BASE = "https://adesh-dairy-farm-mern.vercel.app/api/feed";
+
 let records = [];
 let stockItems = [];
 
@@ -427,19 +429,24 @@ async function apiRequest(url, options = {}) {
     throw new Error("Login token सापडला नाही. पुन्हा login करा.");
   }
 
+  const headers = {
+    "Authorization": "Bearer " + token,
+    ...(options.headers || {})
+  };
+
+  if (options.body && !headers["Content-Type"]) {
+    headers["Content-Type"] = "application/json";
+  }
+
   const response = await fetch(url, {
     ...options,
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer " + token,
-      ...(options.headers || {})
-    }
+    headers
   });
 
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
-    throw new Error(data.message || "Request अयशस्वी झाली.");
+    throw new Error(data.message || data.error || "Request अयशस्वी झाली.");
   }
 
   return data;
@@ -691,6 +698,7 @@ async function loadRecords() {
     renderStock();
     renderRecords();
   } catch (error) {
+    console.error("Feed management load error:", error);
     showMessage(error.message, "error");
   } finally {
     $("refreshStock").disabled = false;
@@ -756,7 +764,6 @@ $("feedForm").addEventListener("submit", async event => {
   }
 });
 
-// DELETE BUTTON: प्रत्येक record च्या Action column मध्ये दिसेल.
 $("recordsBody").addEventListener("click", async event => {
   const button = event.target.closest(".delete-btn");
   if (!button) return;

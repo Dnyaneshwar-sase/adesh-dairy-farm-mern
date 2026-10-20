@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="mr">
 <head>
@@ -7,13 +6,16 @@
 
     <title>Registration | Adesh Dairy Farm</title>
 
-    <!-- Bootstrap 5 CSS -->
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
         rel="stylesheet"
     >
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             min-height: 100vh;
             display: flex;
@@ -28,7 +30,7 @@
             width: 100%;
             max-width: 480px;
             padding: 32px;
-            background: white;
+            background: #ffffff;
             border-radius: 18px;
             box-shadow: 0 10px 35px rgba(0, 0, 0, 0.12);
         }
@@ -49,6 +51,11 @@
         .form-control {
             padding: 11px;
             border-radius: 10px;
+        }
+
+        .form-control:focus {
+            border-color: #267642;
+            box-shadow: 0 0 0 0.2rem rgba(38, 118, 66, 0.15);
         }
 
         .register-btn {
@@ -80,6 +87,14 @@
             text-decoration: underline;
         }
 
+        .approval-note {
+            padding: 12px;
+            border-radius: 10px;
+            background: #f1f8e9;
+            color: #33691e;
+            font-size: 14px;
+        }
+
         @media (max-width: 480px) {
             .register-card {
                 padding: 25px 20px;
@@ -97,7 +112,6 @@
 
     <main class="register-card">
 
-        <!-- Adesh Dairy Farm Logo -->
         <div class="text-center mb-4">
             <img
                 src="images/logo.png"
@@ -109,7 +123,6 @@
             <p class="text-muted">नवीन खाते तयार करा</p>
         </div>
 
-        <!-- Registration Messages -->
         <div
             id="message"
             class="alert d-none"
@@ -117,7 +130,12 @@
             aria-live="polite"
         ></div>
 
-        <!-- Registration Form -->
+        <div class="approval-note mb-4">
+            <strong>महत्त्वाची सूचना:</strong>
+            Registration केल्यानंतर Owner ची मंजुरी मिळेपर्यंत
+            तुम्हाला व्यवस्थापन विभाग वापरता येणार नाही.
+        </div>
+
         <form id="registerForm">
 
             <div class="mb-3">
@@ -125,6 +143,7 @@
                 <input
                     type="text"
                     id="name"
+                    name="name"
                     class="form-control"
                     placeholder="तुमचे पूर्ण नाव"
                     autocomplete="name"
@@ -141,6 +160,7 @@
                 <input
                     type="tel"
                     id="mobileNumber"
+                    name="mobileNumber"
                     class="form-control"
                     placeholder="10 अंकी मोबाईल नंबर"
                     pattern="[6-9][0-9]{9}"
@@ -159,6 +179,7 @@
                 <input
                     type="email"
                     id="email"
+                    name="email"
                     class="form-control"
                     placeholder="तुमचा Email"
                     autocomplete="email"
@@ -175,6 +196,7 @@
                 <input
                     type="password"
                     id="password"
+                    name="password"
                     class="form-control"
                     placeholder="किमान 8 characters"
                     minlength="8"
@@ -192,6 +214,7 @@
                 <input
                     type="password"
                     id="confirmPassword"
+                    name="confirmPassword"
                     class="form-control"
                     placeholder="Password पुन्हा टाका"
                     minlength="8"
@@ -224,31 +247,61 @@
 
     </main>
 
-    <!-- Bootstrap 5 JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Registration Logic -->
     <script>
+        // Deployed Adesh Dairy Farm backend
+        const API_BASE = "https://adesh-dairy-farm-mern.vercel.app";
+
         const form = document.getElementById("registerForm");
         const message = document.getElementById("message");
         const registerButton = document.getElementById("registerButton");
 
-        form.addEventListener("submit", async function(event) {
+        function showMessage(text, type) {
+            message.className = `alert alert-${type}`;
+            message.textContent = text;
+        }
+
+        form.addEventListener("submit", async function (event) {
             event.preventDefault();
 
             const name = document.getElementById("name").value.trim();
-            const mobileNumber = document.getElementById("mobileNumber").value.trim();
-            const email = document.getElementById("email").value.trim();
-            const password = document.getElementById("password").value;
-            const confirmPassword = document.getElementById("confirmPassword").value;
+            const mobileNumber =
+                document.getElementById("mobileNumber").value.trim();
+            const email =
+                document.getElementById("email").value.trim();
+            const password =
+                document.getElementById("password").value;
+            const confirmPassword =
+                document.getElementById("confirmPassword").value;
 
             message.className = "alert d-none";
             message.textContent = "";
 
+            if (!name) {
+                showMessage("कृपया तुमचे पूर्ण नाव टाका.", "danger");
+                return;
+            }
+
+            if (!/^[6-9][0-9]{9}$/.test(mobileNumber)) {
+                showMessage(
+                    "कृपया योग्य 10 अंकी मोबाईल नंबर टाका.",
+                    "danger"
+                );
+                return;
+            }
+
+            if (password.length < 8) {
+                showMessage(
+                    "Password किमान 8 characters चा असावा.",
+                    "danger"
+                );
+                return;
+            }
+
             if (password !== confirmPassword) {
-                message.className = "alert alert-danger";
-                message.textContent =
-                    "दोन्ही Password सारखे असणे आवश्यक आहे.";
+                showMessage(
+                    "दोन्ही Password सारखे असणे आवश्यक आहे.",
+                    "danger"
+                );
                 return;
             }
 
@@ -257,7 +310,7 @@
 
             try {
                 const response = await fetch(
-                    "http://localhost:5000/api/auth/register",
+                    `${API_BASE}/api/auth/register`,
                     {
                         method: "POST",
                         headers: {
@@ -272,26 +325,58 @@
                     }
                 );
 
-                const data = await response.json();
+                const contentType =
+                    response.headers.get("content-type") || "";
 
-                if (!response.ok) {
+                let data = {};
+
+                if (contentType.includes("application/json")) {
+                    data = await response.json();
+                } else {
+                    const responseText = await response.text();
+
+                    if (!response.ok) {
+                        throw new Error(
+                            responseText ||
+                            `Registration अयशस्वी. HTTP ${response.status}`
+                        );
+                    }
+
                     throw new Error(
-                        data.message || "Registration अयशस्वी झाले."
+                        "Backend कडून अपेक्षित JSON response मिळाला नाही."
                     );
                 }
 
-                message.className = "alert alert-success";
-                message.textContent =
-                    "Registration यशस्वी झाले! Owner ची मंजुरी मिळेपर्यंत प्रतीक्षा करा.";
+                if (!response.ok) {
+                    throw new Error(
+                        data.message ||
+                        data.error ||
+                        `Registration अयशस्वी. HTTP ${response.status}`
+                    );
+                }
+
+                showMessage(
+                    data.message ||
+                    "Registration यशस्वी झाले! Owner ची मंजुरी मिळेपर्यंत प्रतीक्षा करा.",
+                    "success"
+                );
 
                 form.reset();
 
             } catch (error) {
-                message.className = "alert alert-danger";
-                message.textContent =
+                console.error("Registration error:", error);
+
+                if (
+                    error instanceof TypeError ||
                     error.message === "Failed to fetch"
-                        ? "Backend Server सुरू आहे का ते तपासा."
-                        : error.message;
+                ) {
+                    showMessage(
+                        "Backend शी संपर्क होत नाही. Backend URL आणि CORS configuration तपासा.",
+                        "danger"
+                    );
+                } else {
+                    showMessage(error.message, "danger");
+                }
 
             } finally {
                 registerButton.disabled = false;

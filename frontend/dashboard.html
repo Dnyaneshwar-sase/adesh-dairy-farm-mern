@@ -6,9 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>आदेश डेअरी फार्म | डॅशबोर्ड</title>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-          rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
         :root {
@@ -25,7 +23,7 @@
         body {
             margin: 0;
             background: var(--farm-bg);
-            font-family: Arial, sans-serif;
+            font-family: "Noto Sans Devanagari", Arial, sans-serif;
             color: #344054;
         }
 
@@ -116,7 +114,6 @@
             color: #5d6b61;
         }
 
-        /* एका Row मध्ये 4 कार्ड्स */
         .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -152,7 +149,7 @@
 
         .card-count {
             color: var(--farm-green);
-            font-size: 40px;
+            font-size: 36px;
             font-weight: 750;
             margin-bottom: 18px;
             overflow-wrap: anywhere;
@@ -286,8 +283,8 @@
 
     <header class="top-header">
         <div class="brand">
-            <!-- logo.png ही frontend/images/ मध्ये ठेवा -->
-            <img src="images/logo.png" alt="आदेश डेअरी फार्म लोगो"
+            <img src="images/logo.png"
+                 alt="आदेश डेअरी फार्म लोगो"
                  onerror="this.style.display='none'">
 
             <div>
@@ -310,7 +307,6 @@
         </p>
     </section>
 
-    <!-- मुख्य आकडेवारी -->
     <section class="dashboard-grid">
 
         <article class="dashboard-card">
@@ -322,18 +318,15 @@
             </p>
             <a href="cows.html" class="card-link">गायींची यादी पाहा →</a>
         </article>
-         <!-- लहान वासरे -->
+
         <article class="dashboard-card">
             <div class="card-icon">🐮</div>
             <h3>लहान वासरे</h3>
             <div class="card-count" id="totalCalves">0</div>
             <p class="card-description">
-                नवीन वासरांची नोंद करा, फोटो जोडा आणि वासरांची माहिती व्यवस्थापित करा.
+                नवीन वासरांची नोंद करा, फोटो जोडा आणि माहिती व्यवस्थापित करा.
             </p>
-            
-            <a href="calves.html" class="card-link">
-                वासरांची माहिती पाहा →
-            </a>
+            <a href="calves.html" class="card-link">वासरांची माहिती पाहा →</a>
         </article>
 
         <article class="dashboard-card">
@@ -356,9 +349,7 @@
             <p class="card-description">
                 गर्भवती म्हणून नोंदवलेल्या गायी.
             </p>
-            
-<a href="pregnant-cows.html" class="card-link">गर्भवती गायींची यादी पाहा →</a>
-
+            <a href="pregnant-cows.html" class="card-link">गर्भवती गायींची यादी पाहा →</a>
         </article>
 
         <article class="dashboard-card">
@@ -405,51 +396,37 @@
                 फार्ममधील महत्त्वाच्या नोंदी लिहा आणि जतन करा.
             </p>
             <a href="notes.html" class="card-link">नोंदी पाहा →</a>
-            
         </article>
-        
-        <!-- खर्च व उत्पन्न -->
+
         <article class="dashboard-card">
             <div class="card-icon">💰</div>
             <h3>खर्च व उत्पन्न</h3>
             <p class="card-description">
                 डेअरी फार्मचे उत्पन्न, खर्च आणि शिल्लक रक्कम व्यवस्थापित करा.
             </p>
-            <a href="income-expense.html" class="card-link">
-                खर्च व उत्पन्न पाहा →
-            </a>
+            <a href="income-expense.html" class="card-link">खर्च व उत्पन्न पाहा →</a>
         </article>
 
-        <!-- पशुखाद्य व्यवस्थापन -->
         <article class="dashboard-card">
             <div class="card-icon">🌾</div>
             <h3>पशुखाद्य व्यवस्थापन</h3>
             <p class="card-description">
-                चारा, पशुखाद्य, खरेदी, उपलब्ध साठा आणि त्याची माहिती व्यवस्थापित करा.
+                चारा, पशुखाद्य, खरेदी आणि उपलब्ध साठ्याची माहिती व्यवस्थापित करा.
             </p>
-            <a href="feed-management.html" class="card-link">
-                पशुखाद्य व्यवस्थापन उघडा →
-            </a>
+            <a href="feed-management.html" class="card-link">पशुखाद्य व्यवस्थापन उघडा →</a>
         </article>
 
-       
-
-        <!-- कामगार व पगार -->
         <article class="dashboard-card">
             <div class="card-icon">👷</div>
             <h3>कामगार व पगार</h3>
             <p class="card-description">
                 कामगारांची माहिती, ठरलेला पगार, दिलेली रक्कम आणि बाकी पगार तपासा.
             </p>
-            <a href="worker-salary.html" class="card-link">
-                कामगारांची माहिती पाहा →
-            </a>
+            <a href="worker-salary.html" class="card-link">कामगारांची माहिती पाहा →</a>
         </article>
-
 
     </section>
 
-    <!-- जलद कृती -->
     <section>
         <h2 class="section-title">⚡ जलद कृती</h2>
         <div class="quick-grid">
@@ -462,7 +439,6 @@
         </div>
     </section>
 
-    <!-- हा विभाग फक्त Owner साठी -->
     <section id="userManagement" class="user-management">
         <h2>👥 वापरकर्ता व्यवस्थापन</h2>
         <p>
@@ -479,8 +455,11 @@
     </footer>
 
 </div>
+
 <script>
-    // लॉगिन माहिती तपासा
+    const API_BASE = "https://adesh-dairy-farm-mern.vercel.app";
+
+    // लॉगिन तपासा
     const token = localStorage.getItem("authToken");
     const savedUser = localStorage.getItem("currentUser");
 
@@ -490,224 +469,217 @@
         try {
             const currentUser = JSON.parse(savedUser);
 
-            // User Management फक्त Owner ला दिसेल.
             if (currentUser.role === "owner") {
                 document.getElementById("userManagement").style.display = "block";
             }
         } catch (error) {
+            console.error("User information error:", error);
             localStorage.removeItem("currentUser");
             localStorage.removeItem("authToken");
             window.location.replace("login.html");
         }
     }
 
-    // Dashboard वरील आकडे Database मधून मिळवा.
-    async function loadDashboardStats() {
-        const token = localStorage.getItem("authToken");
+    function getArrayFromResponse(data, key) {
+        if (Array.isArray(data)) return data;
+        if (key && Array.isArray(data[key])) return data[key];
+        if (Array.isArray(data.data)) return data.data;
+        if (Array.isArray(data.records)) return data.records;
+        return null;
+    }
 
-        if (!token) {
+    // गायींची संख्या आणि आजचे दूध
+    async function loadDashboardStats() {
+        const authToken = localStorage.getItem("authToken");
+
+        if (!authToken) {
             window.location.replace("login.html");
             return;
         }
 
+        const headers = {
+            "Authorization": "Bearer " + authToken,
+            "Accept": "application/json"
+        };
+
         try {
-            // 1. गायींची संख्या मिळवा.
-            const response = await fetch(
-                "http://localhost:5000/api/cows",
+            // 1. गायींची संख्या
+            const cowResponse = await fetch(
+                API_BASE + "/api/cows",
                 {
                     method: "GET",
-                    headers: {
-                        "Authorization": "Bearer " + token,
-                        "Accept": "application/json"
-                    }
+                    headers
                 }
-
-                
             );
 
-            if (!response.ok) {
-                throw new Error(
-                    "गायींची संख्या मिळाली नाही. HTTP " + response.status
-                );
+            if (!cowResponse.ok) {
+                throw new Error("गायींची संख्या मिळाली नाही. HTTP " + cowResponse.status);
             }
 
-            const cows = await response.json();
+            const cowData = await cowResponse.json();
+            const cows = getArrayFromResponse(cowData, "cows");
 
-            if (!Array.isArray(cows)) {
+            if (!cows) {
                 throw new Error("गायींची यादी योग्य स्वरूपात मिळाली नाही.");
             }
 
-            // एकूण गायींची संख्या अपडेट करा.
-            const cowElement = document.getElementById("totalCows");
+            document.getElementById("totalCows").textContent = cows.length;
 
-            if (cowElement) {
-                cowElement.textContent = cows.length;
-            }
-
-            console.log("Dashboard वर एकूण गायी:", cows.length);
-
-            // 2. दुधाच्या नोंदी मिळवा.
+            // 2. दुधाच्या नोंदी
             const milkResponse = await fetch(
-                "http://localhost:5000/api/milk",
+                API_BASE + "/api/milk",
                 {
                     method: "GET",
-                    headers: {
-                        "Authorization": "Bearer " + token,
-                        "Accept": "application/json"
-                    }
+                    headers
                 }
             );
 
             if (!milkResponse.ok) {
-                throw new Error(
-                    "दुधाची नोंद मिळाली नाही. HTTP " + milkResponse.status
-                );
+                throw new Error("दुधाची नोंद मिळाली नाही. HTTP " + milkResponse.status);
             }
 
-            const milkRecords = await milkResponse.json();
+            const milkData = await milkResponse.json();
+            const milkRecords = getArrayFromResponse(milkData, "milkRecords");
 
-            if (!Array.isArray(milkRecords)) {
+            if (!milkRecords) {
                 throw new Error("दुधाची यादी योग्य स्वरूपात मिळाली नाही.");
             }
 
-            // आजची तारीख YYYY-MM-DD स्वरूपात मिळवा.
             const now = new Date();
-
             const todayDate =
                 now.getFullYear() + "-" +
                 String(now.getMonth() + 1).padStart(2, "0") + "-" +
                 String(now.getDate()).padStart(2, "0");
 
-            // फक्त आजच्या दुधाची बेरीज करा.
             const todayMilk = milkRecords
-                .filter(record => record.date === todayDate)
+                .filter(record => {
+                    if (!record.date) return false;
+
+                    const recordDate = String(record.date).slice(0, 10);
+                    return recordDate === todayDate;
+                })
                 .reduce(
-                    (total, record) =>
-                        total + Number(record.totalMilk || 0),
+                    (total, record) => total + Number(record.totalMilk || 0),
                     0
                 );
 
-            // Dashboard वरील दूधाचा count अपडेट करा.
-            const milkElement = document.getElementById("todayMilk");
+            document.getElementById("todayMilk").textContent =
+                todayMilk.toFixed(2);
 
-            if (milkElement) {
-                milkElement.textContent = todayMilk.toFixed(2) + " L";
-            } else {
-                console.warn(
-                    'दूधाचा count दाखवण्यासाठी HTML मध्ये id="todayMilk" शोधता आला नाही.'
-                );
-            }
-
-            console.log("आजचे एकूण दूध:", todayMilk);
+            console.log("एकूण गायी:", cows.length);
+            console.log("आजचे दूध:", todayMilk);
 
         } catch (error) {
-            console.error(
-                "Dashboard वरील आकडे लोड करताना त्रुटी:",
-                error
-            );
+            console.error("Dashboard stats error:", error);
         }
     }
 
-async function loadPregnantCowCount() {
-    const token = localStorage.getItem("authToken");
-    const countElement = document.getElementById("pregnantCows");
+    // गर्भवती गायींची संख्या
+    async function loadPregnantCowCount() {
+        const authToken = localStorage.getItem("authToken");
+        const countElement = document.getElementById("pregnantCows");
 
-    if (!token || !countElement) return;
+        if (!authToken || !countElement) return;
 
-    try {
-        const response = await fetch(
-            "http://localhost:5000/api/breeding",
-            {
-                headers: {
-                    "Authorization": "Bearer " + token,
-                    "Accept": "application/json"
+        try {
+            const response = await fetch(
+                API_BASE + "/api/breeding",
+                {
+                    method: "GET",
+                    headers: {
+                        "Authorization": "Bearer " + authToken,
+                        "Accept": "application/json"
+                    }
                 }
+            );
+
+            if (!response.ok) {
+                throw new Error("Breeding records load झाले नाहीत. HTTP " + response.status);
             }
-        );
 
-        if (!response.ok) {
-            throw new Error("Breeding records load झाले नाहीत.");
-        }
+            const data = await response.json();
+            const records = getArrayFromResponse(data, "records");
 
-        const records = await response.json();
-
-        const pregnantCowIds = new Set(
-            records
-                .filter(record => {
-                    const status = String(record.pregnancyStatus || "")
-                        .trim()
-                        .toLowerCase();
-
-                    return [
-                        "pregnant",
-                        "गर्भवती",
-                        "गाभण",
-                        "गाभण आहे"
-                    ].includes(status);
-                })
-                .map(record => {
-                    const cow = record.cowId;
-                    return cow && typeof cow === "object"
-                        ? String(cow._id || cow.id || "")
-                        : String(cow || "");
-                })
-                .filter(Boolean)
-        );
-
-        countElement.textContent = pregnantCowIds.size;
-
-    } catch (error) {
-        console.error("Pregnant cow count error:", error);
-    }
-}
-
-loadPregnantCowCount();
-
-    // Dashboard आकडे लोड करा.
-    loadDashboardStats();
-</script>
-
-<script>
-
-async function loadTotalCalves() {
-    const token = localStorage.getItem("authToken");
-    const countElement = document.getElementById("totalCalves");
-
-    if (!token || !countElement) return;
-
-    try {
-        const response = await fetch("http://localhost:5000/api/calves", {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                Accept: "application/json"
+            if (!records) {
+                throw new Error("Breeding records चा response array नाही.");
             }
-        });
 
-        if (!response.ok) {
-            throw new Error(`Calves API Error: HTTP ${response.status}`);
+            const pregnantCowIds = new Set();
+
+            records.forEach(record => {
+                const status = String(
+                    record.pregnancyStatus || record.status || ""
+                ).trim().toLowerCase();
+
+                const isPregnant = [
+                    "pregnant",
+                    "गर्भवती",
+                    "गाभण",
+                    "गाभण आहे"
+                ].includes(status);
+
+                if (!isPregnant) return;
+
+                const cow = record.cowId || record.cow;
+                const cowId = cow && typeof cow === "object"
+                    ? String(cow._id || cow.id || "")
+                    : String(cow || "");
+
+                if (cowId) pregnantCowIds.add(cowId);
+            });
+
+            countElement.textContent = pregnantCowIds.size;
+
+        } catch (error) {
+            console.error("Pregnant cow count error:", error);
         }
-
-        const data = await response.json();
-
-        if (Array.isArray(data)) {
-            countElement.textContent = data.length;
-        } else if (Array.isArray(data.calves)) {
-            countElement.textContent = data.calves.length;
-        } else if (Number.isFinite(data.totalCalves)) {
-            countElement.textContent = data.totalCalves;
-        } else {
-            throw new Error("वासरांच्या API चा response तपासणे आवश्यक आहे.");
-        }
-
-    } catch (error) {
-        console.error("लहान वासरांची संख्या:", error);
     }
-}
 
-document.addEventListener("DOMContentLoaded", loadTotalCalves);
+    // वासरांची संख्या
+    async function loadTotalCalves() {
+        const authToken = localStorage.getItem("authToken");
+        const countElement = document.getElementById("totalCalves");
 
+        if (!authToken || !countElement) return;
+
+        try {
+            const response = await fetch(
+                API_BASE + "/api/calves",
+                {
+                    method: "GET",
+                    headers: {
+                        "Authorization": "Bearer " + authToken,
+                        "Accept": "application/json"
+                    }
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Calves API Error: HTTP " + response.status);
+            }
+
+            const data = await response.json();
+            const calves = getArrayFromResponse(data, "calves");
+
+            if (calves) {
+                countElement.textContent = calves.length;
+            } else if (Number.isFinite(data.totalCalves)) {
+                countElement.textContent = data.totalCalves;
+            } else {
+                throw new Error("वासरांच्या API चा response तपासा.");
+            }
+
+        } catch (error) {
+            console.error("वासरांची संख्या लोड झाली नाही:", error);
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        loadDashboardStats();
+        loadPregnantCowCount();
+        loadTotalCalves();
+    });
 </script>
-
 
 </body>
 </html>

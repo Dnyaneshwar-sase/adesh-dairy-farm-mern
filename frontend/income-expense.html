@@ -336,7 +336,8 @@ tbody tr:hover{background:#fbfdfb}
 </footer>
 
 <script>
-const API_BASE = "http://localhost:5000/api/financial";
+// Live Vercel Backend URL
+const API_BASE = "https://adesh-dairy-farm-mern.vercel.app/api/financial";
 const $ = id => document.getElementById(id);
 
 let records = [];
@@ -395,29 +396,42 @@ function getToken() {
 
 async function apiRequest(url,options={}) {
  const token=getToken();
+
  if(!token) {
   throw new Error("Login token मिळाला नाही. Dashboard वरून लॉगिन करून हे पेज उघडा.");
  }
+
  const response=await fetch(API_BASE+url,{
   ...options,
   headers:{
+   ...(options.headers||{}),
    "Content-Type":"application/json",
-   Authorization:"Bearer "+token,
-   ...(options.headers||{})
+   Authorization:"Bearer "+token
   }
  });
+
  let data;
- try { data=await response.json(); } catch { data={}; }
+ try {
+  data=await response.json();
+ } catch {
+  data={};
+ }
+
  if(response.status===401||response.status===403) {
   throw new Error(data.message||"लॉगिन किंवा Owner परवानगी तपासा.");
  }
- if(!response.ok) throw new Error(data.message||"विनंती पूर्ण करता आली नाही.");
+
+ if(!response.ok) {
+  throw new Error(data.message||"विनंती पूर्ण करता आली नाही.");
+ }
+
  return data;
 }
 
 function updateCategoryOptions(preferredValue="") {
  const select=$("category");
  select.replaceChildren();
+
  const placeholder=document.createElement("option");
  placeholder.value="";
  placeholder.textContent="प्रकार निवडा";
@@ -436,13 +450,16 @@ function updateCategoryOptions(preferredValue="") {
   option.textContent=preferredValue;
   select.appendChild(option);
  }
+
  select.value=preferredValue;
 }
 
 function setType(type) {
  if(!["income","expense"].includes(type)) return;
+
  selectedType=type;
  $("recordType").value=type;
+
  document.querySelectorAll(".type-btn").forEach(button=>{
   const active=button.dataset.type===type;
   button.classList.toggle("active",active);
@@ -450,6 +467,7 @@ function setType(type) {
   button.classList.toggle("expense",active&&type==="expense");
   button.setAttribute("aria-pressed",String(active));
  });
+
  updateCategoryOptions();
 }
 
@@ -460,12 +478,14 @@ function getPeriodRecords() {
  if(mode==="month") {
   const value=$("periodMonth").value;
   if(!value) return [];
+
   const [year,month]=value.split("-").map(Number);
   start=new Date(year,month-1,1);
   end=new Date(year,month,1);
  } else {
   const year=Number($("periodYear").value);
   if(!year) return [];
+
   start=new Date(year,0,1);
   end=new Date(year+1,0,1);
  }
@@ -486,6 +506,7 @@ function renderSummary() {
  });
 
  const difference=income-expense;
+
  $("totalIncome").textContent=money(income);
  $("totalExpense").textContent=money(expense);
  $("profitLoss").textContent=(difference>0?"+":"")+money(difference);
@@ -495,11 +516,13 @@ function renderSummary() {
 
  if($("periodMode").value==="month") {
   const value=$("periodMonth").value;
+
   if(value) {
    const [year,month]=value.split("-").map(Number);
    $("periodNote").textContent=
-    new Date(year,month-1,1).toLocaleDateString("mr-IN",{month:"long",year:"numeric"})+
-    " या महिन्याचा हिशोब";
+    new Date(year,month-1,1).toLocaleDateString("mr-IN",{
+     month:"long",year:"numeric"
+    })+" या महिन्याचा हिशोब";
   }
  } else {
   $("periodNote").textContent=$("periodYear").value+" या वर्षाचा हिशोब";
@@ -512,12 +535,14 @@ function setupPeriodControls() {
 
  const yearSelect=$("periodYear");
  const currentYear=now.getFullYear();
+
  for(let year=currentYear-10;year<=currentYear+2;year++) {
   const option=document.createElement("option");
   option.value=year;
   option.textContent=year;
   yearSelect.appendChild(option);
  }
+
  yearSelect.value=currentYear;
 
  $("periodMode").addEventListener("change",()=>{
@@ -526,6 +551,7 @@ function setupPeriodControls() {
   $("periodYear").classList.toggle("hidden",!yearly);
   renderSummary();
  });
+
  $("periodMonth").addEventListener("change",renderSummary);
  $("periodYear").addEventListener("change",renderSummary);
 }
@@ -533,6 +559,7 @@ function setupPeriodControls() {
 function formatDate(value) {
  const date=new Date(value);
  if(Number.isNaN(date.getTime())) return "—";
+
  return date.toLocaleDateString("en-IN",{
   day:"2-digit",month:"short",year:"numeric"
  });
@@ -541,6 +568,7 @@ function formatDate(value) {
 function getFilteredRecords() {
  const date=$("filterDate").value;
  const type=$("filterType").value;
+
  return records.filter(record=>{
   const recordDate=localDateInputValue(new Date(record.date));
   return (!date||recordDate===date)&&(type==="all"||record.type===type);
@@ -550,6 +578,7 @@ function getFilteredRecords() {
 function renderRecords() {
  const filtered=getFilteredRecords();
  const container=$("recordsContainer");
+
  $("recordCountLabel").textContent=filtered.length+" नोंदी दाखवत आहोत";
 
  if(!filtered.length) {
@@ -559,39 +588,56 @@ function renderRecords() {
 
  const rows=filtered.map(record=>{
   const income=record.type==="income";
+
   return `<tr>
    <td>${escapeHTML(formatDate(record.date))}</td>
-   <td><div class="record-name">${escapeHTML(record.category)}</div>
-   <div class="record-description">${escapeHTML(record.description||"")}</div></td>
+   <td>
+    <div class="record-name">${escapeHTML(record.category)}</div>
+    <div class="record-description">${escapeHTML(record.description||"")}</div>
+   </td>
    <td><span class="type-tag ${income?"income":"expense"}">${income?"उत्पन्न":"खर्च"}</span></td>
    <td class="${income?"amount-income":"amount-expense"}">${income?"+":"−"}${escapeHTML(money(record.amount))}</td>
-   <td><div class="actions">
-    <button type="button" class="action-btn edit-btn" data-action="edit" data-id="${escapeHTML(record._id)}">बदल</button>
-    <button type="button" class="action-btn delete-btn" data-action="delete" data-id="${escapeHTML(record._id)}">हटवा</button>
-   </div></td>
+   <td>
+    <div class="actions">
+     <button type="button" class="action-btn edit-btn" data-action="edit" data-id="${escapeHTML(record._id)}">बदल</button>
+     <button type="button" class="action-btn delete-btn" data-action="delete" data-id="${escapeHTML(record._id)}">हटवा</button>
+    </div>
+   </td>
   </tr>`;
  }).join("");
 
  container.innerHTML=`<div class="table-wrap"><table>
-  <thead><tr><th>तारीख</th><th>तपशील</th><th>प्रकार</th><th>रक्कम</th><th>कृती</th></tr></thead>
+  <thead>
+   <tr><th>तारीख</th><th>तपशील</th><th>प्रकार</th><th>रक्कम</th><th>कृती</th></tr>
+  </thead>
   <tbody>${rows}</tbody>
  </table></div>`;
 }
 
 async function loadRecords() {
  $("refreshBtn").disabled=true;
+
  try {
   const data=await apiRequest("");
-  if(!Array.isArray(data)) throw new Error("Backend कडून नोंदींची योग्य यादी मिळाली नाही.");
+
+  if(!Array.isArray(data)) {
+   throw new Error("Backend कडून नोंदींची योग्य यादी मिळाली नाही.");
+  }
+
   records=data;
   renderSummary();
   renderRecords();
+
  } catch(error) {
   showMessage(error.message,"error");
+
   $("recordsContainer").innerHTML=`<div class="empty-state">
-   <div class="empty-icon">⚠️</div><h4>नोंदी लोड झाल्या नाहीत</h4>
-   <p>${escapeHTML(error.message)}</p><p>Backend सुरू आहे का ते तपासा.</p>
+   <div class="empty-icon">⚠️</div>
+   <h4>नोंदी लोड झाल्या नाहीत</h4>
+   <p>${escapeHTML(error.message)}</p>
+   <p>Backend सुरू आहे का ते तपासा.</p>
   </div>`;
+
  } finally {
   $("refreshBtn").disabled=false;
  }
@@ -611,7 +657,10 @@ function resetForm() {
 
 function editRecord(id) {
  const record=records.find(item=>item._id===id);
- if(!record) return showMessage("नोंद सापडली नाही.","error");
+
+ if(!record) {
+  return showMessage("नोंद सापडली नाही.","error");
+ }
 
  $("recordId").value=record._id;
  setType(record.type);
@@ -629,12 +678,17 @@ function editRecord(id) {
 async function deleteRecord(id) {
  const record=records.find(item=>item._id===id);
  if(!record) return;
+
  if(!confirm('"'+record.category+'" ही नोंद कायमची हटवायची आहे का?')) return;
 
  try {
-  const result=await apiRequest("/"+encodeURIComponent(id),{method:"DELETE"});
+  const result=await apiRequest("/"+encodeURIComponent(id),{
+   method:"DELETE"
+  });
+
   showMessage(result.message||"नोंद हटवली.");
   await loadRecords();
+
  } catch(error) {
   showMessage(error.message,"error");
  }
@@ -642,8 +696,10 @@ async function deleteRecord(id) {
 
 $("recordForm").addEventListener("submit",async event=>{
  event.preventDefault();
+
  const id=$("recordId").value;
  const amount=Number($("amount").value);
+
  if(!Number.isFinite(amount)||amount<=0) {
   showMessage("रक्कम शून्यापेक्षा जास्त असावी.","error");
   return;
@@ -657,19 +713,27 @@ $("recordForm").addEventListener("submit",async event=>{
   paymentMethod:$("paymentMethod").value,
   description:$("description").value.trim()
  };
- if(!payload.category) return showMessage("कृपया प्रकार निवडा.","error");
+
+ if(!payload.category) {
+  return showMessage("कृपया प्रकार निवडा.","error");
+ }
 
  const button=$("submitBtn");
  button.disabled=true;
+
  try {
   const result=await apiRequest(id?"/"+encodeURIComponent(id):"",{
-   method:id?"PUT":"POST",body:JSON.stringify(payload)
+   method:id?"PUT":"POST",
+   body:JSON.stringify(payload)
   });
+
   showMessage(result.message||"नोंद यशस्वीरित्या जतन झाली.");
   resetForm();
   await loadRecords();
+
  } catch(error) {
   showMessage(error.message,"error");
+
  } finally {
   button.disabled=false;
  }
@@ -678,6 +742,7 @@ $("recordForm").addEventListener("submit",async event=>{
 document.querySelectorAll(".type-btn").forEach(button=>{
  button.addEventListener("click",()=>setType(button.dataset.type));
 });
+
 $("cancelEditBtn").addEventListener("click",resetForm);
 $("refreshBtn").addEventListener("click",loadRecords);
 $("filterDate").addEventListener("change",renderRecords);
@@ -686,6 +751,7 @@ $("filterType").addEventListener("change",renderRecords);
 $("recordsContainer").addEventListener("click",event=>{
  const button=event.target.closest("button[data-action]");
  if(!button) return;
+
  if(button.dataset.action==="edit") editRecord(button.dataset.id);
  if(button.dataset.action==="delete") deleteRecord(button.dataset.id);
 });
@@ -693,6 +759,7 @@ $("recordsContainer").addEventListener("click",event=>{
 $("todayDate").textContent="📅 "+new Date().toLocaleDateString("mr-IN",{
  day:"2-digit",month:"long",year:"numeric"
 });
+
 $("year").textContent=new Date().getFullYear();
 
 setupPeriodControls();

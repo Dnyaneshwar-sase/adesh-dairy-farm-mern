@@ -1,6 +1,5 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="mr">
 
 <head>
     <meta charset="UTF-8">
@@ -161,6 +160,7 @@
             margin-bottom: 18px;
             font-size: 14px;
             line-height: 1.5;
+            overflow-wrap: anywhere;
         }
 
         .error-message {
@@ -284,10 +284,11 @@
     </main>
 
     <script>
-        
+        "use strict";
 
+        // LIVE VERCEL BACKEND URL
+        const API_BASE = "https://adesh-dairy-farm-mern.vercel.app";
 
-        const API_BASE = "https://adesh-dairy-farm-mern.onrender.com";
         const loginForm = document.getElementById("loginForm");
         const message = document.getElementById("message");
         const loginButton = document.getElementById("loginButton");
@@ -315,7 +316,8 @@
                     {
                         method: "POST",
                         headers: {
-                            "Content-Type": "application/json"
+                            "Content-Type": "application/json",
+                            "Accept": "application/json"
                         },
                         body: JSON.stringify({
                             email,
@@ -324,7 +326,7 @@
                     }
                 );
 
-                const data = await response.json();
+                const data = await response.json().catch(() => ({}));
 
                 if (!response.ok) {
                     throw new Error(
@@ -338,22 +340,39 @@
                     );
                 }
 
+                // Login session save करणे
                 localStorage.setItem("authToken", data.token);
+                localStorage.setItem("token", data.token);
+
                 localStorage.setItem(
                     "currentUser",
                     JSON.stringify(data.user)
                 );
 
+                showMessage("Login यशस्वी! Dashboard उघडत आहे...", "success-message");
+
+                // Dashboard वर जाणे
                 window.location.replace("dashboard.html");
 
             } catch (error) {
-                showMessage(
+                console.error("Login error:", error);
+
+                let errorText = error.message;
+
+                if (
+                    error instanceof TypeError ||
                     error.message === "Failed to fetch"
-                        ? "Backend Server सुरू आहे का ते तपासा."
-                        : error.message,
+                ) {
+                    errorText =
+                        "Backend शी संपर्क होत नाही. Backend URL आणि CORS settings तपासा.";
+                }
+
+                showMessage(
+                    errorText || "Login करताना समस्या आली.",
                     "error-message"
                 );
 
+            } finally {
                 loginButton.disabled = false;
                 loginButton.textContent = "Login करा";
             }

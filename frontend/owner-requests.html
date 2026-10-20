@@ -6,540 +6,352 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Owner Panel - Adesh Dairy Farm</title>
 
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
-    
-<style>
-    :root {
-        --farm-green: #176b3a;
-        --farm-dark: #104b2b;
-        --farm-light: #eaf7ee;
-        --farm-gold: #e5b84b;
-        --text-dark: #20352a;
-        --text-muted: #6c7b71;
-    }
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
 
-    body.bg-light {
-        min-height: 100vh;
-        background:
-            radial-gradient(ellipse at top left, #e0f3e5 0%, transparent 42%),
-            linear-gradient(135deg, #f5faf6, #f4f7ee) !important;
-        color: var(--text-dark);
-        font-family: "Segoe UI", Arial, sans-serif;
-    }
-
-    /* Top navigation */
-    .navbar.bg-success {
-        background: linear-gradient(
-            120deg,
-            #104b2b,
-            #176b3a 65%,
-            #27864b
-        ) !important;
-        padding: 18px 0;
-        box-shadow: 0 5px 22px rgba(16, 75, 43, 0.2);
-        border-bottom: 3px solid var(--farm-gold);
-    }
-
-    .navbar .container {
-        gap: 12px;
-    }
-
-    .navbar-brand {
-        font-size: clamp(17px, 3vw, 23px);
-        font-weight: 750;
-        letter-spacing: 0.2px;
-        white-space: normal;
-    }
-
-    #logoutButton {
-        border-radius: 10px;
-        padding: 8px 17px;
-        font-weight: 600;
-        transition: all 0.2s ease;
-    }
-
-    #logoutButton:hover {
-        background: white;
-        color: var(--farm-dark);
-        transform: translateY(-1px);
-    }
-
-    /* Main content */
-    main.container {
-        max-width: 1120px;
-        padding-top: 38px !important;
-        padding-bottom: 50px !important;
-    }
-
-    main h2 {
-        color: var(--farm-dark);
-        font-size: clamp(25px, 4vw, 34px);
-        font-weight: 800;
-        letter-spacing: -0.5px;
-    }
-
-    main > p.text-secondary {
-        color: var(--text-muted) !important;
-        font-size: 15px;
-        line-height: 1.8;
-        margin-bottom: 28px;
-    }
-
-    /* Alert messages */
-    #message {
-        border: 0;
-        border-radius: 12px;
-        padding: 14px 18px;
-        font-weight: 600;
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
-        overflow-wrap: anywhere;
-    }
-
-    /* Main sections */
-    main > .card {
-        border: 1px solid #e1ebe3 !important;
-        border-radius: 20px;
-        overflow: hidden;
-        background: rgba(255, 255, 255, 0.96);
-        box-shadow: 0 10px 30px rgba(25, 70, 43, 0.07) !important;
-        margin-bottom: 28px !important;
-        transition: box-shadow 0.25s ease;
-    }
-
-    main > .card:hover {
-        box-shadow: 0 14px 35px rgba(25, 70, 43, 0.11) !important;
-    }
-
-    .card-header.bg-white {
-        min-height: 76px;
-        padding: 19px 24px;
-        background: linear-gradient(120deg, #f0f9f2, #ffffff) !important;
-        border-bottom: 1px solid #e2eee5;
-        gap: 12px;
-        flex-wrap: wrap;
-    }
-
-    .card-header strong {
-        color: var(--farm-dark);
-        font-size: 18px;
-        font-weight: 750;
-    }
-
-    .card-body {
-        padding: 24px;
-    }
-
-    /* Refresh buttons */
-    #refreshButton,
-    #refreshUsersButton {
-        border: 1px solid #b7d8c0;
-        color: var(--farm-green);
-        background: white;
-        border-radius: 9px;
-        padding: 8px 14px;
-        font-weight: 650;
-        transition: all 0.2s ease;
-    }
-
-    #refreshButton:hover,
-    #refreshUsersButton:hover {
-        background: var(--farm-green);
-        border-color: var(--farm-green);
-        color: white;
-        transform: translateY(-1px);
-    }
-
-    button:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-        transform: none !important;
-    }
-
-    /* Dynamically created request/user cards */
-    #requestsList > div,
-    #usersList > div {
-        border: 1px solid #e1eae3 !important;
-        border-radius: 15px !important;
-        padding: 22px !important;
-        margin-bottom: 16px !important;
-        background: linear-gradient(145deg, #ffffff, #fbfefb) !important;
-        box-shadow: 0 4px 15px rgba(25, 70, 43, 0.045);
-        transition: transform 0.2s ease, box-shadow 0.2s ease,
-                    border-color 0.2s ease;
-        overflow-wrap: anywhere;
-    }
-
-    #requestsList > div:hover,
-    #usersList > div:hover {
-        transform: translateY(-2px);
-        border-color: #b5d8bf !important;
-        box-shadow: 0 9px 23px rgba(25, 70, 43, 0.09);
-    }
-
-    #requestsList h5,
-    #usersList h5 {
-        color: var(--farm-dark);
-        font-size: 19px;
-        font-weight: 750;
-        margin-bottom: 16px;
-        padding-bottom: 12px;
-        border-bottom: 1px solid #eaf0eb;
-        overflow-wrap: anywhere;
-    }
-
-    #requestsList p,
-    #usersList p {
-        color: #53645a;
-        font-size: 14px;
-        line-height: 1.8;
-        overflow-wrap: anywhere;
-    }
-
-    #requestsList p strong,
-    #usersList p strong {
-        color: #304d3a;
-    }
-
-    /* Status labels */
-    #usersList .badge {
-        display: inline-block;
-        padding: 7px 11px;
-        border-radius: 20px;
-        font-size: 12px;
-        letter-spacing: 0.2px;
-    }
-
-    #usersList .badge.bg-success {
-        background: #dff4e5 !important;
-        color: #176b3a;
-    }
-
-    #usersList .badge.bg-secondary {
-        background: #edf0ee !important;
-        color: #58645c;
-    }
-
-    /* Action buttons */
-    #requestsList .approve-button,
-    #requestsList .reject-button,
-    #usersList .status-button {
-        border-radius: 9px;
-        padding: 9px 17px;
-        font-size: 13px;
-        font-weight: 700;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    #requestsList .approve-button,
-    #usersList .status-button.btn-success {
-        background: linear-gradient(120deg, #176b3a, #27934f);
-        border-color: #176b3a;
-    }
-
-    #requestsList .reject-button,
-    #usersList .status-button.btn-danger {
-        background: linear-gradient(120deg, #bd303b, #dc4b53);
-        border-color: #bd303b;
-    }
-
-    #requestsList .approve-button:hover,
-    #requestsList .reject-button:hover,
-    #usersList .status-button:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 5px 12px rgba(0, 0, 0, 0.13);
-    }
-
-    /* Loading and empty states */
-    #loadingMessage,
-    #usersLoadingMessage {
-        color: var(--text-muted);
-        font-size: 14px;
-        line-height: 1.8;
-    }
-
-    #requestsList:empty,
-    #usersList:empty {
-        min-height: 4px;
-    }
-
-    /* Keyboard accessibility */
-    button:focus-visible,
-    a:focus-visible {
-        outline: 3px solid var(--farm-gold);
-        outline-offset: 3px;
-    }
-
-    /* Mobile layout */
-    @media (max-width: 576px) {
-        .navbar.bg-success {
-            padding: 14px 0;
+    <style>
+        :root {
+            --farm-green: #176b3a;
+            --farm-dark: #104b2b;
+            --farm-gold: #e5b84b;
+            --text-dark: #20352a;
+            --text-muted: #6c7b71;
         }
 
-        .navbar-brand {
-            max-width: 72%;
-            line-height: 1.4;
+        body.bg-light {
+            min-height: 100vh;
+            background:
+                radial-gradient(ellipse at top left, #e0f3e5 0%, transparent 42%),
+                linear-gradient(135deg, #f5faf6, #f4f7ee) !important;
+            color: var(--text-dark);
+            font-family: "Segoe UI", Arial, sans-serif;
         }
 
-        #logoutButton {
-            padding: 7px 11px;
+        .owner-navbar {
+            width: 94%;
+            max-width: 1120px;
+            margin: 18px auto 0;
+            background: linear-gradient(120deg, #e4f3e7, #f2faf3);
+            border: 1px solid #cfe5d4;
+            border-radius: 18px;
+            box-shadow: 0 6px 22px rgba(31, 90, 48, .08);
+        }
+
+        .owner-navbar-inner {
+            min-height: 88px;
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .owner-brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+            color: #174e2b;
+            min-width: 0;
+        }
+
+        .owner-logo {
+            width: 58px;
+            height: 58px;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+
+        .owner-brand span {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .owner-brand strong {
+            font-size: clamp(16px, 2.5vw, 22px);
+            font-weight: 800;
+        }
+
+        .owner-brand small {
+            font-size: 12px;
+            color: #66816d;
+        }
+
+        .owner-nav-links {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-left: auto;
+            margin-right: 12px;
+        }
+
+        .owner-nav-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 10px 14px;
+            border: 1px solid #c9e2cf;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, .75);
+            color: #205c35;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            transition: all .2s ease;
+        }
+
+        .owner-nav-link:hover {
+            background: #246b3b;
+            border-color: #246b3b;
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        .owner-logout {
+            background: #fff;
+            color: #23663a;
+            border: 1px solid #b7d7bf;
+            border-radius: 10px;
+            padding: 9px 17px;
+            font-weight: 700;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .owner-logout:hover {
+            background: #23663a;
+            color: #fff;
         }
 
         main.container {
-            padding-top: 25px !important;
-            padding-bottom: 30px !important;
+            max-width: 1120px;
+            padding-top: 38px !important;
+            padding-bottom: 50px !important;
+        }
+
+        main h2 {
+            color: var(--farm-dark);
+            font-size: clamp(25px, 4vw, 34px);
+            font-weight: 800;
+            letter-spacing: -.5px;
+        }
+
+        main > p.text-secondary {
+            color: var(--text-muted) !important;
+            font-size: 15px;
+            line-height: 1.8;
+            margin-bottom: 28px;
+        }
+
+        #message {
+            border: 0;
+            border-radius: 12px;
+            padding: 14px 18px;
+            font-weight: 600;
+            overflow-wrap: anywhere;
+        }
+
+        main > .card {
+            border: 1px solid #e1ebe3 !important;
+            border-radius: 20px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, .96);
+            box-shadow: 0 10px 30px rgba(25, 70, 43, .07) !important;
+            margin-bottom: 28px !important;
         }
 
         .card-header.bg-white {
-            padding: 17px;
+            min-height: 76px;
+            padding: 19px 24px;
+            background: linear-gradient(120deg, #f0f9f2, #fff) !important;
+            border-bottom: 1px solid #e2eee5;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
         .card-header strong {
-            font-size: 16px;
+            color: var(--farm-dark);
+            font-size: 18px;
+            font-weight: 750;
         }
 
         .card-body {
-            padding: 16px;
+            padding: 24px;
         }
 
-        #requestsList > div,
-        #usersList > div {
-            padding: 17px !important;
+        #refreshButton, #refreshUsersButton {
+            border: 1px solid #b7d8c0;
+            color: var(--farm-green);
+            background: white;
+            border-radius: 9px;
+            padding: 8px 14px;
+            font-weight: 650;
+            transition: all .2s ease;
+        }
+
+        #refreshButton:hover, #refreshUsersButton:hover {
+            background: var(--farm-green);
+            border-color: var(--farm-green);
+            color: white;
+        }
+
+        button:disabled {
+            opacity: .6;
+            cursor: not-allowed;
+        }
+
+        #requestsList > div, #usersList > div {
+            border: 1px solid #e1eae3 !important;
+            border-radius: 15px !important;
+            padding: 22px !important;
+            margin-bottom: 16px !important;
+            background: linear-gradient(145deg, #fff, #fbfefb) !important;
+            box-shadow: 0 4px 15px rgba(25, 70, 43, .045);
+            overflow-wrap: anywhere;
+        }
+
+        #requestsList h5, #usersList h5 {
+            color: var(--farm-dark);
+            font-size: 19px;
+            font-weight: 750;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #eaf0eb;
+            overflow-wrap: anywhere;
+        }
+
+        #requestsList p, #usersList p {
+            color: #53645a;
+            font-size: 14px;
+            line-height: 1.8;
+            overflow-wrap: anywhere;
+        }
+
+        #usersList .badge {
+            display: inline-block;
+            padding: 7px 11px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        #usersList .badge.bg-success {
+            background: #dff4e5 !important;
+            color: #176b3a;
+        }
+
+        #usersList .badge.bg-secondary {
+            background: #edf0ee !important;
+            color: #58645c;
         }
 
         #requestsList .approve-button,
         #requestsList .reject-button,
-        #usersList .status-button {
-            margin-top: 5px;
+        #usersList .status-button,
+        #usersList .delete-user-button {
+            border-radius: 9px;
+            padding: 9px 16px;
+            font-size: 13px;
+            font-weight: 700;
         }
-    }
 
-    @media (prefers-reduced-motion: reduce) {
-        *,
-        *::before,
-        *::after {
-            transition-duration: 0.01ms !important;
-            animation-duration: 0.01ms !important;
+        #requestsList .approve-button,
+        #usersList .status-button.btn-success {
+            background: linear-gradient(120deg, #176b3a, #27934f);
+            border-color: #176b3a;
         }
-    }
-    
-/* Compact, light-green Owner Panel header */
-.owner-navbar {
-    width: 94%;
-    max-width: 1120px;
-    margin: 18px auto 0;
-    background: linear-gradient(120deg, #e4f3e7, #f2faf3);
-    border: 1px solid #cfe5d4;
-    border-radius: 18px;
-    box-shadow: 0 6px 22px rgba(31, 90, 48, 0.08);
-}
 
-.owner-navbar-inner {
-    min-height: 88px;
-    padding: 14px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-}
+        #requestsList .reject-button,
+        #usersList .status-button.btn-danger {
+            background: linear-gradient(120deg, #bd303b, #dc4b53);
+            border-color: #bd303b;
+        }
 
-.owner-brand {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    text-decoration: none;
-    color: #174e2b;
-    min-width: 0;
-}
+        #usersList .delete-user-button {
+            background: linear-gradient(135deg, #fff1f0, #ffe2df);
+            color: #b4232d;
+            border: 1px solid #f1b5b2;
+        }
 
-.owner-logo {
-    width: 58px;
-    height: 58px;
-    object-fit: contain;
-    flex-shrink: 0;
-}
+        #loadingMessage, #usersLoadingMessage {
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.8;
+        }
 
-.owner-brand span {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
+        button:focus-visible, a:focus-visible {
+            outline: 3px solid var(--farm-gold);
+            outline-offset: 3px;
+        }
 
-.owner-brand strong {
-    font-size: clamp(16px, 2.5vw, 22px);
-    font-weight: 800;
-}
+        @media (max-width: 650px) {
+            .owner-navbar-inner {
+                flex-wrap: wrap;
+                padding: 12px;
+                gap: 8px;
+            }
 
-.owner-brand small {
-    font-size: 12px;
-    color: #66816d;
-}
+            .owner-brand {
+                gap: 9px;
+            }
 
-.owner-logout {
-    background: #fff;
-    color: #23663a;
-    border: 1px solid #b7d7bf;
-    border-radius: 10px;
-    padding: 9px 17px;
-    font-weight: 700;
-    cursor: pointer;
-    flex-shrink: 0;
-}
+            .owner-logo {
+                width: 44px;
+                height: 44px;
+            }
 
-.owner-logout:hover {
-    background: #23663a;
-    color: #fff;
-}
+            .owner-brand small {
+                font-size: 10px;
+            }
 
-@media (max-width: 480px) {
-    .owner-navbar {
-        width: 96%;
-        margin-top: 10px;
-        border-radius: 13px;
-    }
+            .owner-nav-links {
+                order: 3;
+                width: 100%;
+                margin: 4px 0 0;
+            }
 
-    .owner-navbar-inner {
-        padding: 12px;
-        min-height: 76px;
-        gap: 8px;
-    }
+            .owner-nav-link {
+                flex: 1;
+                justify-content: center;
+                padding: 9px 8px;
+                font-size: 12px;
+            }
 
-    .owner-logo {
-        width: 44px;
-        height: 44px;
-    }
+            .owner-logout {
+                padding: 8px 10px;
+            }
 
-    .owner-brand {
-        gap: 9px;
-    }
+            main.container {
+                padding-top: 25px !important;
+                padding-bottom: 30px !important;
+            }
 
-    .owner-brand small {
-        font-size: 10px;
-    }
+            .card-header.bg-white {
+                padding: 17px;
+            }
 
-    .owner-logout {
-        padding: 8px 10px;
-    }
-}
+            .card-body {
+                padding: 16px;
+            }
 
-/* Delete User button */
-#usersList .delete-user-button {
-    background: linear-gradient(135deg, #fff1f0, #ffe2df);
-    color: #b4232d;
-    border: 1px solid #f1b5b2;
-    border-radius: 10px;
-    padding: 9px 16px;
-    font-size: 13px;
-    font-weight: 750;
-    box-shadow: 0 3px 8px rgba(180, 35, 45, 0.08);
-    transition: all 0.2s ease;
-}
-
-#usersList .delete-user-button:hover {
-    background: linear-gradient(135deg, #b4232d, #dc3545);
-    color: #fff;
-    border-color: #b4232d;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 14px rgba(180, 35, 45, 0.2);
-}
-
-#usersList .delete-user-button:active {
-    transform: scale(0.97);
-}
-
-#usersList .delete-user-button:focus-visible {
-    outline: 3px solid #f1b5b2;
-    outline-offset: 3px;
-}
-
-@media (max-width: 576px) {
-    #usersList .delete-user-button {
-        margin: 6px 0 0 0 !important;
-        padding: 9px 12px;
-    }
-}
-
-/* Owner Panel Navigation Links */
-.owner-nav-links {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin-left: auto;
-    margin-right: 12px;
-}
-
-.owner-nav-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 10px 14px;
-    border: 1px solid #c9e2cf;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.75);
-    color: #205c35;
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 700;
-    white-space: nowrap;
-    transition: all 0.2s ease;
-}
-
-.owner-nav-link:hover {
-    background: #246b3b;
-    border-color: #246b3b;
-    color: #fff;
-    transform: translateY(-1px);
-}
-
-@media (max-width: 650px) {
-    .owner-navbar-inner {
-        flex-wrap: wrap;
-    }
-
-    .owner-nav-links {
-        order: 3;
-        width: 100%;
-        margin: 4px 0 0;
-    }
-
-    .owner-nav-link {
-        flex: 1;
-        justify-content: center;
-        padding: 9px 8px;
-        font-size: 12px;
-    }
-}
-
-
-</style>
-
+            #requestsList > div, #usersList > div {
+                padding: 17px !important;
+            }
+        }
+    </style>
 </head>
 
 <body class="bg-light">
 
-   
 <nav class="owner-navbar">
     <div class="owner-navbar-inner">
 
         <a href="index.html" class="owner-brand">
-            <img
-                src="images/logo.png"
-                alt="Adesh Dairy Farm Logo"
-                class="owner-logo"
-            >
-           
-<div class="owner-nav-links">
-    <a href="index.html" class="owner-nav-link">
-        <span>⌂</span> Main Website
-    </a>
-
-    <a href="dashboard.html" class="owner-nav-link">
-        <span>▦</span> Dashboard
-    </a>
-</div>
+            <img src="images/logo.png"
+                 alt="Adesh Dairy Farm Logo"
+                 class="owner-logo">
 
             <span>
                 <strong>Adesh Dairy Farm</strong>
@@ -547,383 +359,366 @@
             </span>
         </a>
 
+        <div class="owner-nav-links">
+            <a href="index.html" class="owner-nav-link">
+                <span>⌂</span> Main Website
+            </a>
+
+            <a href="dashboard.html" class="owner-nav-link">
+                <span>▦</span> Dashboard
+            </a>
+        </div>
+
         <button id="logoutButton" class="owner-logout">
             Logout
         </button>
-
     </div>
 </nav>
 
+<main class="container py-4">
 
-    <main class="container py-4">
+    <h2 class="mb-2">Owner Panel</h2>
 
-        <h2 class="mb-2">Owner Panel</h2>
+    <p class="text-secondary">
+        Registration Requests आणि Users व्यवस्थापित करा.
+    </p>
 
-        <p class="text-secondary">
-            Registration Requests आणि Users व्यवस्थापित करा.
-        </p>
+    <div id="message" class="alert d-none" role="alert"></div>
 
-        <div id="message" class="alert d-none" role="alert"></div>
-
-        <!-- PENDING REQUESTS -->
-        <div class="card shadow-sm mb-4">
-            <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                <strong>Pending Requests</strong>
-
-                <button id="refreshButton" class="btn btn-outline-success btn-sm">
-                    Refresh
-                </button>
-            </div>
-
-            <div class="card-body">
-                <div id="loadingMessage">Requests लोड होत आहेत...</div>
-                <div id="requestsList"></div>
-            </div>
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <strong>Pending Requests</strong>
+            <button id="refreshButton" class="btn btn-outline-success btn-sm">
+                Refresh
+            </button>
         </div>
 
-        <!-- APPROVED USERS -->
-        <div class="card shadow-sm">
-            <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                <strong>Approved Users</strong>
+        <div class="card-body">
+            <div id="loadingMessage">Requests लोड होत आहेत...</div>
+            <div id="requestsList"></div>
+        </div>
+    </div>
 
-                <button id="refreshUsersButton" class="btn btn-outline-success btn-sm">
-                    Refresh Users
-                </button>
-            </div>
-
-            <div class="card-body">
-                <div id="usersLoadingMessage">Users लोड होत आहेत...</div>
-                <div id="usersList"></div>
-            </div>
+    <div class="card shadow-sm">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <strong>Approved Users</strong>
+            <button id="refreshUsersButton" class="btn btn-outline-success btn-sm">
+                Refresh Users
+            </button>
         </div>
 
-    </main>
+        <div class="card-body">
+            <div id="usersLoadingMessage">Users लोड होत आहेत...</div>
+            <div id="usersList"></div>
+        </div>
+    </div>
 
-    <script>
-        const message = document.getElementById("message");
+</main>
 
-        const requestsList = document.getElementById("requestsList");
-        const loadingMessage = document.getElementById("loadingMessage");
+<script>
+    const API_BASE_URL = "https://adesh-dairy-farm-mern.vercel.app";
 
-        const usersList = document.getElementById("usersList");
-        const usersLoadingMessage = document.getElementById("usersLoadingMessage");
+    const message = document.getElementById("message");
+    const requestsList = document.getElementById("requestsList");
+    const loadingMessage = document.getElementById("loadingMessage");
+    const usersList = document.getElementById("usersList");
+    const usersLoadingMessage = document.getElementById("usersLoadingMessage");
 
-        const refreshButton = document.getElementById("refreshButton");
-        const refreshUsersButton = document.getElementById("refreshUsersButton");
-        const logoutButton = document.getElementById("logoutButton");
+    const refreshButton = document.getElementById("refreshButton");
+    const refreshUsersButton = document.getElementById("refreshUsersButton");
+    const logoutButton = document.getElementById("logoutButton");
 
-        function showMessage(text, type = "danger") {
-            message.className = "alert alert-" + type;
-            message.textContent = text;
+    function showMessage(text, type = "danger") {
+        message.className = "alert alert-" + type;
+        message.textContent = text;
+    }
+
+    function getToken() {
+        return localStorage.getItem("authToken") ||
+               sessionStorage.getItem("authToken");
+    }
+
+    function clearLoginData() {
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("currentUser");
+        sessionStorage.removeItem("authToken");
+        sessionStorage.removeItem("currentUser");
+    }
+
+    function escapeHTML(value) {
+        return String(value ?? "").replace(/[&<>"']/g, function(char) {
+            return {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;"
+            }[char];
+        });
+    }
+
+    async function apiRequest(url, options = {}) {
+        const token = getToken();
+
+        if (!token) {
+            throw new Error("Login आवश्यक आहे. कृपया पुन्हा Login करा.");
         }
 
-        function getToken() {
-            return localStorage.getItem("authToken");
+        const response = await fetch(url, {
+            ...options,
+            headers: {
+                ...(options.headers || {}),
+                "Authorization": "Bearer " + token
+            }
+        });
+
+        let data = {};
+
+        try {
+            data = await response.json();
+        } catch {
+            data = {};
         }
 
-        function escapeHTML(value) {
-            return String(value ?? "").replace(/[&<>"']/g, function(char) {
-                return {
-                    "&": "&amp;",
-                    "<": "&lt;",
-                    ">": "&gt;",
-                    '"': "&quot;",
-                    "'": "&#39;"
-                }[char];
-            });
+        if (response.status === 401) {
+            clearLoginData();
+            throw new Error("Login Expire झाला आहे. कृपया पुन्हा Login करा.");
         }
 
-        async function apiRequest(url, options = {}) {
-            const token = getToken();
+        if (!response.ok) {
+            throw new Error(
+                data.message || "Request पूर्ण करता आली नाही. HTTP " + response.status
+            );
+        }
 
-            if (!token) {
-                throw new Error("Login आवश्यक आहे. कृपया पुन्हा Login करा.");
+        return data;
+    }
+
+    // Pending registration requests
+    async function loadRequests() {
+        requestsList.replaceChildren();
+        loadingMessage.textContent = "Requests लोड होत आहेत...";
+        refreshButton.disabled = true;
+
+        try {
+            const data = await apiRequest(
+                `${API_BASE_URL}/api/owner/requests/pending`
+            );
+
+            loadingMessage.textContent = "";
+
+            if (!Array.isArray(data.requests) || data.requests.length === 0) {
+                requestsList.textContent = "सध्या कोणतीही Pending Request नाही.";
+                return;
             }
 
-            const response = await fetch(url, {
-                ...options,
-                headers: {
-                    ...(options.headers || {}),
-                    "Authorization": "Bearer " + token
-                }
-            });
+            data.requests.forEach(function(user) {
+                const card = document.createElement("div");
+                card.className = "border rounded p-3 mb-3 bg-white";
 
-            const data = await response.json();
+                card.innerHTML = `
+                    <h5>${escapeHTML(user.name)}</h5>
 
-            if (response.status === 401) {
-               localStorage.removeItem("authToken");
-                localStorage.removeItem("currentUser");
+                    <p class="mb-1">
+                        <strong>Mobile:</strong>
+                        ${escapeHTML(user.mobileNumber)}
+                    </p>
 
-                throw new Error("Login Expire झाला आहे. कृपया पुन्हा Login करा.");
-            }
+                    <p class="mb-1">
+                        <strong>Email:</strong>
+                        ${escapeHTML(user.email)}
+                    </p>
 
-            if (!response.ok) {
-                throw new Error(
-                    data.message || "Request पूर्ण करता आली नाही."
-                );
-            }
+                    <p class="mb-3">
+                        <strong>Registration Date:</strong>
+                        ${user.createdAt
+                            ? escapeHTML(new Date(user.createdAt).toLocaleString())
+                            : "उपलब्ध नाही"}
+                    </p>
 
-            return data;
-        }
+                    <button class="btn btn-success btn-sm approve-button">
+                        Approve
+                    </button>
 
-        // =====================================
-        // PENDING REQUESTS LOAD
-        // =====================================
-        async function loadRequests() {
-            requestsList.replaceChildren();
-            loadingMessage.textContent = "Requests लोड होत आहेत...";
-            refreshButton.disabled = true;
+                    <button class="btn btn-danger btn-sm reject-button ms-2">
+                        Reject
+                    </button>
+                `;
 
-            try {
-                const data = await apiRequest(
-                    "http://localhost:5000/api/owner/requests/pending"
-                );
-
-                loadingMessage.textContent = "";
-
-                if (!Array.isArray(data.requests) || data.requests.length === 0) {
-                    requestsList.textContent = "सध्या कोणतीही Pending Request नाही.";
-                    return;
-                }
-
-                data.requests.forEach(function(user) {
-                    const card = document.createElement("div");
-                    card.className = "border rounded p-3 mb-3 bg-white";
-
-                    card.innerHTML = `
-                        <h5>${escapeHTML(user.name)}</h5>
-
-                        <p class="mb-1">
-                            <strong>Mobile:</strong>
-                            ${escapeHTML(user.mobileNumber)}
-                        </p>
-
-                        <p class="mb-1">
-                            <strong>Email:</strong>
-                            ${escapeHTML(user.email)}
-                        </p>
-
-                        <p class="mb-3">
-                            <strong>Registration Date:</strong>
-                            ${user.createdAt
-                                ? escapeHTML(new Date(user.createdAt).toLocaleString())
-                                : "उपलब्ध नाही"}
-                        </p>
-
-                        <button class="btn btn-success btn-sm approve-button">
-                            Approve
-                        </button>
-
-                        <button class="btn btn-danger btn-sm reject-button ms-2">
-                            Reject
-                        </button>
-                    `;
-
-                    card.querySelector(".approve-button").addEventListener(
-                        "click",
-                        function() {
-                            updateStatus(user._id, "approved");
-                        }
-                    );
-
-                    card.querySelector(".reject-button").addEventListener(
-                        "click",
-                        function() {
-                            updateStatus(user._id, "rejected");
-                        }
-                    );
-
-                    requestsList.appendChild(card);
+                card.querySelector(".approve-button").addEventListener("click", function() {
+                    updateStatus(user._id, "approved");
                 });
 
-            } catch (error) {
-                loadingMessage.textContent = "";
-                showMessage(error.message);
-            } finally {
-                refreshButton.disabled = false;
+                card.querySelector(".reject-button").addEventListener("click", function() {
+                    updateStatus(user._id, "rejected");
+                });
+
+                requestsList.appendChild(card);
+            });
+
+        } catch (error) {
+            loadingMessage.textContent = "";
+            showMessage(error.message);
+        } finally {
+            refreshButton.disabled = false;
+        }
+    }
+
+    // Approved and inactive users
+    async function loadUsers() {
+        usersList.replaceChildren();
+        usersLoadingMessage.textContent = "Users लोड होत आहेत...";
+        refreshUsersButton.disabled = true;
+
+        try {
+            const data = await apiRequest(
+                `${API_BASE_URL}/api/owner/requests/users`
+            );
+
+            usersLoadingMessage.textContent = "";
+
+            if (!Array.isArray(data.users) || data.users.length === 0) {
+                usersList.textContent =
+                    "सध्या Approved किंवा Deactivated User नाही.";
+                return;
             }
-        }
 
-        // =====================================
-        // APPROVED AND INACTIVE USERS LOAD
-        // =====================================
-        
-async function loadUsers() {
-    usersList.replaceChildren();
-    usersLoadingMessage.textContent = "Users लोड होत आहेत...";
-    refreshUsersButton.disabled = true;
+            data.users.forEach(function(user) {
+                const isActive = user.status === "approved";
 
-    try {
-        const data = await apiRequest(
-            "http://localhost:5000/api/owner/requests/users"
-        );
+                const card = document.createElement("div");
+                card.className = "border rounded p-3 mb-3 bg-white";
 
-        usersLoadingMessage.textContent = "";
+                card.innerHTML = `
+                    <h5>${escapeHTML(user.name)}</h5>
 
-        if (!Array.isArray(data.users) || data.users.length === 0) {
-            usersList.textContent =
-                "सध्या Approved किंवा Deactivated User नाही.";
-            return;
-        }
+                    <p class="mb-1">
+                        <strong>Mobile:</strong>
+                        ${escapeHTML(user.mobileNumber)}
+                    </p>
 
-        data.users.forEach(function(user) {
-            const isActive = user.status === "approved";
+                    <p class="mb-1">
+                        <strong>Email:</strong>
+                        ${escapeHTML(user.email)}
+                    </p>
 
-            const card = document.createElement("div");
-            card.className = "border rounded p-3 mb-3 bg-white";
+                    <p class="mb-3">
+                        <strong>Status:</strong>
+                        <span class="badge ${
+                            isActive ? "bg-success" : "bg-secondary"
+                        }">
+                            ${isActive ? "Active" : "Deactivated"}
+                        </span>
+                    </p>
 
-            card.innerHTML = `
-                <h5>${escapeHTML(user.name)}</h5>
+                    <button class="btn ${
+                        isActive ? "btn-danger" : "btn-success"
+                    } btn-sm status-button">
+                        ${isActive ? "Deactivate" : "Activate"}
+                    </button>
 
-                <p class="mb-1">
-                    <strong>Mobile:</strong>
-                    ${escapeHTML(user.mobileNumber)}
-                </p>
+                    <button class="btn btn-outline-danger btn-sm delete-user-button ms-2">
+                        Delete User
+                    </button>
+                `;
 
-                <p class="mb-1">
-                    <strong>Email:</strong>
-                    ${escapeHTML(user.email)}
-                </p>
-
-                <p class="mb-3">
-                    <strong>Status:</strong>
-                    <span class="badge ${
-                        isActive ? "bg-success" : "bg-secondary"
-                    }">
-                        ${isActive ? "Active" : "Deactivated"}
-                    </span>
-                </p>
-
-                <button class="btn ${
-                    isActive ? "btn-danger" : "btn-success"
-                } btn-sm status-button">
-                    ${isActive ? "Deactivate" : "Activate"}
-                </button>
-
-                <button class="btn btn-outline-danger btn-sm delete-user-button ms-2">
-                    Delete User
-                </button>
-            `;
-
-            card.querySelector(".status-button").addEventListener(
-                "click",
-                function() {
+                card.querySelector(".status-button").addEventListener("click", function() {
                     updateStatus(
                         user._id,
                         isActive ? "inactive" : "approved"
                     );
-                }
-            );
+                });
 
-            card.querySelector(".delete-user-button").addEventListener(
-                "click",
-                function() {
+                card.querySelector(".delete-user-button").addEventListener("click", function() {
                     deleteUser(user._id, user.name);
-                }
+                });
+
+                usersList.appendChild(card);
+            });
+
+        } catch (error) {
+            usersLoadingMessage.textContent = "";
+            showMessage(error.message);
+        } finally {
+            refreshUsersButton.disabled = false;
+        }
+    }
+
+    // Delete a user
+    async function deleteUser(userId, userName) {
+        const confirmed = confirm(
+            `"${userName}" या User चे अकाउंट कायमचे Delete करायचे आहे का?\n\nही कृती परत Undo करता येणार नाही.`
+        );
+
+        if (!confirmed) return;
+
+        try {
+            const data = await apiRequest(
+                `${API_BASE_URL}/api/owner/requests/` +
+                encodeURIComponent(userId),
+                { method: "DELETE" }
             );
 
-            usersList.appendChild(card);
-        });
+            showMessage(data.message || "User Delete झाला.", "success");
 
-    } catch (error) {
-        usersLoadingMessage.textContent = "";
-        showMessage(error.message);
-    } finally {
-        refreshUsersButton.disabled = false;
-    }
-}
+            await loadUsers();
+            await loadRequests();
 
-
-        // =====================================
-        // UPDATE USER STATUS
-        // =====================================
-
-
-async function deleteUser(userId, userName) {
-    const confirmed = confirm(
-        `"${userName}" या User चे अकाउंट कायमचे Delete करायचे आहे का?\n\nही कृती परत Undo करता येणार नाही.`
-    );
-
-    if (!confirmed) {
-        return;
+        } catch (error) {
+            showMessage(error.message);
+        }
     }
 
-    try {
-        const data = await apiRequest(
-            "http://localhost:5000/api/owner/requests/" +
-            encodeURIComponent(userId),
-            {
-                method: "DELETE"
-            }
-        );
+    // Approve, reject, activate or deactivate
+    async function updateStatus(userId, status) {
+        const actions = {
+            approved: "Approve / Activate",
+            rejected: "Reject",
+            inactive: "Deactivate"
+        };
 
-        showMessage(
-            data.message || "User Delete झाला.",
-            "success"
-        );
-
-        await loadUsers();
-        await loadRequests();
-
-    } catch (error) {
-        showMessage(error.message);
-    }
-}
-
-
-        async function updateStatus(userId, status) {
-            const actions = {
-                approved: "Approve / Activate",
-                rejected: "Reject",
-                inactive: "Deactivate"
-            };
-
-            if (!confirm("User ला " + actions[status] + " करायचे आहे का?")) {
-                return;
-            }
-
-            try {
-                const data = await apiRequest(
-                    "http://localhost:5000/api/owner/requests/" +
-                    encodeURIComponent(userId) + "/status",
-                    {
-                        method: "PATCH",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({ status })
-                    }
-                );
-
-                showMessage(data.message || "Status यशस्वीरीत्या बदलला.", "success");
-
-                await loadRequests();
-                await loadUsers();
-
-            } catch (error) {
-                showMessage(error.message);
-            }
+        if (!confirm("User ला " + actions[status] + " करायचे आहे का?")) {
+            return;
         }
 
-        // =====================================
-        // BUTTON EVENTS
-        // =====================================
-        refreshButton.addEventListener("click", loadRequests);
-        refreshUsersButton.addEventListener("click", loadUsers);
+        try {
+            const data = await apiRequest(
+                `${API_BASE_URL}/api/owner/requests/` +
+                encodeURIComponent(userId) + "/status",
+                {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ status })
+                }
+            );
 
-        logoutButton.addEventListener("click", function() {
-            sessionStorage.removeItem("authToken");
-            sessionStorage.removeItem("currentUser");
+            showMessage(
+                data.message || "Status यशस्वीरीत्या बदलला.",
+                "success"
+            );
 
-            window.location.href = "login.html";
-        });
+            await loadRequests();
+            await loadUsers();
 
-        // =====================================
-        // INITIAL LOAD
-        // =====================================
-        loadRequests();
-        loadUsers();
-    </script>
+        } catch (error) {
+            showMessage(error.message);
+        }
+    }
+
+    refreshButton.addEventListener("click", loadRequests);
+    refreshUsersButton.addEventListener("click", loadUsers);
+
+    logoutButton.addEventListener("click", function() {
+        clearLoginData();
+        window.location.href = "login.html";
+    });
+
+    loadRequests();
+    loadUsers();
+</script>
 
 </body>
 </html>
+```

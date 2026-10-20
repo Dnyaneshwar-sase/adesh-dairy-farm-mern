@@ -1,7 +1,5 @@
-
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="mr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -147,8 +145,12 @@
             text-decoration: none;
         }
 
+        .back a:hover {
+            text-decoration: underline;
+        }
+
         .hidden {
-            display: none;
+            display: none !important;
         }
 
         @media (max-width: 500px) {
@@ -179,7 +181,7 @@
                 तुमच्या registered email वर आलेला 6 अंकी OTP टाका.
             </p>
 
-            <div id="otpMessage" class="message" role="status"></div>
+            <div id="otpMessage" class="message" role="status" aria-live="polite"></div>
 
             <form id="otpForm">
                 <div class="form-group">
@@ -210,7 +212,7 @@
                 OTP verify झाला आहे. आता नवीन password सेट करा.
             </p>
 
-            <div id="passwordMessage" class="message" role="status"></div>
+            <div id="passwordMessage" class="message" role="status" aria-live="polite"></div>
 
             <form id="passwordForm">
                 <div class="form-group">
@@ -219,6 +221,7 @@
                         type="password"
                         id="newPassword"
                         minlength="8"
+                        maxlength="128"
                         autocomplete="new-password"
                         placeholder="Minimum 8 characters"
                         required
@@ -231,6 +234,7 @@
                         type="password"
                         id="confirmPassword"
                         minlength="8"
+                        maxlength="128"
                         autocomplete="new-password"
                         placeholder="Enter password again"
                         required
@@ -250,7 +254,8 @@
     </main>
 
     <script>
-        const API_BASE = "http://localhost:5000";
+        // Deployed Adesh Dairy Farm backend
+        const API_BASE = "https://adesh-dairy-farm-mern.vercel.app";
 
         const email = sessionStorage.getItem("passwordResetEmail");
 
@@ -278,28 +283,97 @@
             passwordSection.classList.remove("hidden");
         }
 
+        async function readResponse(response) {
+            const text = await response.text();
+
+            if (!text) {
+                return {};
+            }
+
+            try {
+                return JSON.parse(text);
+            } catch {
+                throw new Error(
+                    "Backend कडून योग्य JSON response मिळाला नाही. API route तपासा."
+                );
+            }
+        }
+
+        async function postJson(endpoint, payload) {
+            const response = await fetch(`${API_BASE}${endpoint}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await readResponse(response);
+
+            if (!response.ok) {
+                throw new Error(
+                    data.message ||
+                    data.error ||
+                    `Request अयशस्वी झाली. HTTP ${response.status}`
+                );
+            }
+
+            return data;
+        }
+
+        function showNetworkError(element, error) {
+            console.error("Password reset error:", error);
+
+            if (
+                error instanceof TypeError ||
+                error.message === "Failed to fetch"
+            ) {
+                showMessage(
+                    element,
+                    "Backend शी संपर्क होत नाही. Backend URL आणि CORS configuration तपासा.",
+                    "error"
+                );
+            } else {
+                showMessage(element, error.message, "error");
+            }
+        }
+
         if (!email) {
             otpForm.classList.add("hidden");
+
             showMessage(
                 otpMessage,
                 "Email session सापडली नाही. Forgot Password पेजवर पुन्हा जा.",
                 "error"
             );
-        } else if (
-            sessionStorage.getItem("passwordOtpVerified") === email
-        ) {
-            showPasswordForm();
+        } else {
+            const verifiedEmail =
+                sessionStorage.getItem("passwordOtpVerified");
+
+            if (verifiedEmail === email) {
+                showPasswordForm();
+            }
         }
+
+        otpInput.addEventListener("input", function () {
+            otpInput.value = otpInput.value.replace(/\D/g, "").slice(0, 6);
+        });
 
         otpForm.addEventListener("submit", async function (event) {
             event.preventDefault();
 
-            if (!email) return;
+            if (!email) {
+                return;
+            }
 
             const otp = otpInput.value.trim();
 
             if (!/^\d{6}$/.test(otp)) {
-                showMessage(otpMessage, "6 अंकी योग्य OTP टाका.", "error");
+                showMessage(
+                    otpMessage,
+                    "6 अंकी योग्य OTP टाका.",
+                    "error"
+                );
                 return;
             }
 
@@ -307,22 +381,10 @@
             verifyButton.textContent = "Verifying...";
 
             try {
-                const response = await fetch(
-                    `${API_BASE}/api/auth/verify-reset-otp`,
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({ email, otp })
-                    }
+                const data = await postJson(
+                    "/api/auth/verify-reset-otp",
+                    { email, otp }
                 );
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(data.message || "OTP verify झाला नाही.");
-                }
 
                 sessionStorage.setItem("passwordOtpVerified", email);
 
@@ -335,13 +397,7 @@
                 showPasswordForm();
 
             } catch (error) {
-                showMessage(
-                    otpMessage,
-                    error.message === "Failed to fetch"
-                        ? "Backend server सुरू आहे का ते तपासा."
-                        : error.message,
-                    "error"
-                );
+                showNetworkError(otpMessage, error);
             } finally {
                 verifyButton.disabled = false;
                 verifyButton.textContent = "Verify OTP";
@@ -351,8 +407,10 @@
         passwordForm.addEventListener("submit", async function (event) {
             event.preventDefault();
 
-            if (!email ||
-                sessionStorage.getItem("passwordOtpVerified") !== email) {
+            if (
+                !email ||
+                sessionStorage.getItem("passwordOtpVerified") !== email
+            ) {
                 showMessage(
                     passwordMessage,
                     "आधी OTP verify करा.",
@@ -373,6 +431,15 @@
                 return;
             }
 
+            if (newPassword.length > 128) {
+                showMessage(
+                    passwordMessage,
+                    "Password 128 characters पेक्षा मोठा असू शकत नाही.",
+                    "error"
+                );
+                return;
+            }
+
             if (newPassword !== confirmPassword) {
                 showMessage(
                     passwordMessage,
@@ -386,43 +453,41 @@
             resetButton.textContent = "Updating Password...";
 
             try {
-                const response = await fetch(
-                    `${API_BASE}/api/auth/reset-password`,
+                const data = await postJson(
+                    "/api/auth/reset-password",
                     {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({ email, newPassword })
+                        email,
+                        newPassword
                     }
                 );
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(
-                        data.message || "Password reset झाला नाही."
-                    );
-                }
 
                 sessionStorage.removeItem("passwordResetEmail");
                 sessionStorage.removeItem("passwordOtpVerified");
 
-                alert(data.message || "Password successfully reset झाला.");
-
-                window.location.replace("login.html");
-
-            } catch (error) {
                 showMessage(
                     passwordMessage,
-                    error.message === "Failed to fetch"
-                        ? "Backend server सुरू आहे का ते तपासा."
-                        : error.message,
-                    "error"
+                    data.message || "Password successfully reset झाला.",
+                    "success"
                 );
+
+                passwordForm.reset();
+
+                resetButton.textContent = "Password Updated";
+
+                setTimeout(() => {
+                    window.location.replace("login.html");
+                }, 1200);
+
+            } catch (error) {
+                showNetworkError(passwordMessage, error);
             } finally {
-                resetButton.disabled = false;
-                resetButton.textContent = "Reset Password";
+                if (document.body.contains(resetButton)) {
+                    resetButton.disabled = false;
+
+                    if (resetButton.textContent !== "Password Updated") {
+                        resetButton.textContent = "Reset Password";
+                    }
+                }
             }
         });
     </script>

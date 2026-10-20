@@ -418,7 +418,7 @@
 </div>
 
 <script>
-    const API_URL = "http://localhost:5000/api/cows";
+   const API_URL = "http://localhost:5000/api/cows";
 
     const container = document.getElementById("cowContainer");
     const loading = document.getElementById("loading");
@@ -463,7 +463,7 @@
         }
 
         if (photo.startsWith("/")) {
-            return "http://localhost:5000" + photo;
+           return "https://adesh-dairy-farm-mern.vercel.app" + photo;
         }
 
         return photo;

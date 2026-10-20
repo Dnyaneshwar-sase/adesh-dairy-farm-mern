@@ -6,356 +6,302 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>गाभण गायी | आदेश डेअरी फार्म</title>
 
-   
+    <style>
+        :root {
+            --green: #198754;
+            --dark-green: #146c43;
+            --light-green: #e9f7ef;
+            --background: #f4f8f5;
+            --text: #26352b;
+            --muted: #6c757d;
+            --border: #dee8e1;
+            --white: #ffffff;
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+        }
 
-<style>
-    :root {
-        --green: #198754;
-        --dark-green: #146c43;
-        --light-green: #e9f7ef;
-        --background: #f4f8f5;
-        --text: #26352b;
-        --muted: #6c757d;
-        --border: #dee8e1;
-        --white: #ffffff;
-        --shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-    }
+        * {
+            box-sizing: border-box;
+        }
 
-    * {
-        box-sizing: border-box;
-    }
-
-    body {
-        margin: 0;
-        padding: 25px;
-        font-family: "Segoe UI", Arial, sans-serif;
-        color: var(--text);
-        background: var(--background);
-    }
-
-    .page {
-        max-width: 1300px;
-        margin: 0 auto;
-    }
-
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 15px;
-        padding: 28px;
-        margin-bottom: 25px;
-        border-radius: 16px;
-        background: linear-gradient(135deg, #146c43, #28a745);
-        color: white;
-        box-shadow: var(--shadow);
-    }
-
-    h1 {
-        margin: 0 0 8px;
-        color: white;
-        font-size: 30px;
-    }
-
-    .subtitle {
-        margin: 0;
-        color: #e5f5e9;
-        font-size: 15px;
-    }
-
-    .back-button {
-        display: inline-block;
-        padding: 12px 20px;
-        border-radius: 8px;
-        background: white;
-        color: var(--dark-green);
-        text-decoration: none;
-        font-weight: 700;
-        transition: 0.2s;
-    }
-
-    .back-button:hover {
-        background: var(--light-green);
-        transform: translateY(-2px);
-    }
-
-    .summary {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 20px;
-        margin-bottom: 25px;
-    }
-
-    .summary-card {
-        padding: 25px;
-        border: 1px solid var(--border);
-        border-radius: 14px;
-        background: var(--white);
-        box-shadow: var(--shadow);
-    }
-
-    .summary-card p {
-        margin: 0 0 12px;
-        color: var(--muted);
-        font-size: 15px;
-        font-weight: 600;
-    }
-
-    .summary-card strong {
-        color: var(--green);
-        font-size: 36px;
-    }
-
-    .toolbar {
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 12px;
-        margin-bottom: 20px;
-        padding: 16px;
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        background: white;
-    }
-
-    input,
-    select {
-        min-height: 44px;
-        padding: 10px 14px;
-        border: 1px solid #cedbd1;
-        border-radius: 8px;
-        background: white;
-        color: var(--text);
-        font: inherit;
-        outline: none;
-    }
-
-    input {
-        flex: 1;
-        min-width: 220px;
-    }
-
-    select {
-        min-width: 220px;
-        cursor: pointer;
-    }
-
-    input:focus,
-    select:focus {
-        border-color: var(--green);
-        box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.12);
-    }
-
-    .table-container {
-        overflow-x: auto;
-        border: 1px solid var(--border);
-        border-radius: 14px;
-        background: white;
-        box-shadow: var(--shadow);
-    }
-
-    table {
-        width: 100%;
-        min-width: 900px;
-        border-collapse: collapse;
-    }
-
-    th {
-        padding: 16px;
-        background: var(--light-green);
-        color: var(--dark-green);
-        text-align: left;
-        font-size: 14px;
-        white-space: nowrap;
-    }
-
-    td {
-        padding: 16px;
-        border-bottom: 1px solid #edf1ee;
-        font-size: 14px;
-    }
-
-    tbody tr:hover {
-        background: #f7fbf8;
-    }
-
-    tbody tr:last-child td {
-        border-bottom: none;
-    }
-
-    .status {
-        display: inline-block;
-        padding: 6px 12px;
-        border-radius: 20px;
-        background: #d1f0dc;
-        color: #176b3a;
-        font-size: 12px;
-        font-weight: 700;
-        white-space: nowrap;
-    }
-
-    .empty,
-    .message {
-        padding: 25px;
-        text-align: center;
-        color: var(--muted);
-    }
-
-    .error {
-        color: #b42318;
-    }
-
-    #pageMessage {
-        margin-top: 10px;
-    }
-
-    @media (max-width: 700px) {
         body {
-            padding: 12px;
+            margin: 0;
+            padding: 24px;
+            font-family: "Segoe UI", Arial, sans-serif;
+            color: var(--text);
+            background: var(--background);
+        }
+
+        .page {
+            width: 100%;
+            max-width: 1300px;
+            margin: 0 auto;
         }
 
         .header {
-            padding: 22px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 26px;
+            margin-bottom: 24px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #146c43, #28a745);
+            color: white;
+            box-shadow: var(--shadow);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .brand-logo img {
+            width: 64px;
+            height: 64px;
+            object-fit: contain;
+            border-radius: 10px;
+            background: white;
+            padding: 5px;
         }
 
         h1 {
-            font-size: 25px;
-        }
-
-        .summary {
-            gap: 12px;
-        }
-
-        .summary-card {
-            padding: 18px;
-        }
-
-        .summary-card strong {
+            margin: 0 0 8px;
+            color: white;
             font-size: 30px;
         }
 
-        input,
-        select {
-            width: 100%;
-            min-width: 0;
+        .subtitle {
+            margin: 0;
+            color: #e5f5e9;
+            font-size: 15px;
         }
-    }
 
-    @media (max-width: 400px) {
+        .back-button {
+            display: inline-block;
+            min-width: 120px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            background: white;
+            color: var(--dark-green);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 700;
+            text-align: center;
+            white-space: nowrap;
+            transition: 0.2s;
+        }
+
+        .back-button:hover {
+            background: var(--light-green);
+            transform: translateY(-2px);
+        }
+
         .summary {
-            grid-template-columns: 1fr;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 24px;
+            width: 100%;
         }
-    }
-    
 
-.page {
-    width: 100%;
-    max-width: 1100px;
-    margin: 0 auto;
-}
+        .summary-card {
+            padding: 24px;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            background: var(--white);
+            box-shadow: var(--shadow);
+        }
 
-body {
-    margin: 0;
-    padding: 24px;
-    font-family: "Segoe UI", Arial, sans-serif;
-    color: var(--text);
-    background: var(--background);
-}
+        .summary-card p {
+            margin: 0 0 12px;
+            color: var(--muted);
+            font-size: 15px;
+            font-weight: 600;
+        }
 
-.header {
-    padding: 26px;
-    margin-bottom: 24px;
-    border-radius: 18px;
-}
+        .summary-card strong {
+            color: var(--green);
+            font-size: 36px;
+        }
 
-.summary {
-    gap: 18px;
-    margin-bottom: 24px;
-}
+        .toolbar {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 18px;
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: white;
+            width: 100%;
+        }
 
-.summary-card {
-    padding: 24px;
-    border-radius: 15px;
-}
+        input, select {
+            min-height: 44px;
+            padding: 10px 14px;
+            border: 1px solid #cedbd1;
+            border-radius: 8px;
+            background: white;
+            color: var(--text);
+            font: inherit;
+            outline: none;
+        }
 
-.toolbar {
-    margin-bottom: 18px;
-}
+        input {
+            flex: 1;
+            min-width: 220px;
+        }
 
-@media (max-width: 600px) {
-    body {
-        padding: 12px;
-    }
+        select {
+            min-width: 220px;
+            cursor: pointer;
+        }
 
-    .header {
-        padding: 18px;
-    }
+        input:focus, select:focus {
+            border-color: var(--green);
+            box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.12);
+        }
 
-    .summary {
-        grid-template-columns: 1fr;
-    }
-}
+        .table-container {
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: white;
+            box-shadow: var(--shadow);
+            width: 100%;
+        }
 
+        table {
+            width: 100%;
+            min-width: 900px;
+            border-collapse: collapse;
+        }
 
-.summary,
-.toolbar,
-.table-container {
-    width: 100%;
-    max-width: none;
-}
+        th {
+            padding: 16px;
+            background: var(--light-green);
+            color: var(--dark-green);
+            text-align: left;
+            font-size: 14px;
+            white-space: nowrap;
+        }
 
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #edf1ee;
+            font-size: 14px;
+        }
 
-.brand-logo img {
-    width: 64px;
-    height: 64px;
-    object-fit: contain;
-    border-radius: 10px;
-    background: white;
-    padding: 5px;
-}
+        tbody tr:hover {
+            background: #f7fbf8;
+        }
 
-.back-button {
-    min-width: 120px;
-    color: #146c43 !important;
-    font-size: 14px;
-    text-align: center;
-    white-space: nowrap;
-}
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
 
-</style>
+        .status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: #d1f0dc;
+            color: #176b3a;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
 
+        .empty, .message {
+            padding: 25px;
+            text-align: center;
+            color: var(--muted);
+        }
 
+        .error {
+            color: #b42318;
+        }
+
+        #pageMessage {
+            margin-top: 10px;
+        }
+
+        @media (max-width: 700px) {
+            body {
+                padding: 12px;
+            }
+
+            .header {
+                padding: 20px 16px;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+
+            .brand {
+                gap: 10px;
+            }
+
+            .brand-logo img {
+                width: 48px;
+                height: 48px;
+            }
+
+            .summary {
+                gap: 12px;
+            }
+
+            .summary-card {
+                padding: 18px;
+            }
+
+            .summary-card strong {
+                font-size: 30px;
+            }
+
+            input, select {
+                width: 100%;
+                min-width: 0;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .summary {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 
 <body>
 <div class="page">
 
-   
-<header class="header">
-    <div class="brand">
-        <div class="brand-logo">
-           <img src="images/logo.png"
-     alt="Adesh Dairy Farm Logo">
-        </div>
-        <div>
-            <h1>गर्भवती गायी</h1>
-            <p class="subtitle">आदेश डेअरी फार्म — गर्भवती गायींची माहिती</p>
-        </div>
-    </div>
+    <header class="header">
+        <div class="brand">
+            <div class="brand-logo">
+                <img src="images/logo.png"
+                     alt="Adesh Dairy Farm Logo">
+            </div>
 
-    <a class="back-button" href="dashboard.html">← Dashboard</a>
-</header>
+            <div>
+                <h1>गर्भवती गायी</h1>
+                <p class="subtitle">
+                    आदेश डेअरी फार्म — गर्भवती गायींची माहिती
+                </p>
+            </div>
+        </div>
 
+        <a class="back-button" href="dashboard.html">
+            ← Dashboard
+        </a>
+    </header>
 
     <section class="summary">
         <div class="summary-card">
-            <p>एकूण गर्भवती  गायी</p>
+            <p>एकूण गर्भवती गायी</p>
             <strong id="totalPregnant">0</strong>
         </div>
 
@@ -381,35 +327,39 @@ body {
     <div class="table-container">
         <table>
             <thead>
-            <tr>
-                <th>अ.क्र.</th>
-                <th>Cow Tag</th>
-                <th>गायीचे नाव</th>
-                <th>जात</th>
-                <th>AI Date</th>
-                <th>अपेक्षित वेताची तारीख</th>
-                <th>स्थिती</th>
-            </tr>
+                <tr>
+                    <th>अ.क्र.</th>
+                    <th>Cow Tag</th>
+                    <th>गायीचे नाव</th>
+                    <th>जात</th>
+                    <th>AI Date</th>
+                    <th>अपेक्षित वेताची तारीख</th>
+                    <th>स्थिती</th>
+                </tr>
             </thead>
 
             <tbody id="pregnantTableBody">
-            <tr>
-                <td colspan="7" class="message">माहिती लोड होत आहे...</td>
-            </tr>
+                <tr>
+                    <td colspan="7" class="message">
+                        माहिती लोड होत आहे...
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
 
-    <p id="pageMessage" class="message"></p>
+    <p id="pageMessage" class="message" role="status"></p>
 
 </div>
 
 <script>
-    const API_BASE = "http://localhost:5000/api";
+    // LIVE DEPLOYMENT BACKEND URL
+    const API_BASE = "https://adesh-dairy-farm-mern.vercel.app/api";
 
     const tableBody = document.getElementById("pregnantTableBody");
     const searchInput = document.getElementById("searchInput");
     const statusFilter = document.getElementById("statusFilter");
+    const pageMessage = document.getElementById("pageMessage");
 
     let pregnantRecords = [];
 
@@ -420,14 +370,30 @@ body {
             || localStorage.getItem("token");
     }
 
+    function escapeHtml(value) {
+        return String(value ?? "").replace(/[&<>"']/g, character => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        })[character]);
+    }
+
     function formatDate(value) {
         if (!value) return "—";
 
         const date = new Date(value);
 
-        if (Number.isNaN(date.getTime())) return "—";
+        if (Number.isNaN(date.getTime())) {
+            return "—";
+        }
 
-        return date.toLocaleDateString("en-GB");
+        return date.toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric"
+        });
     }
 
     function startOfToday() {
@@ -436,32 +402,33 @@ body {
         return date;
     }
 
-   
-function isPregnant(record) {
-    const status = String(record.pregnancyStatus || "")
-        .trim()
-        .toLowerCase();
+    function isPregnant(record) {
+        const status = String(record.pregnancyStatus || "")
+            .trim()
+            .toLowerCase();
 
-    return [
-        "pregnant",
-        "गर्भवती",
-        "गर्भवती",
-        "गर्भवती आहे"
-    ].includes(status);
-}
-
+        return [
+            "pregnant",
+            "गर्भवती",
+            "गर्भवती आहे"
+        ].includes(status);
+    }
 
     function isCalvingSoon(record) {
-        if (!record.expectedCalvingDate) return false;
+        if (!record.expectedCalvingDate) {
+            return false;
+        }
 
         const today = startOfToday();
         const dueDate = new Date(record.expectedCalvingDate);
 
-        if (Number.isNaN(dueDate.getTime())) return false;
+        if (Number.isNaN(dueDate.getTime())) {
+            return false;
+        }
 
         dueDate.setHours(0, 0, 0, 0);
 
-        const days = Math.round(
+        const days = Math.floor(
             (dueDate.getTime() - today.getTime()) / 86400000
         );
 
@@ -472,29 +439,49 @@ function isPregnant(record) {
         const token = getToken();
 
         if (!token) {
-            showError("Login token सापडला नाही. Login करून पुन्हा प्रयत्न करा.");
+            showError(
+                "Login token सापडला नाही. कृपया Login करून पुन्हा प्रयत्न करा."
+            );
             return;
         }
 
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="7" class="message">
+                    माहिती लोड होत आहे...
+                </td>
+            </tr>
+        `;
+
+        pageMessage.textContent = "";
+
         try {
             const response = await fetch(`${API_BASE}/breeding`, {
+                method: "GET",
                 headers: {
-                    "Authorization": `Bearer ${token}`
+                    "Authorization": `Bearer ${token}`,
+                    "Accept": "application/json"
                 }
             });
 
-            if (!response.ok) {
-                if (response.status === 401 || response.status === 403) {
-                    throw new Error("Login किंवा owner access तपासा.");
-                }
+            if (response.status === 401 || response.status === 403) {
+                throw new Error(
+                    "Login किंवा access permission तपासा. पुन्हा Login करून पाहा."
+                );
+            }
 
-                throw new Error(`Server error: ${response.status}`);
+            if (!response.ok) {
+                throw new Error(
+                    `Server error: ${response.status}. Backend API तपासा.`
+                );
             }
 
             const records = await response.json();
 
             if (!Array.isArray(records)) {
-                throw new Error("Breeding API कडून अपेक्षित माहिती मिळाली नाही.");
+                throw new Error(
+                    "Breeding API कडून अपेक्षित array माहिती मिळाली नाही."
+                );
             }
 
             pregnantRecords = records.filter(isPregnant);
@@ -506,6 +493,7 @@ function isPregnant(record) {
                 pregnantRecords.filter(isCalvingSoon).length;
 
             renderRecords();
+
         } catch (error) {
             showError(error.message || "माहिती लोड करता आली नाही.");
         }
@@ -534,7 +522,7 @@ function isPregnant(record) {
             tableBody.innerHTML = `
                 <tr>
                     <td colspan="7" class="empty">
-                        गाभण गायींची माहिती उपलब्ध नाही.
+                        गर्भवती गायींची माहिती उपलब्ध नाही.
                     </td>
                 </tr>
             `;
@@ -558,16 +546,6 @@ function isPregnant(record) {
         }).join("");
     }
 
-    function escapeHtml(value) {
-        return String(value).replace(/[&<>"']/g, character => ({
-            "&": "&amp;",
-            "<": "&lt;",
-            ">": "&gt;",
-            '"': "&quot;",
-            "'": "&#39;"
-        })[character]);
-    }
-
     function showError(message) {
         tableBody.innerHTML = `
             <tr>
@@ -577,8 +555,8 @@ function isPregnant(record) {
             </tr>
         `;
 
-        document.getElementById("pageMessage").textContent =
-            "माहिती लोड झाली नाही. Backend सुरू आहे आणि Login केले आहे याची खात्री करा.";
+        pageMessage.textContent =
+            "माहिती लोड झाली नाही. Backend, API route आणि Login तपासा.";
     }
 
     searchInput.addEventListener("input", renderRecords);

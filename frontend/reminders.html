@@ -10,15 +10,27 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --green: #176b3a;
+            --green-dark: #10552d;
+            --green-light: #e8f5e9;
+            --background: #f4f8f4;
+            --text: #26332a;
+            --border: #dce8dd;
+            --white: #ffffff;
+            --red: #dc3545;
+        }
+
         body {
             margin: 0;
             padding: 20px;
-            background: #f4f8f4;
+            background: var(--background);
             font-family: Arial, sans-serif;
-            color: #26332a;
+            color: var(--text);
         }
 
         .container {
+            width: 100%;
             max-width: 1200px;
             margin: auto;
         }
@@ -33,22 +45,21 @@
         }
 
         .header h1 {
-            color: #176b3a;
-            margin-top: 0;
-            margin-bottom: 6px;
+            color: var(--green);
+            margin: 0 0 6px;
             font-size: 28px;
             font-weight: 800;
         }
 
         .header p {
-            margin-top: 0;
+            margin: 0;
             line-height: 1.5;
         }
 
         .nav-button {
             display: inline-block;
-            background: #e8f5e9;
-            color: #176b3a;
+            background: var(--green-light);
+            color: var(--green);
             padding: 11px 16px;
             border: 1px solid #c8e6c9;
             border-radius: 8px;
@@ -62,7 +73,7 @@
         }
 
         .panel {
-            background: white;
+            background: var(--white);
             border-radius: 12px;
             padding: 22px;
             margin-bottom: 22px;
@@ -71,7 +82,7 @@
 
         .panel h2 {
             margin-top: 0;
-            color: #26332a;
+            color: var(--text);
             font-size: 22px;
             font-weight: 800;
         }
@@ -96,7 +107,7 @@
             border-radius: 8px;
             margin-top: 7px;
             background: white;
-            color: #26332a;
+            color: var(--text);
             font-size: 15px;
         }
 
@@ -107,7 +118,7 @@
         }
 
         #resultCount {
-            color: #176b3a;
+            color: var(--green);
             font-weight: bold;
             margin-bottom: 0;
         }
@@ -120,15 +131,15 @@
 
         .cow-card {
             min-width: 0;
-            border: 1px solid #dce8dd;
+            border: 1px solid var(--border);
             border-radius: 12px;
             padding: 18px;
-            background: #fff;
+            background: var(--white);
         }
 
         .cow-card h3 {
             margin-top: 0;
-            color: #176b3a;
+            color: var(--green);
             font-size: 21px;
             font-weight: 800;
             overflow-wrap: anywhere;
@@ -141,15 +152,15 @@
 
         .cow-card strong {
             font-weight: 700;
-            color: #26332a;
+            color: var(--text);
         }
 
         .countdown {
-            background: #e8f5e9;
+            background: var(--green-light);
             border-radius: 8px;
             padding: 12px;
             font-weight: bold;
-            color: #176b3a;
+            color: var(--green);
             line-height: 1.6;
         }
 
@@ -191,16 +202,16 @@
         }
 
         .edit-button {
-            background: #176b3a;
+            background: var(--green);
             color: white;
         }
 
         .edit-button:hover {
-            background: #10552d;
+            background: var(--green-dark);
         }
 
         .delete-button {
-            background: #dc3545;
+            background: var(--red);
             color: white;
         }
 
@@ -242,6 +253,7 @@
             border-radius: 10px;
             line-height: 1.6;
             margin-bottom: 20px;
+            overflow-wrap: anywhere;
         }
 
         .footer {
@@ -325,7 +337,7 @@
         <p id="resultCount">दिसणाऱ्या गायी: 0</p>
     </section>
 
-    <div id="pageMessage" style="display:none;"></div>
+    <div id="pageMessage" style="display:none;" role="alert"></div>
 
     <section id="reminderList" class="reminder-list"></section>
 
@@ -341,7 +353,11 @@
 <script>
 "use strict";
 
-const API_BASE = "http://localhost:5000";
+/*
+ * DEPLOYMENT BACKEND URL
+ * localhost ऐवजी live Vercel backend वापरला आहे.
+ */
+const API_BASE = "https://adesh-dairy-farm-mern.vercel.app";
 
 const searchInput = document.getElementById("searchCow");
 const filterSelect = document.getElementById("filterType");
@@ -370,12 +386,13 @@ function authHeaders() {
 }
 
 function escapeHtml(value) {
-    return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+    return String(value ?? "").replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+    })[character]);
 }
 
 function parseDate(value) {
@@ -655,7 +672,6 @@ function hasActiveReminder(item) {
     if (isRecordNotPregnant(item.record)) return false;
 
     const heatActive = formatDate(item.heatDate) >= today;
-
     const pregnancyActive =
         isPregnancyTestPending({ pregnancyStatus: status });
 
@@ -682,10 +698,9 @@ function renderCard(item) {
         formatDate(item.calvingDate) >= today;
 
     return `
-        <article
-            class="cow-card"
-            data-search="${escapeHtml(item.cowName + " " + item.cowTag)}"
-        >
+        <article class="cow-card"
+                 data-search="${escapeHtml(item.cowName + " " + item.cowTag)}">
+
             <h3>
                 🐄 ${escapeHtml(item.cowName)}
                 ${item.cowTag ? "(" + escapeHtml(item.cowTag) + ")" : ""}
@@ -816,6 +831,10 @@ async function loadReminders() {
         return;
     }
 
+    pageMessage.style.display = "none";
+    reminderList.innerHTML =
+        '<div class="empty-message">Reminder माहिती लोड होत आहे...</div>';
+
     try {
         const [cowResponse, breedingResponse] = await Promise.all([
             fetch(`${API_BASE}/api/cows`, {
@@ -876,22 +895,17 @@ async function loadReminders() {
             })
             .map(getReminderDetails)
             .filter(Boolean)
-            // Expected Calving तारीख उलटल्यावर Reminder मधून गायब होईल.
-            // Breeding Record मात्र डेटाबेसमध्ये कायम राहील.
-            .filter(item => {
-                if (!item.calvingDate) return true;
-                return formatDate(item.calvingDate) >= getTodayDate();
-            })
             .filter(hasActiveReminder)
             .sort((a, b) => b.aiDate - a.aiDate);
 
-        pageMessage.style.display = "none";
         applyFilters();
 
     } catch (error) {
         console.error("Reminder loading error:", error);
+
         showError(
-            error.message || "Reminder records लोड करताना समस्या आली."
+            error.message ||
+            "Reminder records लोड करताना समस्या आली."
         );
     }
 }
