@@ -13,9 +13,7 @@ const router = express.Router();
 // Backend uploads folder तयार करणे
 const uploadDir = path.join(__dirname, "../uploads");
 
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-}
+
 
 // फोटो कोणत्या नावाने आणि कुठे Save करायचा
 const storage = multer.diskStorage({

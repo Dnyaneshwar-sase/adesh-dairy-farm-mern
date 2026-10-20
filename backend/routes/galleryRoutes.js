@@ -9,9 +9,8 @@ const ownerAuth = require("../middleware/ownerAuth");
 
 const router = express.Router();
 
+// Upload folder path
 const uploadDir = path.join(__dirname, "..", "uploads", "gallery");
-
-fs.mkdirSync(uploadDir, { recursive: true });
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -41,10 +40,7 @@ const upload = multer({
         const isImage = file.mimetype.startsWith("image/");
         const isVideo = file.mimetype.startsWith("video/");
 
-        if (
-            allowedExtensions.has(ext) &&
-            (isImage || isVideo)
-        ) {
+        if (allowedExtensions.has(ext) && (isImage || isVideo)) {
             return cb(null, true);
         }
 
@@ -64,9 +60,7 @@ router.get("/", async (req, res) => {
             success: true,
             media: media.map(item => ({
                 ...item,
-                url: `/uploads/gallery/${encodeURIComponent(
-                    item.filename
-                )}`
+                url: `/uploads/gallery/${encodeURIComponent(item.filename)}`
             }))
         });
     } catch (error) {
@@ -78,7 +72,7 @@ router.get("/", async (req, res) => {
     }
 });
 
-// Upload: फक्त मंजूर Owner
+// Upload: फक्त Owner
 router.post(
     "/upload",
     ownerAuth,
@@ -144,6 +138,41 @@ router.post(
         }
     }
 );
+
+// Delete: फक्त Owner
+router.delete("/:id", ownerAuth, async (req, res) => {
+    try {
+        const item = await GalleryMedia.findById(req.params.id);
+
+        if (!item) {
+            return res.status(404).json({
+                success: false,
+                message: "Gallery मधील फाइल सापडली नाही."
+            });
+        }
+
+        // उपलब्ध local storage मधील फाइलही हटवण्याचा प्रयत्न
+        const filePath = path.join(uploadDir, path.basename(item.filename));
+
+        if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+        }
+
+        await GalleryMedia.findByIdAndDelete(item._id);
+
+        res.json({
+            success: true,
+            message: "Gallery मधील फाइल Delete झाली."
+        });
+    } catch (error) {
+        console.error("Gallery Delete Error:", error.message);
+
+        res.status(400).json({
+            success: false,
+            message: "फाइल Delete करता आली नाही."
+        });
+    }
+});
 
 // Upload साठी Multer errors
 router.use((error, req, res, next) => {
