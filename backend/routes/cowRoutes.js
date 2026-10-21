@@ -1,77 +1,61 @@
 
 const express = require("express");
 const multer = require("multer");
-const path = require("path");
+const Cow = require("../models/Cow");
+const auth = require("../middleware/auth");
 
 const router = express.Router();
 
-const Cow = require("../models/Cow");
-const ownerAuth = require("../middleware/ownerAuth");
-const auth = require("../middleware/auth");
+// Protect all cow routes
+router.use(auth);
 
-// फोटो upload करण्याची सेटिंग
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, "../uploads"));
-    },
+// Vercel-compatible photo upload using memory storage
+const storage = multer.memoryStorage();
 
-    filename: (req, file, cb) => {
-        const extension = path.extname(file.originalname).toLowerCase();
-
-        const uniqueName =
-            "cow-" +
-            Date.now() +
-            "-" +
-            Math.round(Math.random() * 1e9) +
-            extension;
-
-        cb(null, uniqueName);
-    }
-});
-
-// फक्त image files स्वीकारा
-const imageFilter = (req, file, cb) => {
+const fileFilter = (req, file, cb) => {
     if (file.mimetype && file.mimetype.startsWith("image/")) {
         cb(null, true);
     } else {
-        cb(new Error("कृपया फक्त फोटो निवडा."));
+        cb(new Error("Only image files are allowed"), false);
     }
 };
 
 const upload = multer({
     storage,
-    fileFilter: imageFilter
+    limits: {
+        fileSize: 5 * 1024 * 1024
+    },
+    fileFilter
 });
 
-// सर्व routes साठी Login आणि Owner authentication आवश्यक
-router.use(auth);
+// Convert uploaded image to Base64
+const getPhotoData = (file) => {
+    if (!file) return null;
 
+    const mimeType = file.mimetype;
+    const base64 = file.buffer.toString("base64");
 
-// ==========================================
-// 1. सर्व गायी मिळवा
-// GET /api/cows
-// ==========================================
+    return `data:${mimeType};base64,${base64}`;
+};
+
+// GET: Get all cows for logged-in owner
 router.get("/", async (req, res) => {
     try {
         const cows = await Cow.find({
             ownerId: req.user.id
         }).sort({ createdAt: -1 });
 
-        res.json(cows);
+        return res.status(200).json(cows);
     } catch (error) {
-        console.error("Get Cows Error:", error.message);
-
-        res.status(500).json({
-            message: "गायींची यादी मिळवताना समस्या आली."
+        console.error("Get cows error:", error);
+        return res.status(500).json({
+            message: "Failed to fetch cows",
+            error: error.message
         });
     }
 });
 
-
-// ==========================================
-// 2. एका गायीची माहिती मिळवा
-// GET /api/cows/:id
-// ==========================================
+// GET: Get one cow
 router.get("/:id", async (req, res) => {
     try {
         const cow = await Cow.findOne({
@@ -81,25 +65,21 @@ router.get("/:id", async (req, res) => {
 
         if (!cow) {
             return res.status(404).json({
-                message: "गाय सापडली नाही."
+                message: "Cow not found"
             });
         }
 
-        res.json(cow);
+        return res.status(200).json(cow);
     } catch (error) {
-        console.error("Get Cow Error:", error.message);
-
-        res.status(400).json({
-            message: "गायीची माहिती मिळवता आली नाही."
+        console.error("Get cow error:", error);
+        return res.status(500).json({
+            message: "Failed to fetch cow",
+            error: error.message
         });
     }
 });
 
-
-// ==========================================
-// 3. नवीन गाय जोडा
-// POST /api/cows
-// ==========================================
+// POST: Add new cow
 router.post("/", upload.single("photoFile"), async (req, res) => {
     try {
         const {
@@ -107,123 +87,132 @@ router.post("/", upload.single("photoFile"), async (req, res) => {
             name,
             breed,
             dateOfBirth,
-            healthStatus
+            healthStatus,
+            pregnancyStatus
         } = req.body;
 
         if (!cowTag || !cowTag.trim()) {
             return res.status(400).json({
-                message: "गाय ID / Tag Number भरणे आवश्यक आहे."
+                message: "Cow tag is required"
             });
         }
 
-        const photo = req.file
-            ? "/uploads/" + req.file.filename
-            : "/images/default-cow.png";
+        const existingCow = await Cow.findOne({
+            ownerId: req.user.id,
+            cowTag: cowTag.trim()
+        });
+
+        if (existingCow) {
+            return res.status(409).json({
+                message: "This cow tag already exists"
+            });
+        }
+
+        const photo =
+            getPhotoData(req.file) || "/images/default-cow.png";
 
         const cow = await Cow.create({
             ownerId: req.user.id,
             cowTag: cowTag.trim(),
             name: name || "",
             breed: breed || "",
-            dateOfBirth: dateOfBirth || "",
+            dateOfBirth: dateOfBirth || null,
             healthStatus: healthStatus || "निरोगी",
-            pregnancyStatus: "Not Pregnant",
-            photo: photo
+            pregnancyStatus: pregnancyStatus || "Not Pregnant",
+            photo
         });
 
-        res.status(201).json({
-            message: "गाय यशस्वीरित्या जतन झाली.",
-            cow: cow
+        return res.status(201).json({
+            message: "Cow added successfully",
+            cow
         });
-
     } catch (error) {
-        console.error("Add Cow Error:", error.message);
+        console.error("Add cow error:", error);
 
         if (error.code === 11000) {
             return res.status(409).json({
-                message: "हा Tag Number तुमच्या दुसऱ्या गायीला दिलेला आहे."
+                message: "This cow tag already exists"
             });
         }
 
-        res.status(500).json({
-            message: "गाय जतन करताना समस्या आली."
+        return res.status(500).json({
+            message: "Failed to add cow",
+            error: error.message
         });
     }
 });
 
-
-// ==========================================
-// 4. गायीची माहिती Update करा
-// PUT /api/cows/:id
-// ==========================================
+// PUT: Update cow
 router.put("/:id", upload.single("photoFile"), async (req, res) => {
     try {
-        const cow = await Cow.findOne({
-            _id: req.params.id,
-            ownerId: req.user.id
-        });
-
-        if (!cow) {
-            return res.status(404).json({
-                message: "गाय सापडली नाही किंवा परवानगी नाही."
-            });
-        }
-
         const {
             cowTag,
             name,
             breed,
             dateOfBirth,
-            healthStatus
+            healthStatus,
+            pregnancyStatus
         } = req.body;
 
-        if (!cowTag || !cowTag.trim()) {
-            return res.status(400).json({
-                message: "गाय ID / Tag Number भरणे आवश्यक आहे."
+        const updateData = {};
+
+        if (cowTag !== undefined) updateData.cowTag = cowTag.trim();
+        if (name !== undefined) updateData.name = name;
+        if (breed !== undefined) updateData.breed = breed;
+        if (dateOfBirth !== undefined) {
+            updateData.dateOfBirth = dateOfBirth || null;
+        }
+        if (healthStatus !== undefined) {
+            updateData.healthStatus = healthStatus;
+        }
+        if (pregnancyStatus !== undefined) {
+            updateData.pregnancyStatus = pregnancyStatus;
+        }
+
+        // Update photo only when a new photo is uploaded
+        if (req.file) {
+            updateData.photo = getPhotoData(req.file);
+        }
+
+        const cow = await Cow.findOneAndUpdate(
+            {
+                _id: req.params.id,
+                ownerId: req.user.id
+            },
+            { $set: updateData },
+            {
+                new: true,
+                runValidators: true
+            }
+        );
+
+        if (!cow) {
+            return res.status(404).json({
+                message: "Cow not found"
             });
         }
 
-        // फक्त निवडलेल्या गायीची माहिती बदला
-        cow.cowTag = cowTag.trim();
-        cow.name = name || "";
-        cow.breed = breed || "";
-        cow.dateOfBirth = dateOfBirth || "";
-        cow.healthStatus = healthStatus || "निरोगी";
-
-        // नवीन फोटो दिला असेल तरच फोटोचा path बदला.
-        // नवीन फोटो नसेल तर जुना फोटो कायम राहील.
-        if (req.file) {
-            cow.photo = "/uploads/" + req.file.filename;
-        }
-
-        // pregnancyStatus इथे बदलत नाही; जुनी स्थिती कायम राहते.
-        await cow.save();
-
-        res.json({
-            message: "गायीची माहिती यशस्वीरित्या Update झाली.",
-            cow: cow
+        return res.status(200).json({
+            message: "Cow updated successfully",
+            cow
         });
-
     } catch (error) {
-        console.error("Update Cow Error:", error.message);
+        console.error("Update cow error:", error);
 
         if (error.code === 11000) {
             return res.status(409).json({
-                message: "हा Tag Number तुमच्या दुसऱ्या गायीला दिलेला आहे."
+                message: "This cow tag already exists"
             });
         }
 
-        res.status(500).json({
-            message: "गायीची माहिती Update करताना समस्या आली."
+        return res.status(500).json({
+            message: "Failed to update cow",
+            error: error.message
         });
     }
 });
 
-
-// ==========================================
-// 5. गाय Delete करा
-// DELETE /api/cows/:id
-// ==========================================
+// DELETE: Delete cow
 router.delete("/:id", async (req, res) => {
     try {
         const cow = await Cow.findOneAndDelete({
@@ -233,21 +222,41 @@ router.delete("/:id", async (req, res) => {
 
         if (!cow) {
             return res.status(404).json({
-                message: "गाय सापडली नाही किंवा परवानगी नाही."
+                message: "Cow not found"
             });
         }
 
-        res.json({
-            message: "गाय यशस्वीरित्या Delete झाली."
+        return res.status(200).json({
+            message: "Cow deleted successfully"
         });
-
     } catch (error) {
-        console.error("Delete Cow Error:", error.message);
+        console.error("Delete cow error:", error);
 
-        res.status(400).json({
-            message: "गाय Delete करता आली नाही."
+        return res.status(500).json({
+            message: "Failed to delete cow",
+            error: error.message
         });
     }
+});
+
+// Handle upload errors
+router.use((err, req, res, next) => {
+    if (err instanceof multer.MulterError) {
+        return res.status(400).json({
+            message:
+                err.code === "LIMIT_FILE_SIZE"
+                    ? "Image size must be 5 MB or less"
+                    : err.message
+        });
+    }
+
+    if (err) {
+        return res.status(400).json({
+            message: err.message || "File upload failed"
+        });
+    }
+
+    next();
 });
 
 module.exports = router;
