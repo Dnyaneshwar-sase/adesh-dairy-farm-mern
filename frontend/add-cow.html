@@ -288,7 +288,7 @@
                     <label for="photoFile">गायीचा फोटो (ऐच्छिक)</label>
                     <input
                         id="photoFile"
-                        name="photo"
+                        name="photoFile"
                         type="file"
                         accept="image/jpeg,image/png,image/webp"
                     >
@@ -454,8 +454,9 @@ form.addEventListener("submit", async function (event) {
         document.getElementById("pregnancyStatus").value
     );
 
+    // Backend uses upload.single("photoFile")
     if (photo) {
-        formData.append("photo", photo);
+        formData.append("photoFile", photo);
     }
 
     saveButton.disabled = true;
