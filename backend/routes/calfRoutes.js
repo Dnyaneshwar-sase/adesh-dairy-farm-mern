@@ -2,38 +2,15 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
 
 const Calf = require("../models/Calf");
 const ownerAuth = require("../middleware/ownerAuth");
 
 const router = express.Router();
 
-// Backend uploads folder तयार करणे
-const uploadDir = path.join(__dirname, "../uploads");
-
-
-
-// फोटो कोणत्या नावाने आणि कुठे Save करायचा
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, uploadDir);
-    },
-
-    filename: (req, file, cb) => {
-        const extension = path.extname(file.originalname).toLowerCase();
-        const uniqueName =
-            "calf-" + Date.now() + "-" +
-            Math.round(Math.random() * 1e9) + extension;
-
-        cb(null, uniqueName);
-    }
-});
-
-// फक्त Image files स्वीकारणे
+// फोटो server च्या disk वर न ठेवता memory मध्ये घ्या.
 const upload = multer({
-    storage,
+    storage: multer.memoryStorage(),
     limits: {
         fileSize: 5 * 1024 * 1024
     },
@@ -46,20 +23,19 @@ const upload = multer({
     }
 });
 
-// सर्व वासरांची माहिती आणि एकूण संख्या
+// सर्व वासरांची माहिती
 router.get("/", ownerAuth, async (req, res) => {
     try {
-        const ownerId = req.user.id;
-
-        const calves = await Calf.find({ ownerId })
-            .sort({ createdAt: -1 });
+        const calves = await Calf.find({
+            ownerId: req.user.id
+        }).sort({ createdAt: -1 });
 
         res.json({
             totalCalves: calves.length,
             calves
         });
     } catch (error) {
-        console.error("Fetch Calves Error:", error.message);
+        console.error("Fetch Calves Error:", error);
 
         res.status(500).json({
             message: "वासरांची माहिती मिळवताना समस्या आली."
@@ -67,21 +43,16 @@ router.get("/", ownerAuth, async (req, res) => {
     }
 });
 
-// नवीन वासराची नोंद आणि फोटो Upload
+// नवीन वासराची नोंद
 router.post("/", ownerAuth, (req, res, next) => {
     upload.single("photo")(req, res, (error) => {
         if (error) {
-            if (error instanceof multer.MulterError) {
-                const message = error.code === "LIMIT_FILE_SIZE"
+            const message =
+                error.code === "LIMIT_FILE_SIZE"
                     ? "फोटोचा आकार 5 MB पेक्षा कमी असावा."
-                    : "फोटो Upload करताना समस्या आली.";
+                    : error.message || "फोटो Upload करताना समस्या आली.";
 
-                return res.status(400).json({ message });
-            }
-
-            return res.status(400).json({
-                message: error.message || "फोटो योग्य नाही."
-            });
+            return res.status(400).json({ message });
         }
 
         next();
@@ -101,19 +72,20 @@ router.post("/", ownerAuth, (req, res, next) => {
             typeof calfTag !== "string" ||
             !calfTag.trim()
         ) {
-            if (req.file) {
-                fs.unlink(req.file.path, () => {});
-            }
-
             return res.status(400).json({
                 message: "वासराचा Tag Number आवश्यक आहे."
             });
         }
 
-        // फोटो निवडला नसेल तर Default फोटोचा path
-        const photo = req.file
-            ? `/uploads/${req.file.filename}`
-            : "images/.default-calf.png";
+        // फोटो MongoDB मध्ये Data URL स्वरूपात साठवा.
+        let photo = "/images/default-calf.png";
+
+        if (req.file) {
+            const mimeType = req.file.mimetype;
+            const base64 = req.file.buffer.toString("base64");
+
+            photo = `data:${mimeType};base64,${base64}`;
+        }
 
         const calf = await Calf.create({
             ownerId: req.user.id,
@@ -126,15 +98,12 @@ router.post("/", ownerAuth, (req, res, next) => {
             photo
         });
 
-        res.status(201).json({
+        return res.status(201).json({
             message: "वासराची नोंद यशस्वी झाली!",
             calf
         });
-    } catch (error) {
-        if (req.file) {
-            fs.unlink(req.file.path, () => {});
-        }
 
+    } catch (error) {
         if (error.code === 11000) {
             return res.status(409).json({
                 message: "हा Tag Number आधीपासून नोंदवलेला आहे."
@@ -147,9 +116,9 @@ router.post("/", ownerAuth, (req, res, next) => {
             });
         }
 
-        console.error("Create Calf Error:", error.message);
+        console.error("Create Calf Error:", error);
 
-        res.status(500).json({
+        return res.status(500).json({
             message: "वासराची नोंद करताना समस्या आली."
         });
     }
@@ -175,13 +144,14 @@ router.delete("/:id", ownerAuth, async (req, res) => {
             });
         }
 
-        res.json({
+        return res.json({
             message: "वासराची नोंद Delete झाली."
         });
-    } catch (error) {
-        console.error("Delete Calf Error:", error.message);
 
-        res.status(500).json({
+    } catch (error) {
+        console.error("Delete Calf Error:", error);
+
+        return res.status(500).json({
             message: "वासराची नोंद Delete करताना समस्या आली."
         });
     }
