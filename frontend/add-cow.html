@@ -1,15 +1,10 @@
 
-
 <!DOCTYPE html>
 <html lang="mr">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>नवीन गाय जोडा | आदेश डेअरी फार्म</title>
-
-    <link rel="stylesheet" href="css/style.css">
 
     <style>
         * {
@@ -18,723 +13,510 @@
 
         body {
             margin: 0;
-            font-family: "Segoe UI", Arial, sans-serif;
-            background: #f4f8f3;
-            color: #24352a;
+            padding: 24px;
+            font-family: Arial, "Noto Sans Devanagari", sans-serif;
+            background: #f3f8f2;
+            color: #174d32;
         }
 
-        .add-cow-page {
-            min-height: 100vh;
-            padding: 25px 16px 40px;
-        }
-
-        .add-cow-wrapper {
-            max-width: 700px;
+        .container {
+            max-width: 850px;
             margin: 0 auto;
         }
 
-        .farm-brand {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 18px 22px;
+        .header, .card {
+            background: #fff;
+            border: 1px solid #dcebdc;
+            border-radius: 18px;
+            padding: 24px;
             margin-bottom: 22px;
-            background: #ffffff;
-            border: 1px solid #e0eadf;
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(32, 80, 43, 0.07);
+            box-shadow: 0 5px 20px rgba(20, 80, 40, 0.05);
         }
 
-        .farm-logo {
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo {
             width: 70px;
             height: 70px;
             object-fit: contain;
-            padding: 5px;
-            background: #f1f8ef;
-            border-radius: 12px;
         }
 
-        .farm-brand h2 {
-            margin: 0 0 5px;
-            color: #176b3a;
-            font-size: 23px;
-            font-weight: 800;
+        h1, h2 {
+            margin-top: 0;
+            color: #087443;
         }
 
-        .farm-brand p {
-            margin: 0;
-            color: #647568;
-            font-size: 14px;
+        .subtitle {
+            color: #66796c;
+            line-height: 1.7;
         }
 
-        .page-navigation {
+        .navigation {
             display: flex;
+            gap: 10px;
             flex-wrap: wrap;
-            gap: 12px;
             margin-bottom: 22px;
         }
 
-        .page-navigation a {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 11px 17px;
-            border: 1px solid #c8e6c9;
+        .button {
+            display: inline-block;
+            border: none;
             border-radius: 10px;
-            background: #e8f5e9;
-            color: #285c35;
-            font-size: 14px;
-            font-weight: 700;
-            text-decoration: none;
-            transition: 0.25s ease;
-        }
-
-        .page-navigation a:hover {
-            background: #d5ebd8;
-            transform: translateY(-2px);
-        }
-
-        .add-cow-card {
-            width: 100%;
-            padding: 35px;
-            background: #ffffff;
-            border: 1px solid #e0eadf;
-            border-radius: 20px;
-            box-shadow: 0 8px 30px rgba(29, 68, 39, 0.09);
-        }
-
-        .form-heading {
-            padding-bottom: 22px;
-            margin-bottom: 25px;
-            border-bottom: 1px solid #e6eee5;
-        }
-
-        .add-cow-card h1 {
-            margin: 0 0 10px;
-            color: #176b3a;
-            font-size: 32px;
-            font-weight: 800;
-            line-height: 1.4;
-        }
-
-        .form-subtitle {
-            margin: 0;
-            color: #647568;
+            padding: 12px 20px;
+            background: #168653;
+            color: white;
             font-size: 15px;
-            line-height: 1.8;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
         }
 
-        .cow-form {
+        .button:hover {
+            background: #106a40;
+        }
+
+        .button.secondary {
+            background: #e7f4e7;
+            border: 1px solid #cce5cc;
+            color: #145c36;
+        }
+
+        .button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .form-grid {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 22px;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
         }
 
-        .form-group {
+        .field {
             display: flex;
             flex-direction: column;
-            gap: 9px;
-            min-width: 0;
+            gap: 8px;
         }
 
-        .form-group label {
-            color: #344b39;
-            font-size: 14px;
-            font-weight: 700;
-        }
-
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            min-height: 48px;
-            padding: 12px 14px;
-            background: #fbfdfb;
-            color: #24352a;
-            border: 1px solid #d5e2d4;
-            border-radius: 10px;
-            outline: none;
-            font-family: inherit;
-            font-size: 14px;
-            transition: border-color 0.2s ease,
-                        box-shadow 0.2s ease,
-                        background 0.2s ease;
-        }
-
-        .form-group input::placeholder {
-            color: #9aa79c;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            background: #ffffff;
-            border-color: #198754;
-            box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.12);
-        }
-
-        .form-group input[type="file"] {
-            padding: 9px;
-            background: #f7fbf6;
-            cursor: pointer;
-        }
-
-        .form-group input[type="file"]::file-selector-button {
-            padding: 8px 12px;
-            margin-right: 10px;
-            background: #e3f2e4;
-            color: #176b3a;
-            border: 0;
-            border-radius: 7px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .form-group input[type="file"]::file-selector-button:hover {
-            background: #cde8d0;
-        }
-
-        .full-width {
+        .field.full {
             grid-column: 1 / -1;
+        }
+
+        label {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #d4e3d5;
+            border-radius: 10px;
+            font-size: 15px;
+            background: #fff;
+            color: #244832;
+        }
+
+        input:focus, select:focus {
+            outline: 2px solid #8ecba5;
+            border-color: #168653;
+        }
+
+        .preview-box {
+            margin-top: 12px;
+            display: none;
+        }
+
+        #photoPreview {
+            max-width: 220px;
+            max-height: 220px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 1px solid #dcebdc;
+        }
+
+        .message {
+            display: none;
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow-wrap: anywhere;
+        }
+
+        .message.success {
+            display: block;
+            color: #155c32;
+            background: #e0f5e5;
+            border: 1px solid #a7d9b3;
+        }
+
+        .message.error {
+            display: block;
+            color: #8d2020;
+            background: #fde5e5;
+            border: 1px solid #f1b5b5;
         }
 
         .form-actions {
             display: flex;
-            flex-direction: column;
-            gap: 13px;
-            margin-top: 30px;
-        }
-
-        .save-cow-button {
-            width: 100%;
-            min-height: 50px;
-            padding: 13px 20px;
-            background: linear-gradient(135deg, #198754, #146c43);
-            color: #ffffff;
-            border: 1px solid #146c43;
-            border-radius: 11px;
-            font-family: inherit;
-            font-size: 16px;
-            font-weight: 800;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(25, 135, 84, 0.18);
-            transition: 0.25s ease;
-        }
-
-        .save-cow-button:hover {
-            background: linear-gradient(135deg, #146c43, #0f5132);
-            transform: translateY(-2px);
-            box-shadow: 0 7px 17px rgba(25, 135, 84, 0.24);
-        }
-
-        .save-cow-button:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .cancel-button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            min-height: 48px;
-            padding: 12px 18px;
-            background: #f3f7f2;
-            color: #365541;
-            border: 1px solid #d8e5d7;
-            border-radius: 11px;
-            font-size: 14px;
-            font-weight: 700;
-            text-align: center;
-            text-decoration: none;
-            transition: 0.25s ease;
-        }
-
-        .cancel-button:hover {
-            background: #e4eee2;
-            border-color: #b7d4b8;
-        }
-
-        #message {
-            display: none;
-            margin-bottom: 20px;
-            padding: 12px 15px;
-            border-radius: 10px;
-            font-size: 14px;
-        }
-
-        #photoPreview {
-            display: none;
-            max-width: 180px;
-            max-height: 150px;
-            margin-top: 12px;
-            border-radius: 10px;
-            object-fit: cover;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 24px;
         }
 
         @media (max-width: 600px) {
-            .add-cow-page {
-                padding: 14px 12px 25px;
+            body {
+                padding: 12px;
             }
 
-            .farm-brand {
-                padding: 14px;
-                gap: 12px;
+            .header, .card {
+                padding: 18px;
             }
 
-            .farm-logo {
-                width: 55px;
-                height: 55px;
-            }
-
-            .farm-brand h2 {
-                font-size: 19px;
-            }
-
-            .farm-brand p {
-                font-size: 12px;
-            }
-
-            .add-cow-card {
-                padding: 22px 17px;
-                border-radius: 15px;
-            }
-
-            .add-cow-card h1 {
-                font-size: 26px;
-            }
-
-            .form-subtitle {
-                font-size: 14px;
-            }
-
-            .cow-form {
+            .form-grid {
                 grid-template-columns: 1fr;
-                gap: 19px;
             }
 
-            .full-width {
+            .field.full {
                 grid-column: auto;
             }
 
-            .page-navigation a {
-                flex: 1;
-                padding: 10px;
+            .logo {
+                width: 55px;
+                height: 55px;
             }
         }
     </style>
 </head>
 
 <body>
+<div class="container">
 
-    <div class="add-cow-page">
-        <div class="add-cow-wrapper">
-
-            <header class="farm-brand">
-                <img src="images/logo.png"
-                     alt="आदेश डेअरी फार्म लोगो"
-                     class="farm-logo"
-                     onerror="this.style.display='none'">
-
-                <div>
-                    <h2>आदेश डेअरी फार्म</h2>
-                    <p>आपल्या डेअरीचे स्मार्ट व्यवस्थापन 🐄</p>
-                </div>
-            </header>
-
-            <nav class="page-navigation">
-                <a href="dashboard.html">🏠 Dashboard</a>
-                <a href="cows.html">← गायींची यादी</a>
-            </nav>
-
-            <div class="add-cow-card">
-
-                <div class="form-heading">
-                    <h1>🐄 नवीन गाय जोडा</h1>
-
-                    <p class="form-subtitle">
-                        आदेश डेअरी फार्ममध्ये नवीन गायीची माहिती नोंदवा.
-                    </p>
-                </div>
-
-                <div id="message" role="alert"></div>
-
-                <form class="cow-form"
-                      id="addCowForm"
-                      enctype="multipart/form-data">
-
-                    <div class="form-group">
-                        <label for="cowTag">गाय ID / Tag Number *</label>
-
-                        <input type="text"
-                               id="cowTag"
-                               name="cowTag"
-                               placeholder="उदा. AD002"
-                               required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="name">गायीचे नाव</label>
-
-                        <input type="text"
-                               id="name"
-                               name="name"
-                               placeholder="उदा. लक्ष्मी">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="breed">जात / Breed</label>
-
-                        <input type="text"
-                               id="breed"
-                               name="breed"
-                               placeholder="उदा. HF">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="dateOfBirth">जन्मतारीख</label>
-
-                        <input type="date"
-                               id="dateOfBirth"
-                               name="dateOfBirth">
-                    </div>
-
-                    <div class="form-group full-width">
-                        <label for="photoFile">गायीचा फोटो</label>
-
-                        <input type="file"
-                               id="photoFile"
-                               name="photoFile"
-                               accept="image/*">
-
-                        <img id="photoPreview"
-                             alt="गायीच्या फोटोचे पूर्वदृश्य">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="healthStatus">आरोग्य स्थिती</label>
-
-                        <input type="text"
-                               id="healthStatus"
-                               name="healthStatus"
-                               placeholder="उदा. निरोगी">
-                    </div>
-
-                    <div class="form-actions full-width">
-
-                        <button type="submit"
-                                class="save-cow-button"
-                                id="saveButton">
-                            💾 गाय जतन करा
-                        </button>
-
-                        <a href="cows.html" class="cancel-button">
-                            ← परत गायींच्या यादीवर
-                        </a>
-
-                    </div>
-
-                </form>
-            </div>
+    <header class="header">
+        <img
+            class="logo"
+            src="/images/logo.png"
+            alt="आदेश डेअरी फार्म लोगो"
+            onerror="this.style.display='none'"
+        >
+        <div>
+            <h1 style="margin-bottom: 6px;">आदेश डेअरी फार्म</h1>
+            <div class="subtitle">आपल्या डेअरीचे स्मार्ट व्यवस्थापन 🐄</div>
         </div>
-    </div>
+    </header>
 
-   
+    <nav class="navigation">
+        <a class="button secondary" href="dashboard.html">🏠 Dashboard</a>
+        <a class="button secondary" href="cows.html">← गायींची यादी</a>
+    </nav>
+
+    <main class="card">
+        <h2>🐄 नवीन गाय जोडा</h2>
+        <p class="subtitle">आदेश डेअरी फार्ममध्ये नवीन गायीची माहिती नोंदवा.</p>
+
+        <div id="message" class="message" role="alert"></div>
+
+        <form id="addCowForm">
+            <div class="form-grid">
+
+                <div class="field">
+                    <label for="cowTag">गाय ID / Tag Number *</label>
+                    <input
+                        id="cowTag"
+                        name="cowTag"
+                        type="text"
+                        placeholder="उदा. AD002"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="name">गायीचे नाव</label>
+                    <input
+                        id="name"
+                        name="name"
+                        type="text"
+                        placeholder="उदा. लक्ष्मी"
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="breed">जात / Breed</label>
+                    <input
+                        id="breed"
+                        name="breed"
+                        type="text"
+                        placeholder="उदा. HF, जर्सी"
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="dateOfBirth">जन्मतारीख</label>
+                    <input
+                        id="dateOfBirth"
+                        name="dateOfBirth"
+                        type="date"
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="healthStatus">आरोग्य स्थिती</label>
+                    <select id="healthStatus" name="healthStatus">
+                        <option value="निरोगी">निरोगी</option>
+                        <option value="आजारी">आजारी</option>
+                        <option value="उपचार सुरू">उपचार सुरू</option>
+                        <option value="Healthy">Healthy</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="pregnancyStatus">गर्भधारणा स्थिती</label>
+                    <select id="pregnancyStatus" name="pregnancyStatus">
+                        <option value="माहित नाही">माहित नाही</option>
+                        <option value="गाभण">गाभण</option>
+                        <option value="गाभण नाही">गाभण नाही</option>
+                        <option value="Pregnant">Pregnant</option>
+                        <option value="Not Pregnant">Not Pregnant</option>
+                    </select>
+                </div>
+
+                <div class="field full">
+                    <label for="photoFile">गायीचा फोटो (ऐच्छिक)</label>
+                    <input
+                        id="photoFile"
+                        name="photo"
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                    >
+
+                    <div class="subtitle">
+                        JPG, PNG किंवा WEBP फोटो निवडा. कमाल आकार 4 MB.
+                    </div>
+
+                    <div id="previewBox" class="preview-box">
+                        <img id="photoPreview" alt="गायीच्या फोटोचे Preview">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-actions">
+                <button id="saveButton" class="button" type="submit">
+                    💾 गायीची नोंद करा
+                </button>
+
+                <a href="cows.html" class="button secondary">
+                    रद्द करा
+                </a>
+            </div>
+        </form>
+    </main>
+</div>
+
 <script>
-  const API_URL = "https://adesh-dairy-farm-mern.vercel.app/api/cows";
+"use strict";
 
-    const form = document.getElementById("addCowForm");
-    const message = document.getElementById("message");
-    const saveButton = document.getElementById("saveButton");
-    const photoInput = document.getElementById("photoFile");
-    const photoPreview = document.getElementById("photoPreview");
+// Production Backend API
+const API_URL = "https://adesh-dairy-farm-mern.vercel.app/api/cows";
 
-    const params = new URLSearchParams(window.location.search);
-    const editId = params.get("edit");
-    const isEditMode = Boolean(editId);
+const form = document.getElementById("addCowForm");
+const message = document.getElementById("message");
+const saveButton = document.getElementById("saveButton");
+const photoInput = document.getElementById("photoFile");
+const photoPreview = document.getElementById("photoPreview");
+const previewBox = document.getElementById("previewBox");
 
-    const DEFAULT_PHOTO = new URL(
-        "images/default-cow.png",
-        window.location.href
-    ).href;
+let previewObjectUrl = null;
 
-    function showMessage(text, type = "error") {
-        message.textContent = text;
-        message.style.display = "block";
+function showMessage(text, type) {
+    message.textContent = text;
+    message.className = "message " + type;
+    message.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest"
+    });
+}
 
-        message.style.background =
-            type === "success" ? "#e8f5e9" :
-            type === "warning" ? "#fff3cd" : "#f8d7da";
+function clearMessage() {
+    message.textContent = "";
+    message.className = "message";
+}
 
-        message.style.color =
-            type === "success" ? "#176b3a" :
-            type === "warning" ? "#664d03" : "#842029";
+function getAuthToken() {
+    const possibleKeys = [
+        "token",
+        "authToken",
+        "userToken",
+        "dairyToken",
+        "accessToken"
+    ];
 
-        message.style.border =
-            type === "success" ? "1px solid #badbcc" :
-            type === "warning" ? "1px solid #ffecb5" :
-            "1px solid #f5c2c7";
-    }
+    for (const key of possibleKeys) {
+        const value = localStorage.getItem(key);
 
-    function getToken() {
-        return localStorage.getItem("authToken");
-    }
-
-    function setField(id, value) {
-        const field = document.getElementById(id);
-
-        if (field && value !== undefined && value !== null) {
-            field.value = value;
+        if (value && value.trim()) {
+            return value.trim().replace(/^Bearer\s+/i, "");
         }
     }
 
-    // API response JSON आहे की HTML आहे ते सुरक्षितपणे तपासा.
-    async function readApiResponse(response) {
-        const text = await response.text();
+    return "";
+}
 
-        let data;
+// फोटो Preview
+photoInput.addEventListener("change", function () {
+    clearMessage();
 
-        try {
-            data = text ? JSON.parse(text) : {};
-        } catch (error) {
-            console.error(
-                "API returned non-JSON response:",
-                response.url,
-                text.slice(0, 300)
-            );
+    if (previewObjectUrl) {
+        URL.revokeObjectURL(previewObjectUrl);
+        previewObjectUrl = null;
+    }
 
+    photoPreview.removeAttribute("src");
+    previewBox.style.display = "none";
+
+    const file = photoInput.files[0];
+
+    if (!file) {
+        return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+        photoInput.value = "";
+        showMessage("कृपया योग्य फोटो निवडा.", "error");
+        return;
+    }
+
+    if (file.size > 4 * 1024 * 1024) {
+        photoInput.value = "";
+        showMessage("फोटोचा आकार 4 MB पेक्षा कमी असावा.", "error");
+        return;
+    }
+
+    previewObjectUrl = URL.createObjectURL(file);
+    photoPreview.src = previewObjectUrl;
+    previewBox.style.display = "block";
+});
+
+// गाय नोंदवणे
+form.addEventListener("submit", async function (event) {
+    event.preventDefault();
+    clearMessage();
+
+    const token = getAuthToken();
+
+    if (!token) {
+        showMessage(
+            "Login आवश्यक आहे. कृपया पुन्हा Login करून ही फाइल उघडा.",
+            "error"
+        );
+        return;
+    }
+
+    const cowTag = document.getElementById("cowTag").value.trim();
+
+    if (!cowTag) {
+        showMessage("गाय ID / Tag Number आवश्यक आहे.", "error");
+        return;
+    }
+
+    const photo = photoInput.files[0];
+
+    if (photo && photo.size > 4 * 1024 * 1024) {
+        showMessage("फोटोचा आकार 4 MB पेक्षा कमी असावा.", "error");
+        return;
+    }
+
+    const formData = new FormData();
+
+    formData.append("cowTag", cowTag);
+    formData.append(
+        "name",
+        document.getElementById("name").value.trim()
+    );
+    formData.append(
+        "breed",
+        document.getElementById("breed").value.trim()
+    );
+    formData.append(
+        "dateOfBirth",
+        document.getElementById("dateOfBirth").value
+    );
+    formData.append(
+        "healthStatus",
+        document.getElementById("healthStatus").value
+    );
+    formData.append(
+        "pregnancyStatus",
+        document.getElementById("pregnancyStatus").value
+    );
+
+    if (photo) {
+        formData.append("photo", photo);
+    }
+
+    saveButton.disabled = true;
+    saveButton.textContent = "नोंद करत आहे...";
+
+    try {
+        const response = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token
+            },
+            body: formData
+        });
+
+        const result = await response.json().catch(function () {
+            return {};
+        });
+
+        if (response.status === 401 || response.status === 403) {
             throw new Error(
-                "API कडून JSON ऐवजी HTML मिळाले. HTTP " +
-                response.status +
-                ". Backend चालू आहे का आणि cowRoutes.js योग्य जोडले आहे का ते तपासा."
+                result.message ||
+                "Login किंवा Owner परवानगी तपासा. पुन्हा Login करा."
             );
         }
 
         if (!response.ok) {
             throw new Error(
-                data.message || "Request अयशस्वी झाली. HTTP " + response.status
+                result.message ||
+                "गायीची नोंद करता आली नाही. Backend तपासा."
             );
         }
 
-        return data;
-    }
+        showMessage(
+            result.message || "गायीची नोंद यशस्वी झाली!",
+            "success"
+        );
 
-    // फोटो URL योग्य बनवा.
-    
-function getPhotoUrl(photoPath) {
-    if (
-        !photoPath ||
-        photoPath === "/images/default-cow.png" ||
-        photoPath === "images/default-cow.png"
-    ) {
-        return DEFAULT_PHOTO;
-    }
+        form.reset();
 
-    if (/^(https?:\/\/|data:image\/)/i.test(photoPath)) {
-        return photoPath;
-    }
-
-    if (photoPath.startsWith("/")) {
-        return "https://adesh-dairy-farm-mern.vercel.app" + photoPath;
-    }
-
-    return "https://adesh-dairy-farm-mern.vercel.app/" + photoPath;
-}
-
-
-       if (photoPath.startsWith("/")) {
-    return "https://adesh-dairy-farm-mern.vercel.app" + photoPath;
-}
-
-       return "https://adesh-dairy-farm-mern.vercel.app/" + photoPath;
-
-    function showPhoto(photoPath) {
-        const imageUrl = getPhotoUrl(photoPath);
-    }
-
-        photoPreview.onerror = function () {
-            // Upload केलेला फोटो नसेल किंवा सापडला नाही तर default फोटो वापरा.
-            if (photoPreview.src !== DEFAULT_PHOTO) {
-                photoPreview.src = DEFAULT_PHOTO;
-            } 
-            else {
-                photoPreview.style.display = "none";
-                console.error("Default cow photo not found:", DEFAULT_PHOTO);
-            }
-        };
-
-        photoPreview.onload = function () {
-            photoPreview.style.display = "block";
-        };
-
-        photoPreview.src = imageUrl;{
-        photoPreview.style.display = "block";
-    }
-
-    async function loadCowForEdit() {
-        if (!isEditMode) return;
-
-        const token = getToken();
-
-        if (!token) {
-            showMessage("कृपया आधी Login करा.", "warning");
-            return;
+        if (previewObjectUrl) {
+            URL.revokeObjectURL(previewObjectUrl);
+            previewObjectUrl = null;
         }
 
-        saveButton.disabled = true;
-        saveButton.textContent = "माहिती लोड होत आहे...";
+        photoPreview.removeAttribute("src");
+        previewBox.style.display = "none";
 
-        try {
-            const response = await fetch(
-                API_URL + "/" + encodeURIComponent(editId),
-                {
-                    method: "GET",
-                    headers: {
-                        "Authorization": "Bearer " + token,
-                        "Accept": "application/json"
-                    }
-                }
-            );
+    } catch (error) {
+        console.error("Add Cow Error:", error);
 
-            const data = await readApiResponse(response);
-            const cow = data.cow || data.data || data;
-
-            if (!cow || (!cow._id && !cow.id)) {
-                throw new Error("निवडलेल्या गायीची माहिती मिळाली नाही.");
-            }
-
-            setField("cowTag", cow.cowTag || cow.tagNumber || "");
-            setField("name", cow.name || "");
-            setField("breed", cow.breed || "");
-
-            setField(
-                "dateOfBirth",
-                cow.dateOfBirth
-                    ? String(cow.dateOfBirth).slice(0, 10)
-                    : ""
-            );
-
-            setField("healthStatus", cow.healthStatus || "निरोगी");
-
-            showPhoto(cow.photo);
-
-        } catch (error) {
-            console.error("Load cow error:", error);
-            showMessage(error.message, "error");
-
-        } finally {
-            saveButton.disabled = false;
-            saveButton.textContent = isEditMode
-                ? "💾 बदल जतन करा"
-                : "💾 गाय जतन करा";
-        }
+        showMessage(
+            error.message === "Failed to fetch"
+                ? "Backend शी संपर्क होत नाही. Vercel Backend आणि CORS तपासा."
+                : error.message,
+            "error"
+        );
+    } finally {
+        saveButton.disabled = false;
+        saveButton.textContent = "💾 गायीची नोंद करा";
     }
-
-    // नवीन फोटो निवडल्यावर preview दाखवा.
-    photoInput.addEventListener("change", function () {
-        const file = this.files[0];
-
-        if (!file) return;
-
-        if (!file.type.startsWith("image/")) {
-            this.value = "";
-            showMessage("कृपया फक्त फोटो निवडा.", "error");
-            return;
-        }
-
-        const localPhotoUrl = URL.createObjectURL(file);
-
-        photoPreview.onerror = function () {
-            photoPreview.style.display = "none";
-            showMessage("निवडलेला फोटो दाखवता आला नाही.", "error");
-        };
-
-        photoPreview.onload = function () {
-            photoPreview.style.display = "block";
-            message.style.display = "none";
-            URL.revokeObjectURL(localPhotoUrl);
-        };
-
-        photoPreview.src = localPhotoUrl;
-        photoPreview.style.display = "block";
-    });
-
-    // Add Cow आणि Edit Cow form submit.
-    form.addEventListener("submit", async function (event) {
-        event.preventDefault();
-        message.style.display = "none";
-
-        const token = getToken();
-
-        if (!token) {
-            showMessage("कृपया आधी Login करा.", "warning");
-            return;
-        }
-
-        const formData = new FormData(form);
-
-        saveButton.disabled = true;
-        saveButton.textContent = isEditMode
-            ? "बदल जतन होत आहेत..."
-            : "गाय जतन होत आहे...";
-
-        try {
-            const response = await fetch(
-                isEditMode
-                    ? API_URL + "/" + encodeURIComponent(editId)
-                    : API_URL,
-                {
-                    method: isEditMode ? "PUT" : "POST",
-                    headers: {
-                        "Authorization": "Bearer " + token,
-                        "Accept": "application/json"
-                    },
-                    body: formData
-                }
-            );
-
-            const data = await readApiResponse(response);
-
-            showMessage(
-                data.message ||
-                    (isEditMode
-                        ? "गायीची माहिती Update झाली."
-                        : "गाय यशस्वीरित्या जतन झाली."),
-                "success"
-            );
-
-            setTimeout(function () {
-                window.location.href = "cows.html";
-            }, 1000);
-
-        } catch (error) {
-            console.error("Save cow error:", error);
-            showMessage(error.message || "Server शी संपर्क होऊ शकला नाही.", "error");
-
-        } finally {
-            saveButton.disabled = false;
-            saveButton.textContent = isEditMode
-                ? "💾 बदल जतन करा"
-                : "💾 गाय जतन करा";
-        }
-    });
-
-    if (isEditMode) {
-        const heading = document.querySelector(".add-cow-card h1");
-        const subtitle = document.querySelector(".form-subtitle");
-
-        if (heading) {
-            heading.textContent = "✏️ गायीची माहिती बदला";
-        }
-
-        if (subtitle) {
-            subtitle.textContent =
-                "गायीची माहिती तपासा आणि आवश्यक बदल करा.";
-        }
-
-        loadCowForEdit();
-    }
+});
 </script>
-
 </body>
 </html>
